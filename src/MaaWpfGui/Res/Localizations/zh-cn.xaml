@@ -127,6 +127,8 @@
     <system:String x:Key="RoguelikeStrategyGold">刷源石锭，到达第二层后直接退出</system:String>
     <system:String x:Key="RoguelikeStrategyLastReward">刷开局，刷取热水壶或精二干员开局</system:String>
     <system:String x:Key="RoguelikeStrategyCollapse">刷坍缩范式，遇到非稀有坍缩范式后直接重开</system:String>
+    <system:String x:Key="RoguelikeStrategyMonthlySquadReward">刷月度奖励，到达第四层后直接退出</system:String>
+    <system:String x:Key="RoguelikeStrategyMonthlySquadInterview">刷月度访谈，到达第五层后直接退出</system:String>
     <system:String x:Key="StartingSquad">开局分队</system:String>
     <system:String x:Key="StartingRoles">开局职业组</system:String>
     <system:String x:Key="StartingCoreChar">开局干员 (单个)</system:String>

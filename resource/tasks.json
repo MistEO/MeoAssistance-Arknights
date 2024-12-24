@@ -7824,6 +7824,12 @@
     "Roguelike@StrategyChange_mode5": {
         "baseTask": "Roguelike@StrategyChange_default"
     },
+    "Roguelike@StrategyChange_mode6": {
+        "baseTask": "Roguelike@StrategyChange_default"
+    },
+    "Roguelike@StrategyChange_mode7": {
+        "baseTask": "Roguelike@StrategyChange_default"
+    },
     "Roguelike@TempRecruitFlag": {
         "roi": [587, 76, 100, 20],
         "templThreshold": 0.5
@@ -7891,9 +7897,13 @@
     },
     "Phantom@Roguelike@CloseEvent": {},
     "Phantom@Roguelike@Continue": {},
+    "Phantom@Roguelike@DialogSkip": {
+        "template": "Roguelike@DialogSkip.png",
+        "next": ["Phantom@Roguelike@DialogSkipConfirm", "Phantom@Roguelike@Stages#next"]
+    },
     "Phantom@Roguelike@DialogSkipConfirm": {
         "template": "Roguelike@DialogSkipConfirm.png",
-        "next": ["Phantom@Roguelike@DialogSkip", "Phantom@Roguelike@Stages#next"]
+        "next": ["Phantom@Roguelike@DialogSkipConfirm", "Phantom@Roguelike@Stages#next"]
     },
     "Phantom@Roguelike@DropsFlag": {
         "template": "Roguelike@DropsFlag.png",
@@ -7986,7 +7996,6 @@
             "Phantom@Roguelike@LastRewardRand",
             "Phantom@Roguelike@RolesDefault",
             "Phantom@Roguelike@CloseCollection",
-            "Phantom@Roguelike@DialogSkip",
             "Phantom@Roguelike@Stages#next"
         ]
     },
@@ -8060,6 +8069,7 @@
         "algorithm": "JustReturn",
         "next": [
             "Phantom@Roguelike@NextLevel",
+            "Phantom@Roguelike@DialogSkip",
             "Phantom@Roguelike@StageTrader",
             "Phantom@Roguelike@StageSafeHouse",
             "Phantom@Roguelike@StageEncounter",
@@ -8107,6 +8117,28 @@
             ["故土残躯", "_exit"],
             ["噩梦之始", "_exit"],
             ["血月长廊", "_exit"],
+            ["渴欲大厅", "_exit"]
+        ]
+    },
+    "Phantom@Roguelike@StrategyChange_mode6": {
+        "text": ["_default", "_exit"],
+        "ocrReplace": [
+            ["迷雾歧途", "_default"],
+            ["落阳庭院", "_default"],
+            ["故土残躯", "_default"],
+            ["噩梦之始", "_default"],
+            ["血月长廊", "_exit"],
+            ["渴欲大厅", "_exit"]
+        ]
+    },
+    "Phantom@Roguelike@StrategyChange_mode7": {
+        "text": ["_default", "_exit"],
+        "ocrReplace": [
+            ["迷雾歧途", "_default"],
+            ["落阳庭院", "_default"],
+            ["故土残躯", "_default"],
+            ["噩梦之始", "_default"],
+            ["血月长廊", "_default"],
             ["渴欲大厅", "_exit"]
         ]
     },
@@ -8595,6 +8627,30 @@
             ["失尘岩洞", "_exit"],
             ["幽海丛林", "_exit"],
             ["绀碧摇篮", "_exit"]
+        ]
+    },
+    "Mizuki@Roguelike@StrategyChange_mode6": {
+        "text": ["_default", "_exit"],
+        "ocrReplace": [
+            ["天光海岸", "_default"],
+            ["离岸孤岛", "_default"],
+            ["波涛略地", "_default"],
+            ["隐秘温床", "_default"],
+            ["失尘岩洞", "_exit"],
+            ["幽海丛林", "_exit"],
+            ["绀碧摇篮", "_SKIP_"]
+        ]
+    },
+    "Mizuki@Roguelike@StrategyChange_mode7": {
+        "text": ["_default", "_exit"],
+        "ocrReplace": [
+            ["天光海岸", "_default"],
+            ["离岸孤岛", "_default"],
+            ["波涛略地", "_default"],
+            ["隐秘温床", "_default"],
+            ["失尘岩洞", "_default"],
+            ["幽海丛林", "_exit"],
+            ["绀碧摇篮", "_SKIP_"]
         ]
     },
     "Mizuki@Roguelike@TodoEnter": {},
@@ -9816,6 +9872,30 @@
             ["积冰岩骸", "_SKIP_"],
             ["无瑕花园", "_SKIP_"],
             ["远见之构", "_SKIP_"],
+            ["深埋迷境", "_SKIP_"]
+        ]
+    },
+    "Sami@Roguelike@StrategyChange_mode6": {
+        "text": ["_default", "_exit"],
+        "ocrReplace": [
+            ["初霜湖泽", "_default"],
+            ["密静林地", "_default"],
+            ["昧明冻土", "_default"],
+            ["积冰岩骸", "_default"],
+            ["无瑕花园", "_exit"],
+            ["远见之构", "_exit"],
+            ["深埋迷境", "_SKIP_"]
+        ]
+    },
+    "Sami@Roguelike@StrategyChange_mode7": {
+        "text": ["_default", "_exit"],
+        "ocrReplace": [
+            ["初霜湖泽", "_default"],
+            ["密静林地", "_default"],
+            ["昧明冻土", "_default"],
+            ["积冰岩骸", "_default"],
+            ["无瑕花园", "_default"],
+            ["远见之构", "_exit"],
             ["深埋迷境", "_SKIP_"]
         ]
     },
@@ -11077,6 +11157,30 @@
             ["虚实疆界", "_exit"],
             ["辉光天顶", "_exit"],
             ["诡谲断章", "_exit"]
+        ]
+    },
+    "Sarkaz@Roguelike@StrategyChange_mode6": {
+        "text": ["_default", "_exit"],
+        "ocrReplace": [
+            ["熔魂之始", "_default"],
+            ["锻铁根须", "_default"],
+            ["灰铸迷城", "_default"],
+            ["或然歧域", "_default"],
+            ["虚实疆界", "_exit"],
+            ["辉光天顶", "_exit"],
+            ["诡谲断章", "_SKIP_"]
+        ]
+    },
+    "Sarkaz@Roguelike@StrategyChange_mode7": {
+        "text": ["_default", "_exit"],
+        "ocrReplace": [
+            ["熔魂之始", "_default"],
+            ["锻铁根须", "_default"],
+            ["灰铸迷城", "_default"],
+            ["或然歧域", "_default"],
+            ["虚实疆界", "_default"],
+            ["辉光天顶", "_exit"],
+            ["诡谲断章", "_SKIP_"]
         ]
     },
     "Sarkaz@Roguelike@TodoEnter": {},
