@@ -127,6 +127,8 @@
     <system:String x:Key="RoguelikeStrategyGold">오리지늄 각뿔 우선, 2번째 구역 도달 시 탐험 중도 포기</system:String>
     <system:String x:Key="RoguelikeStrategyLastReward">전기주전자 획득까지 반복, 3번째 구역 도달 시 탐험 중도 포기</system:String>
     <system:String x:Key="RoguelikeStrategyCollapse">희귀 붕괴 패러다임 파밍, 일반 붕괴 패러다임이 나올 시 재시작</system:String>
+    <system:String x:Key="RoguelikeStrategyMonthlySquadReward">월간 팀 보상을 목표로, 4번째 구역 도달 후 탐험 중도 포기</system:String>
+    <system:String x:Key="RoguelikeStrategyMonthlySquadInterview">월간 팀 대화 해제를 목표로, 5번째 구역 도달 후 탐험 중도 포기</system:String>
     <system:String x:Key="StartingSquad">시작 분대</system:String>
     <system:String x:Key="StartingRoles">모집 조합</system:String>
     <system:String x:Key="StartingCoreChar">시작 오퍼레이터 (1명)</system:String>

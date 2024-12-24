@@ -127,6 +127,8 @@
     <system:String x:Key="RoguelikeStrategyGold">源石錐の収集、2層到着後終了</system:String>
     <system:String x:Key="RoguelikeStrategyLastReward">支援選択を得るため3層到着後に終了</system:String>
     <system:String x:Key="RoguelikeStrategyCollapse">パラダイムロストをファーミングして、非レアパラダイムロストに遭遇したらすぐに再起動します</system:String>
+    <system:String x:Key="RoguelikeStrategyMonthlySquadReward">月間チーム報酬を目指し、4層到達後に終了</system:String>
+    <system:String x:Key="RoguelikeStrategyMonthlySquadInterview">月間チームの会話解放を目指し、5層到達後に終了</system:String>
     <system:String x:Key="StartingSquad">最初の分隊</system:String>
     <system:String x:Key="StartingRoles">最初の職業</system:String>
     <system:String x:Key="StartingCoreChar">最初のオペレーター（一人だけ）</system:String>
