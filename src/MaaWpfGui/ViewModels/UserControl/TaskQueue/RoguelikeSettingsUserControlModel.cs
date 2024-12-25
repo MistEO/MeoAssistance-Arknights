@@ -584,7 +584,7 @@ public class RoguelikeSettingsUserControlModel : PropertyChangedBase
     private bool _roguelikeEnableNonfriendSupport = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.RoguelikeEnableNonfriendSupport, bool.FalseString));
 
     /// <summary>
-    /// Gets or sets a value indicating whether can roguelike support unit belong to nonfriend
+    /// Gets or sets a value indicating whether can roguelike support unit belong to nonfriend.
     /// </summary>
     public bool RoguelikeEnableNonfriendSupport
     {
@@ -701,7 +701,7 @@ public class RoguelikeSettingsUserControlModel : PropertyChangedBase
     private bool _roguelikeStopAtFinalBoss = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.RoguelikeStopAtFinalBoss, bool.FalseString));
 
     /// <summary>
-    /// Gets or sets a value indicating whether to stop when investment is full.
+    /// Gets or sets a value indicating whether to stop when arriving at final boss.
     /// </summary>
     public bool RoguelikeStopAtFinalBoss
     {
@@ -716,7 +716,7 @@ public class RoguelikeSettingsUserControlModel : PropertyChangedBase
     private bool _roguelikeMonthlySquadAutoIterate = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.RoguelikeMonthlySquadAutoIterate, bool.FalseString));
 
     /// <summary>
-    /// Gets or sets a value indicating whether to automatically iterate the monthly squad .
+    /// Gets or sets a value indicating whether to automatically iterate the monthly squad.
     /// </summary>
     public bool RoguelikeMonthlySquadAutoIterate
     {
