@@ -219,6 +219,24 @@
             </CheckBox>
             <CheckBox
                 Margin="0,10"
+                IsChecked="{Binding RoguelikeMonthlySquadAutoIterate}"
+                Visibility="{c:Binding 'RoguelikeMode == &quot;6&quot; or RoguelikeMode == &quot;7&quot;'}">
+                <TextBlock
+                    Block.TextAlignment="Left"
+                    Text="{DynamicResource RoguelikeMonthlySquadAutoIterate}"
+                    TextWrapping="Wrap" />
+            </CheckBox>
+            <CheckBox
+                Margin="0,10"
+                IsChecked="{Binding RoguelikeDeepExplorationAutoIterate}"
+                Visibility="{c:Binding 'RoguelikeMode == &quot;6&quot; or RoguelikeMode == &quot;7&quot;'}">
+                <TextBlock
+                    Block.TextAlignment="Left"
+                    Text="{DynamicResource RoguelikeDeepExplorationAutoIterate}"
+                    TextWrapping="Wrap" />
+            </CheckBox>
+            <CheckBox
+                Margin="0,10"
                 IsChecked="{Binding RoguelikeStopAtMaxLevel}"
                 Visibility="{c:Binding 'RoguelikeMode == &quot;0&quot;'}">
                 <TextBlock

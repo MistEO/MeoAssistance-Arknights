@@ -713,6 +713,36 @@ public class RoguelikeSettingsUserControlModel : PropertyChangedBase
         }
     }
 
+    private bool _roguelikeMonthlySquadAutoIterate = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.RoguelikeMonthlySquadAutoIterate, bool.FalseString));
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to automatically iterate the monthly squad .
+    /// </summary>
+    public bool RoguelikeMonthlySquadAutoIterate
+    {
+        get => _roguelikeMonthlySquadAutoIterate;
+        set
+        {
+            SetAndNotify(ref _roguelikeMonthlySquadAutoIterate, value);
+            ConfigurationHelper.SetValue(ConfigurationKeys.RoguelikeMonthlySquadAutoIterate, value.ToString());
+        }
+    }
+
+    private bool _roguelikeDeepExplorationAutoIterate = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.RoguelikeDeepExplorationAutoIterate, bool.FalseString));
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to automatically iterate the deep exploration mode.
+    /// </summary>
+    public bool RoguelikeDeepExplorationAutoIterate
+    {
+        get => _roguelikeDeepExplorationAutoIterate;
+        set
+        {
+            SetAndNotify(ref _roguelikeDeepExplorationAutoIterate, value);
+            ConfigurationHelper.SetValue(ConfigurationKeys.RoguelikeDeepExplorationAutoIterate, value.ToString());
+        }
+    }
+
     private bool _roguelikeStopAtMaxLevel = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.RoguelikeStopAtMaxLevel, bool.FalseString));
 
     /// <summary>
