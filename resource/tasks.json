@@ -6648,7 +6648,14 @@
         "action": "ClickSelf",
         "roi": [720, 413, 249, 168],
         "postDelay": 1000,
-        "next": ["Roguelike@MissionFailedFlag2", "Roguelike@StartExplore", "Roguelike@StartExploreCD"]
+        "next": ["Roguelike@MissionFailedFlag2", "Roguelike@CollectReward", "Roguelike@StartExplore", "Roguelike@StartExploreCD"]
+    },
+    "Roguelike@CollectReward": {
+        "Doc": "多点一下回收奖励",
+        "template": "Phantom@Roguelike@GamePassSkip1Confirm.png",
+        "action": "ClickSelf",
+        "roi": [310, 409, 648, 165],
+        "postDelay": 1000
     },
     "Roguelike@Begin": {
         "algorithm": "JustReturn",

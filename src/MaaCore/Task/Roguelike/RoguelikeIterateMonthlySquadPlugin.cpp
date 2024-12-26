@@ -32,7 +32,7 @@ bool asst::RoguelikeIterateMonthlySquadPlugin::verify(AsstMsg msg, const json::v
     if (task_view.starts_with(roguelike_name)) {
         task_view.remove_prefix(roguelike_name.length());
     }
-    if (task_view == "Roguelike@Begin") {
+    if (task_view == "Roguelike@StartExplore") {
         return true;
     }
     else {
