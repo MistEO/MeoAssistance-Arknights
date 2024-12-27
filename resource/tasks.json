@@ -6714,6 +6714,38 @@
         "action": "ClickSelf",
         "roi": [800, 660, 240, 60]
     },
+    "Roguelike@ChooseDeepExploration": {
+        "Doc": "base_task 深入调查入口",
+        "template": "empty.png",
+        "action": "ClickSelf",
+        "roi": [370, 650, 200, 70],
+        "onErrorNext": ["Roguelike@DeepExplorationNotUnlockedComplain"]
+    },
+    "Roguelike@DeepExplorationRewardMiss": {
+        "Doc": "base_task 深入调查奖励领过了",
+        "template": "empty.png",
+        "action": "ClickRect",
+        "roi": [60, 560, 330, 60],
+        "specificRect": [940, 210, 50, 80]
+    },
+    "Roguelike@DeepExplorationComplete": {
+        "Doc": "base_task 深入调查全部结束",
+        "template": "empty.png",
+        "roi": [60, 560, 330, 50],
+        "next": ["Roguelike@DeepExplorationCompleteComplain"]
+    },
+    "Roguelike@DeepExplorationCompleteComplain": {
+        "Doc": "base_task",
+        "template": "empty.png",
+        "action": "ClickSelf",
+        "roi": [800, 660, 240, 60]
+    },
+    "Roguelike@DeepExplorationNotUnlockedComplain": {
+        "Doc": "base_task 深入调查没解锁",
+        "template": "empty.png",
+        "action": "ClickSelf",
+        "roi": [800, 660, 240, 60]
+    },
     "Roguelike@ChooseDifficulty": {
         "Doc": "base_task",
         "template": "empty.png",
@@ -7929,6 +7961,32 @@
         "action": "ClickSelf",
         "roi": [800, 650, 240, 60]
     },
+    "Phantom@Roguelike@ChooseDeepExploration": {
+        "template": "Phantom@Roguelike@DeepExploration.png",
+        "action": "ClickSelf",
+        "roi": [360, 650, 230, 65]
+    },
+    "Phantom@Roguelike@DeepExplorationRewardMiss": {
+        "template": "Phantom@Roguelike@DeepExplorationRewardMiss.png",
+        "action": "ClickRect",
+        "roi": [60, 560, 330, 50],
+        "specificRect": [940, 210, 50, 80]
+    },
+    "Phantom@Roguelike@DeepExplorationComplete": {
+        "template": "Phantom@Roguelike@DeepExplorationRewardMiss.png",
+        "roi": [60, 560, 330, 50],
+        "next": ["Phantom@Roguelike@DeepExplorationCompleteComplain"]
+    },
+    "Phantom@Roguelike@DeepExplorationCompleteComplain": {
+        "template": "Phantom@Roguelike@NormalOperation.png",
+        "action": "ClickSelf",
+        "roi": [800, 660, 240, 60]
+    },
+    "Phantom@Roguelike@DeepExplorationNotUnlockedComplain": {
+        "template": "empty.png",
+        "action": "ClickSelf",
+        "roi": [800, 660, 240, 60]
+    },
     "Phantom@Roguelike@ChooseDifficulty": {},
     "Phantom@Roguelike@ChooseOper": {
         "next": [
@@ -8187,10 +8245,10 @@
     "Phantom@Roguelike@StrategyChange_mode6": {
         "text": ["_default", "_exit"],
         "ocrReplace": [
-            ["迷雾歧途", "_default"],
-            ["落阳庭院", "_default"],
-            ["故土残躯", "_default"],
-            ["噩梦之始", "_default"],
+            ["迷雾歧途", "_aggressive"],
+            ["落阳庭院", "_aggressive"],
+            ["故土残躯", "_aggressive"],
+            ["噩梦之始", "_pragmatic"],
             ["血月长廊", "_exit"],
             ["渴欲大厅", "_exit"]
         ]
@@ -8198,12 +8256,12 @@
     "Phantom@Roguelike@StrategyChange_mode7": {
         "text": ["_default", "_exit"],
         "ocrReplace": [
-            ["迷雾歧途", "_default"],
-            ["落阳庭院", "_default"],
-            ["故土残躯", "_default"],
-            ["噩梦之始", "_default"],
-            ["血月长廊", "_default"],
-            ["渴欲大厅", "_exit"]
+            ["迷雾歧途", "_aggressive"],
+            ["落阳庭院", "_aggressive"],
+            ["故土残躯", "_aggressive"],
+            ["噩梦之始", "_pragmatic"],
+            ["血月长廊", "_pragmatic"],
+            ["渴欲大厅", "_default"]
         ]
     },
     "Phantom@Roguelike@TodoEnter": {},
@@ -8699,10 +8757,10 @@
     "Mizuki@Roguelike@StrategyChange_mode6": {
         "text": ["_default", "_exit"],
         "ocrReplace": [
-            ["天光海岸", "_default"],
-            ["离岸孤岛", "_default"],
-            ["波涛略地", "_default"],
-            ["隐秘温床", "_default"],
+            ["天光海岸", "_aggressive"],
+            ["离岸孤岛", "_aggressive"],
+            ["波涛略地", "_pragmatic"],
+            ["隐秘温床", "_pragmatic"],
             ["失尘岩洞", "_exit"],
             ["幽海丛林", "_exit"],
             ["绀碧摇篮", "_SKIP_"]
@@ -8711,12 +8769,12 @@
     "Mizuki@Roguelike@StrategyChange_mode7": {
         "text": ["_default", "_exit"],
         "ocrReplace": [
-            ["天光海岸", "_default"],
-            ["离岸孤岛", "_default"],
-            ["波涛略地", "_default"],
-            ["隐秘温床", "_default"],
+            ["天光海岸", "_aggressive"],
+            ["离岸孤岛", "_aggressive"],
+            ["波涛略地", "_pragmatic"],
+            ["隐秘温床", "_pragmatic"],
             ["失尘岩洞", "_default"],
-            ["幽海丛林", "_exit"],
+            ["幽海丛林", "_default"],
             ["绀碧摇篮", "_SKIP_"]
         ]
     },
@@ -9948,10 +10006,11 @@
     "Sami@Roguelike@StrategyChange_mode6": {
         "text": ["_default", "_exit"],
         "ocrReplace": [
-            ["初霜湖泽", "_default"],
-            ["密静林地", "_default"],
-            ["昧明冻土", "_default"],
-            ["积冰岩骸", "_default"],
+            ["初霜湖泽", "_aggressive"],
+            ["密静林地", "_aggressive"],
+            [".*明冻土", "昧明冻土"],
+            ["昧明冻土", "_pragmatic"],
+            ["积冰岩骸", "_pragmatic"],
             ["无瑕花园", "_exit"],
             ["远见之构", "_exit"],
             ["深埋迷境", "_SKIP_"]
@@ -9960,12 +10019,13 @@
     "Sami@Roguelike@StrategyChange_mode7": {
         "text": ["_default", "_exit"],
         "ocrReplace": [
-            ["初霜湖泽", "_default"],
-            ["密静林地", "_default"],
-            ["昧明冻土", "_default"],
-            ["积冰岩骸", "_default"],
+            ["初霜湖泽", "_aggressive"],
+            ["密静林地", "_aggressive"],
+            [".*明冻土", "昧明冻土"],
+            ["昧明冻土", "_pragmatic"],
+            ["积冰岩骸", "_pragmatic"],
             ["无瑕花园", "_default"],
-            ["远见之构", "_exit"],
+            ["远见之构", "_default"],
             ["深埋迷境", "_SKIP_"]
         ]
     },
@@ -11250,7 +11310,7 @@
             ["灰铸迷城", "_default"],
             ["或然歧域", "_default"],
             ["虚实疆界", "_default"],
-            ["辉光天顶", "_exit"],
+            ["辉光天顶", "_default"],
             ["诡谲断章", "_SKIP_"]
         ]
     },

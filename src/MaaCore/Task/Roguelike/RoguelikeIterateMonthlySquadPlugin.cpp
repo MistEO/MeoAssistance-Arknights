@@ -2,10 +2,8 @@
 
 #include "Config/TaskData.h"
 #include "Controller/Controller.h"
-#include "Status.h"
 #include "Task/ProcessTask.h"
 #include "Utils/Logger.hpp"
-#include "Vision/OCRer.h"
 
 bool asst::RoguelikeIterateMonthlySquadPlugin::load_params([[maybe_unused]] const json::value& params)
 {
@@ -49,13 +47,14 @@ bool asst::RoguelikeIterateMonthlySquadPlugin::_run()
         monthly_squad_count = 8;
     }
     else {
-        monthly_squad_count = 0;
+        monthly_squad_count = 1;
     }
 
     if (monthly_squad_count > 0) {
         ProcessTask(*this, { m_config->get_theme() + "@Roguelike@ChooseMonthlySquad" }).run();
     }
 
+    // todo: 检查月度小队通信
     while (monthly_squad_count > 0) {
         monthly_squad_count--;
         if (!ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadRewardMiss" }).run()) {
@@ -63,7 +62,8 @@ bool asst::RoguelikeIterateMonthlySquadPlugin::_run()
         }
     }
 
-    // todo:deep exploration整合+全部结束直接停止
+    // todo: 全部结束直接停止
+    // todo: actually complain in wpf
     ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadComplete" }).run();
 
     return true;

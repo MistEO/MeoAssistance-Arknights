@@ -127,8 +127,8 @@
     <system:String x:Key="RoguelikeStrategyGold">Invests coins, exits after arriving at the second level</system:String>
     <system:String x:Key="RoguelikeStrategyLastReward">Grind to obtain Hot Water Kettle or Elite II operators</system:String>
     <system:String x:Key="RoguelikeStrategyCollapse">Farm collapse paradigms, restart immediately after encountering a non-rare collapse paradigm</system:String>
-    <system:String x:Key="RoguelikeStrategyMonthlySquadReward">Aim for Monthly Squad rewards，exits after arriving at the forth level</system:String>
-    <system:String x:Key="RoguelikeStrategyMonthlySquadInterview">Aim for Monthly Squad conversation unlocks，exits after arriving at the fifth level</system:String>
+    <system:String x:Key="RoguelikeStrategyMonthlySquad">Grind Monthly Squad，exits after arriving at the fifth level</system:String>
+    <system:String x:Key="RoguelikeStrategyDeepExploration">Grind Deep Exploration，clear as far as possible</system:String>
     <system:String x:Key="StartingSquad">Starting Squad</system:String>
     <system:String x:Key="StartingRoles">Starting Roles</system:String>
     <system:String x:Key="StartingCoreChar">Starting Operator (single)</system:String>

@@ -71,8 +71,8 @@ public class RoguelikeSettingsUserControlModel : PropertyChangedBase
                 // new CombData { Display = "两者兼顾，投资过后退出", Value = "2" } // 弃用
                 // new CombData { Display = Localization.GetString("3"), Value = "3" },  // 开发中
                 new() { Display = LocalizationHelper.GetString("RoguelikeStrategyLastReward"), Value = "4" },
-                new() { Display = LocalizationHelper.GetString("RoguelikeStrategyMonthlySquadReward"), Value = "6" }, // 印象里近期奖励需求都不是过四层了，意义存疑
-                new() { Display = LocalizationHelper.GetString("RoguelikeStrategyMonthlySquadInterview"), Value = "7" },
+                new() { Display = LocalizationHelper.GetString("RoguelikeStrategyMonthlySquad"), Value = "6" }, 
+                new() { Display = LocalizationHelper.GetString("RoguelikeStrategyDeepExploration"), Value = "7" },
             ];
 
         switch (RoguelikeTheme)
