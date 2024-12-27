@@ -26,8 +26,8 @@ enum class RoguelikeMode
                     // 2 - 【已移除】两者兼顾，投资过后再退出，没有投资就继续往后打
     Ending = 3,     // 3 - 尝试通关，激进策略（TODO）
     Collectible = 4, // 4 - 刷开局，以获得热水壶或者演讲稿开局或只凹直升，不期而遇采用保守策略
-    Reward = 6,    // 6 - 月度小队奖励，尽可能稳定抵达四层，不期而遇采用保守策略
-    Interview = 7, // 7 - 月度小队访谈，尽可能稳定抵达五层，不期而遇采用保守策略
+    Squad = 6,       // 6 - 月度小队，尽可能稳定抵达五层，不期而遇采用激进策略
+    Exploration = 7, // 7 - 深入调查，尽可能稳定地打更多层数，不期而遇采用激进策略
 
     // ------------------ 萨米主题专用模式 ------------------
     CLP_PDS = 5, // 5 - 刷隐藏坍缩范式,以增加坍缩值为最优先目标
@@ -54,7 +54,7 @@ public:
     static constexpr bool is_valid_mode(RoguelikeMode mode, std::string_view theme = RoguelikeTheme::Sami)
     {
         return mode == RoguelikeMode::Exp || mode == RoguelikeMode::Investment || mode == RoguelikeMode::Collectible ||
-               mode == RoguelikeMode::Reward || mode == RoguelikeMode::Interview ||
+               mode == RoguelikeMode::Squad || mode == RoguelikeMode::Exploration ||
                (mode == RoguelikeMode::CLP_PDS && theme == RoguelikeTheme::Sami) ||
                (mode == RoguelikeMode::FastPass && theme == RoguelikeTheme::Sarkaz);
     }

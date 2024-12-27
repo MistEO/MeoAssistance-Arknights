@@ -25,12 +25,13 @@ bool asst::RoguelikeIterateDeepExplorationPlugin::verify(AsstMsg msg, const json
     }
 
     const std::string roguelike_name = m_config->get_theme() + "@";
+    const auto& mode = m_config->get_mode();
     const std::string& task = details.get("details", "task", "");
     std::string_view task_view = task;
     if (task_view.starts_with(roguelike_name)) {
         task_view.remove_prefix(roguelike_name.length());
     }
-    if (task_view == "Roguelike@StartExplore") {
+    if (task_view == "Roguelike@StartExplore" && mode == RoguelikeMode::Exploration) {
         return true;
     }
     else {
