@@ -65,7 +65,9 @@ bool asst::RoguelikeIterateMonthlySquadPlugin::_run()
 
     // todo: 全部结束直接停止
     // todo: actually complain in wpf
-    ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadComplete" }).run();
+    if (ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadComplete" }).run()) {
+        m_task_ptr->set_enable(false);
+    }
 
     return true;
 }

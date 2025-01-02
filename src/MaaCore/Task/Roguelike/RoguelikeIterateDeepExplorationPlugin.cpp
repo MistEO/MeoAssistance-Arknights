@@ -67,7 +67,9 @@ bool asst::RoguelikeIterateDeepExplorationPlugin::_run()
     // todo: 深入调查目标识别+策略适配
     // todo: 全部结束直接停止
     // todo: actually complain in wpf
-    ProcessTask(*this, { m_config->get_theme() + "@Roguelike@DeepExplorationComplete" }).run();
+    if (ProcessTask(*this, { m_config->get_theme() + "@Roguelike@DeepExplorationComplete" }).run()) {
+        m_task_ptr->set_enable(false);
+    }
 
     return true;
 }

@@ -6705,14 +6705,7 @@
     "Roguelike@MonthlySquadComplete": {
         "Doc": "base_task 月度小队全部结束",
         "template": "Roguelike@MonthlySquadRewardMiss.png",
-        "roi": [740, 440, 250, 60],
-        "next": ["Roguelike@MonthlySquadCompleteComplain"]
-    },
-    "Roguelike@MonthlySquadCompleteComplain": {
-        "Doc": "base_task",
-        "template": "Roguelike@NormalOperation.png",
-        "action": "ClickSelf",
-        "roi": [760, 620, 280, 100]
+        "roi": [740, 440, 250, 60]
     },
     "Roguelike@ChooseDeepExploration": {
         "Doc": "base_task 深入调查入口",
@@ -6731,14 +6724,7 @@
     "Roguelike@DeepExplorationComplete": {
         "Doc": "base_task 深入调查全部结束",
         "template": "empty.png",
-        "roi": [60, 560, 330, 50],
-        "next": ["Roguelike@DeepExplorationCompleteComplain"]
-    },
-    "Roguelike@DeepExplorationCompleteComplain": {
-        "Doc": "base_task",
-        "template": "Roguelike@NormalOperation.png",
-        "action": "ClickSelf",
-        "roi": [760, 620, 280, 100]
+        "roi": [60, 560, 330, 50]
     },
     "Roguelike@DeepExplorationNotUnlockedComplain": {
         "Doc": "base_task 深入调查没解锁",
@@ -7946,11 +7932,7 @@
         "template": "Roguelike@MonthlySquadRewardMiss.png"
     },
     "Phantom@Roguelike@MonthlySquadComplete": {
-        "template": "Roguelike@MonthlySquadRewardMiss.png",
-        "next": ["Phantom@Roguelike@MonthlySquadCompleteComplain"]
-    },
-    "Phantom@Roguelike@MonthlySquadCompleteComplain": {
-        "template": "Roguelike@NormalOperation.png"
+        "template": "Roguelike@MonthlySquadRewardMiss.png"
     },
     "Phantom@Roguelike@ChooseDeepExploration": {
         "template": "Phantom@Roguelike@DeepExploration.png"
@@ -7959,11 +7941,7 @@
         "template": "Phantom@Roguelike@DeepExplorationRewardMiss.png"
     },
     "Phantom@Roguelike@DeepExplorationComplete": {
-        "template": "Phantom@Roguelike@DeepExplorationRewardMiss.png",
-        "next": ["Phantom@Roguelike@DeepExplorationCompleteComplain"]
-    },
-    "Phantom@Roguelike@DeepExplorationCompleteComplain": {
-        "template": "Roguelike@NormalOperation.png"
+        "template": "Phantom@Roguelike@DeepExplorationRewardMiss.png"
     },
     "Phantom@Roguelike@DeepExplorationNotUnlockedComplain": {
         "template": "empty.png"
@@ -8267,11 +8245,7 @@
         "template": "Roguelike@MonthlySquadRewardMiss.png"
     },
     "Mizuki@Roguelike@MonthlySquadComplete": {
-        "template": "Roguelike@MonthlySquadRewardMiss.png",
-        "next": ["Mizuki@Roguelike@MonthlySquadCompleteComplain"]
-    },
-    "Mizuki@Roguelike@MonthlySquadCompleteComplain": {
-        "template": "Roguelike@NormalOperation.png"
+        "template": "Roguelike@MonthlySquadRewardMiss.png"
     },
     "Mizuki@Roguelike@ChooseDeepExploration": {
         "template": "Mizuki@Roguelike@DeepExploration.png"
@@ -8280,11 +8254,7 @@
         "template": "Mizuki@Roguelike@DeepExplorationRewardMiss.png"
     },
     "Mizuki@Roguelike@DeepExplorationComplete": {
-        "template": "Mizuki@Roguelike@DeepExplorationRewardMiss.png",
-        "next": ["Mizuki@Roguelike@DeepExplorationCompleteComplain"]
-    },
-    "Mizuki@Roguelike@DeepExplorationCompleteComplain": {
-        "template": "Roguelike@NormalOperation.png"
+        "template": "Mizuki@Roguelike@DeepExplorationRewardMiss.png"
     },
     "Mizuki@Roguelike@DeepExplorationNotUnlockedComplain": {
         "template": "empty.png"
@@ -8811,11 +8781,7 @@
         "template": "Roguelike@MonthlySquadRewardMiss.png"
     },
     "Sami@Roguelike@MonthlySquadComplete": {
-        "template": "Roguelike@MonthlySquadRewardMiss.png",
-        "next": ["Sami@Roguelike@MonthlySquadCompleteComplain"]
-    },
-    "Sami@Roguelike@MonthlySquadCompleteComplain": {
-        "template": "Roguelike@NormalOperation.png"
+        "template": "Roguelike@MonthlySquadRewardMiss.png"
     },
     "Sami@Roguelike@ChooseDeepExploration": {
         "template": "Sami@Roguelike@DeepExploration.png"
@@ -8824,11 +8790,7 @@
         "template": "Sami@Roguelike@DeepExplorationRewardMiss.png"
     },
     "Sami@Roguelike@DeepExplorationComplete": {
-        "template": "Sami@Roguelike@DeepExplorationRewardMiss.png",
-        "next": ["Sami@Roguelike@DeepExplorationCompleteComplain"]
-    },
-    "Sami@Roguelike@DeepExplorationCompleteComplain": {
-        "template": "Roguelike@NormalOperation.png"
+        "template": "Sami@Roguelike@DeepExplorationRewardMiss.png"
     },
     "Sami@Roguelike@DeepExplorationNotUnlockedComplain": {
         "template": "empty.png"
@@ -10112,11 +10074,7 @@
         "template": "Roguelike@MonthlySquadRewardMiss.png"
     },
     "Sarkaz@Roguelike@MonthlySquadComplete": {
-        "template": "Roguelike@MonthlySquadRewardMiss.png",
-        "next": ["Sarkaz@Roguelike@MonthlySquadCompleteComplain"]
-    },
-    "Sarkaz@Roguelike@MonthlySquadCompleteComplain": {
-        "template": "Roguelike@NormalOperation.png"
+        "template": "Roguelike@MonthlySquadRewardMiss.png"
     },
     "Sarkaz@Roguelike@ChooseDeepExploration": {
         "doc": "Sarkaz@Roguelike@DeepExploration.png",
@@ -10128,11 +10086,7 @@
     },
     "Sarkaz@Roguelike@DeepExplorationComplete": {
         "doc": "Sarkaz@Roguelike@DeepExplorationRewardMiss.png",
-        "template": "empty.png",
-        "next": ["Sarkaz@Roguelike@DeepExplorationCompleteComplain"]
-    },
-    "Sarkaz@Roguelike@DeepExplorationCompleteComplain": {
-        "template": "Roguelike@NormalOperation.png"
+        "template": "empty.png"
     },
     "Sarkaz@Roguelike@DeepExplorationNotUnlockedComplain": {
         "template": "empty.png"
