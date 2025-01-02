@@ -6697,15 +6697,15 @@
     },
     "Roguelike@MonthlySquadRewardMiss": {
         "Doc": "base_task 月度小队奖励领过了",
-        "template": "Roguelike@MonthlySquadRewardMiss.png",
+        "template": "empty.png",
         "action": "ClickRect",
-        "roi": [735, 410, 265, 95],
+        "roi": [735, 410, 280, 95],
         "specificRect": [466, 405, 40, 60]
     },
     "Roguelike@MonthlySquadComplete": {
         "Doc": "base_task 月度小队全部结束",
-        "template": "Roguelike@MonthlySquadRewardMiss.png",
-        "roi": [740, 440, 250, 60]
+        "template": "empty.png",
+        "roi": [735, 410, 280, 95]
     },
     "Roguelike@ChooseDeepExploration": {
         "Doc": "base_task 深入调查入口",
@@ -7928,11 +7928,9 @@
     "Phantom@Roguelike@ChooseMonthlySquad": {
         "template": "Phantom@Roguelike@MonthlySquad.png"
     },
-    "Phantom@Roguelike@MonthlySquadRewardMiss": {
-        "template": "Roguelike@MonthlySquadRewardMiss.png"
-    },
+    "Phantom@Roguelike@MonthlySquadRewardMiss": {},
     "Phantom@Roguelike@MonthlySquadComplete": {
-        "template": "Roguelike@MonthlySquadRewardMiss.png"
+        "template": "Phantom@Roguelike@MonthlySquadRewardMiss.png"
     },
     "Phantom@Roguelike@ChooseDeepExploration": {
         "template": "Phantom@Roguelike@DeepExploration.png"
@@ -8241,11 +8239,10 @@
         "template": "Mizuki@Roguelike@MonthlySquad.png"
     },
     "Mizuki@Roguelike@MonthlySquadRewardMiss": {
-        "specificRect": [490, 530, 45, 55],
-        "template": "Roguelike@MonthlySquadRewardMiss.png"
+        "specificRect": [423, 536, 54, 62]
     },
     "Mizuki@Roguelike@MonthlySquadComplete": {
-        "template": "Roguelike@MonthlySquadRewardMiss.png"
+        "template": "Mizuki@Roguelike@MonthlySquadRewardMiss.png"
     },
     "Mizuki@Roguelike@ChooseDeepExploration": {
         "template": "Mizuki@Roguelike@DeepExploration.png"
@@ -8777,11 +8774,10 @@
         "template": "Sami@Roguelike@MonthlySquad.png"
     },
     "Sami@Roguelike@MonthlySquadRewardMiss": {
-        "specificRect": [490, 530, 45, 55],
-        "template": "Roguelike@MonthlySquadRewardMiss.png"
+        "specificRect": [490, 530, 45, 55]
     },
     "Sami@Roguelike@MonthlySquadComplete": {
-        "template": "Roguelike@MonthlySquadRewardMiss.png"
+        "template": "Sami@Roguelike@MonthlySquadRewardMiss.png"
     },
     "Sami@Roguelike@ChooseDeepExploration": {
         "template": "Sami@Roguelike@DeepExploration.png"
@@ -10070,11 +10066,10 @@
         "template": "Sarkaz@Roguelike@MonthlySquad.png"
     },
     "Sarkaz@Roguelike@MonthlySquadRewardMiss": {
-        "specificRect": [490, 530, 45, 55],
-        "template": "Roguelike@MonthlySquadRewardMiss.png"
+        "specificRect": [490, 530, 45, 55]
     },
     "Sarkaz@Roguelike@MonthlySquadComplete": {
-        "template": "Roguelike@MonthlySquadRewardMiss.png"
+        "template": "Sarkaz@Roguelike@MonthlySquadRewardMiss.png"
     },
     "Sarkaz@Roguelike@ChooseDeepExploration": {
         "doc": "Sarkaz@Roguelike@DeepExploration.png",
