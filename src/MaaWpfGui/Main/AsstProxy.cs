@@ -1204,6 +1204,18 @@ namespace MaaWpfGui.Main
                             case "StageTraderSpecialShoppingAfterRefresh":
                                 Instances.TaskQueueViewModel.AddLog(LocalizationHelper.GetString("RoguelikeSpecialItemBought"), UiLogColor.RareOperator);
                                 break;
+
+                            case "MonthlySquadComplain":
+                                Instances.TaskQueueViewModel.AddLog(LocalizationHelper.GetString("MonthlySquadComplain"), UiLogColor.RareOperator);
+                                break;
+
+                            case "DeepExplorationComplain":
+                                Instances.TaskQueueViewModel.AddLog(LocalizationHelper.GetString("DeepExplorationComplain"), UiLogColor.RareOperator);
+                                break;
+
+                            case "DeepExplorationNotUnlockedComplain":
+                                Instances.TaskQueueViewModel.AddLog(LocalizationHelper.GetString("DeepExplorationNotUnlockedComplain"), UiLogColor.Warning);
+                                break;
                         }
 
                         break;
@@ -2435,6 +2447,7 @@ namespace MaaWpfGui.Main
         /// <param name="refreshTraderWithDice">是否用骰子刷新商店购买特殊商品，目前支持水月肉鸽的指路鳞</param>
         /// <param name="stopAtFinalBoss">是否在五层BOSS前停下来</param>
         /// <param name="monthlySquadAutoIterate">是否启动月度小队自动切换</param>
+        /// <param name="monthlySquadCheckComms">是否将月度小队通信也作为切换依据</param>
         /// <param name="deepExplorationAutoIterate">是否启动深入调查自动切换</param>
         /// <param name="stopAtMaxLevel">是否在满级时停止任务</param>
         /// <param name="startWithSeed">是否使用刷钱种子</param>
@@ -2464,6 +2477,8 @@ namespace MaaWpfGui.Main
             bool refreshTraderWithDice,
             bool stopAtFinalBoss,
             bool monthlySquadAutoIterate,
+            bool monthlySquadCheckComms,
+            bool deepExplorationAutoIterate,
             bool deepExplorationAutoIterate,
             bool stopAtMaxLevel,
             bool startWithSeed)
@@ -2508,6 +2523,7 @@ namespace MaaWpfGui.Main
             taskParams["only_start_with_elite_two"] = onlyStartWithEliteTwo;
 
             taskParams["monthly_squad_auto_iterate"] = monthlySquadAutoIterate;
+            taskParams["monthly_squad_check_comms"] = monthlySquadCheckComms;
             taskParams["deep_exploration_auto_iterate"] = deepExplorationAutoIterate;
 
             taskParams["start_with_two_ideas"] = startWithTwoIdeas;

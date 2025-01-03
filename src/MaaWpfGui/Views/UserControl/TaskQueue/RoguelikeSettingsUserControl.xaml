@@ -228,6 +228,15 @@
             </CheckBox>
             <CheckBox
                 Margin="0,10"
+                IsChecked="{Binding RoguelikeMonthlySquadCheckComms}"
+                Visibility="{c:Binding 'RoguelikeMonthlySquadAutoIterate and RoguelikeMode == &quot;6&quot;'}">
+                <TextBlock
+                    Block.TextAlignment="Left"
+                    Text="{DynamicResource RoguelikeMonthlySquadCheckComms}"
+                    TextWrapping="Wrap" />
+            </CheckBox>
+            <CheckBox
+                Margin="0,10"
                 IsChecked="{Binding RoguelikeDeepExplorationAutoIterate}"
                 Visibility="{c:Binding 'RoguelikeMode == &quot;7&quot;'}">
                 <TextBlock

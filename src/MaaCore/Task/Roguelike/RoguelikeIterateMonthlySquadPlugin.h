@@ -18,5 +18,7 @@ protected:
 private:
     int m_current_difficulty = -1;
     int monthly_squad_count;
+    bool checkComms;
+    bool completed;
 };
 }

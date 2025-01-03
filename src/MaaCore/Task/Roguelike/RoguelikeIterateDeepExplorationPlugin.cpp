@@ -43,7 +43,6 @@ bool asst::RoguelikeIterateDeepExplorationPlugin::_run()
 {
     LogTraceFunction;
 
-    // 检查主题，读深入调查数量
     if (m_config->get_theme() == "Phantom" || m_config->get_theme() == "Mizuki") {
         deep_exploration_count = 12;
     }
@@ -65,8 +64,6 @@ bool asst::RoguelikeIterateDeepExplorationPlugin::_run()
         }
     }
     // todo: 深入调查目标识别+策略适配
-    // todo: 全部结束直接停止
-    // todo: actually complain in wpf
     if (ProcessTask(*this, { m_config->get_theme() + "@Roguelike@DeepExplorationComplete" }).run()) {
         m_task_ptr->set_enable(false);
     }

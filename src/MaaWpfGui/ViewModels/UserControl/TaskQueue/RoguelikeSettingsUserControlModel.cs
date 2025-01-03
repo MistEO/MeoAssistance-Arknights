@@ -728,6 +728,21 @@ public class RoguelikeSettingsUserControlModel : PropertyChangedBase
         }
     }
 
+    private bool _roguelikeMonthlySquadCheckComms = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.RoguelikeMonthlySquadCheckComms, bool.FalseString));
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to automatically iterate the deep exploration mode.
+    /// </summary>
+    public bool RoguelikeMonthlySquadCheckComms
+    {
+        get => _roguelikeMonthlySquadCheckComms;
+        set
+        {
+            SetAndNotify(ref _roguelikeMonthlySquadCheckComms, value);
+            ConfigurationHelper.SetValue(ConfigurationKeys.RoguelikeMonthlySquadCheckComms, value.ToString());
+        }
+    }
+
     private bool _roguelikeDeepExplorationAutoIterate = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.RoguelikeDeepExplorationAutoIterate, bool.FalseString));
 
     /// <summary>

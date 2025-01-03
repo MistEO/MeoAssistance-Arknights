@@ -9,6 +9,7 @@ bool asst::RoguelikeIterateMonthlySquadPlugin::load_params([[maybe_unused]] cons
 {
     LogTraceFunction;
 
+    checkComms = params.find<bool>("monthly_squad_check_comms").value_or(false);
     auto iterateMS = params.find<bool>("monthly_squad_auto_iterate");
     return iterateMS.value_or(false);
 }
@@ -43,7 +44,6 @@ bool asst::RoguelikeIterateMonthlySquadPlugin::_run()
 {
     LogTraceFunction;
 
-    // 检查主题，读月度小队数量
     if (m_config->get_theme() == "Phantom" || m_config->get_theme() == "Mizuki" || m_config->get_theme() == "Sami") {
         monthly_squad_count = 8;
     }
@@ -51,21 +51,28 @@ bool asst::RoguelikeIterateMonthlySquadPlugin::_run()
         monthly_squad_count = 1;
     }
 
+    completed = true;
     if (monthly_squad_count > 0) {
         ProcessTask(*this, { m_config->get_theme() + "@Roguelike@ChooseMonthlySquad" }).run();
     }
 
-    // todo: 检查月度小队通信
-    while (monthly_squad_count > 0) {
-        monthly_squad_count--;
+    for (int i = 0; i < monthly_squad_count; i++) {
+        if (checkComms) {
+            ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadComms" }).run();
+            if (!ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadCommsMiss" }).run()) {
+                ProcessTask(*this, { "Roguelike@MonthlySquadCommsBackTwice" }).run();
+                completed = false;
+                break;
+            }
+        }
+
         if (!ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadRewardMiss" }).run()) {
+            completed = false;
             break;
         }
     }
-
-    // todo: 全部结束直接停止
-    // todo: actually complain in wpf
-    if (ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadComplete" }).run()) {
+    if (completed) {
+        ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadComplain" }).run();
         m_task_ptr->set_enable(false);
     }
 
