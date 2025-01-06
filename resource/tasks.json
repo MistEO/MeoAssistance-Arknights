@@ -7813,6 +7813,7 @@
         "template": "empty.png",
         "action": "ClickSelf",
         "roi": [1026, 470, 254, 248],
+        "preDelay": 500,
         "postDelay": 2000,
         "exceededNext": ["RoguelikeControlTaskPlugin-Stop"],
         "next": [
