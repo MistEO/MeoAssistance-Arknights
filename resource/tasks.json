@@ -6741,13 +6741,8 @@
         "template": "empty.png",
         "action": "ClickRect",
         "roi": [60, 560, 330, 50],
-        "specificRect": [940, 210, 50, 80]
-    },
-    "Roguelike@DeepExplorationComplete": {
-        "Doc": "base_task 深入调查全部结束",
-        "template": "empty.png",
-        "roi": [60, 560, 330, 50],
-        "next": "Roguelike@DeepExplorationComplain"
+        "specificRect": [940, 210, 50, 80],
+        "postDelay": 300
     },
     "Roguelike@DeepExplorationComplain": {
         "Doc": "深入调查通知用户全部结束",
@@ -6888,6 +6883,12 @@
         "roi": [1032, 487, 248, 215],
         "postDelay": 500,
         "next": ["Roguelike@MissionFailedFlag2", "Roguelike@ExitThenAbandon"]
+    },
+    "Roguelike@DeepExplorationEnd": {
+        "template": "empty.png",
+        "action": "ClickSelf",
+        "roi": [600, 620, 90, 90],
+        "next": ["Roguelike@StartExplore", "Roguelike@StartUpThemes#next"]
     },
     "Roguelike@DialogSkip": {
         "Doc": "月度小队，跳过对话",
@@ -7196,6 +7197,14 @@
         "roi": [522, 431, 245, 144],
         "postDelay": 1000,
         "next": ["Roguelike@StrategyChange"]
+    },
+    "Roguelike@NoneSelected": {
+        "algorithm": "OcrDetect",
+        "action": "ClickRect",
+        "text": ["不编入"],
+        "roi": [390, 300, 500, 50],
+        "specificRect": [650, 460, 310, 70],
+        "next": ["Roguelike@StartAction"]
     },
     "Roguelike@OptionChoose1-1": {
         "algorithm": "JustReturn",
@@ -7787,6 +7796,7 @@
         "preDelay": 500,
         "roi": [905, 593, 375, 127],
         "next": [
+            "Roguelike@NoneSelected",
             "Roguelike@InBattleFlag",
             "Roguelike@MissionCompletedFlag",
             "Roguelike@MissionFailedFlag",
@@ -7969,9 +7979,6 @@
     "Phantom@Roguelike@DeepExplorationRewardMiss": {
         "template": "Phantom@Roguelike@DeepExplorationRewardMiss.png"
     },
-    "Phantom@Roguelike@DeepExplorationComplete": {
-        "template": "Phantom@Roguelike@DeepExplorationRewardMiss.png"
-    },
     "Phantom@Roguelike@DeepExplorationNotUnlockedComplain": {
         "template": "empty.png"
     },
@@ -7995,6 +8002,7 @@
     },
     "Phantom@Roguelike@CloseEvent": {},
     "Phantom@Roguelike@Continue": {},
+    "Phantom@Roguelike@DeepExplorationEnd": {},
     "Phantom@Roguelike@DialogSkip": {
         "template": "Roguelike@DialogSkip.png",
         "next": ["Phantom@Roguelike@DialogSkipConfirm"]
@@ -8286,9 +8294,6 @@
     "Mizuki@Roguelike@DeepExplorationRewardMiss": {
         "template": "Mizuki@Roguelike@DeepExplorationRewardMiss.png"
     },
-    "Mizuki@Roguelike@DeepExplorationComplete": {
-        "template": "Mizuki@Roguelike@DeepExplorationRewardMiss.png"
-    },
     "Mizuki@Roguelike@DeepExplorationNotUnlockedComplain": {
         "template": "empty.png"
     },
@@ -8370,6 +8375,7 @@
         "next": ["Mizuki@Roguelike@StageEncounterEnter", "Mizuki@Roguelike@Stages#next"]
     },
     "Mizuki@Roguelike@Continue": {},
+    "Mizuki@Roguelike@DeepExplorationEnd": {},
     "Mizuki@Roguelike@DataTraceback": {
         "action": "ClickSelf",
         "roi": [1114, 0, 166, 134],
@@ -8826,9 +8832,6 @@
     "Sami@Roguelike@DeepExplorationRewardMiss": {
         "template": "Sami@Roguelike@DeepExplorationRewardMiss.png"
     },
-    "Sami@Roguelike@DeepExplorationComplete": {
-        "template": "Sami@Roguelike@DeepExplorationRewardMiss.png"
-    },
     "Sami@Roguelike@DeepExplorationNotUnlockedComplain": {
         "template": "empty.png"
     },
@@ -8945,6 +8948,7 @@
             "Sami@Roguelike@LastReward2",
             "Sami@Roguelike@LastReward3",
             "Sami@Roguelike@LastRewardRand",
+            "Sami@Roguelike@GetLUD",
             "Sami@Roguelike@RolesDefault"
         ]
     },
@@ -9067,6 +9071,7 @@
         "roi": [522, 525, 245, 81],
         "next": ["Sami@Roguelike@Continue"]
     },
+    "Sami@Roguelike@DeepExplorationEnd": {},
     "Sami@Roguelike@DialogSkip": {
         "template": "Roguelike@DialogSkip.png",
         "next": ["Sami@Roguelike@DialogSkipConfirm"]
@@ -9294,6 +9299,14 @@
             "Sami@Roguelike@GetDropRecruit"
         ]
     },
+    "Sami@Roguelike@GetLUD": {
+        "doc": "萨米调查装备只拿一个LUD-99X，暂时性措施",
+        "algorithm": "OcrDetect",
+        "text": ["LUD"],
+        "action": "ClickSelf",
+        "roi": [100, 430, 1100, 63],
+        "next": ["Sami@Roguelike@LastRewardConfirm"]
+    },
     "Sami@Roguelike@InitialDrop": {},
     "Sami@Roguelike@LastReward": {},
     "Sami@Roguelike@LastReward2": {},
@@ -9358,6 +9371,7 @@
             "Sami@Roguelike@LastReward2",
             "Sami@Roguelike@LastReward3",
             "Sami@Roguelike@LastRewardRand",
+            "Sami@Roguelike@GetLUD",
             "Sami@Roguelike@RolesDefault",
             "Sami@Roguelike@CloseCollection",
             "Sami@Roguelike@Stages#next",
@@ -10125,10 +10139,6 @@
         "doc": "Sarkaz@Roguelike@DeepExplorationRewardMiss.png",
         "template": "empty.png"
     },
-    "Sarkaz@Roguelike@DeepExplorationComplete": {
-        "doc": "Sarkaz@Roguelike@DeepExplorationRewardMiss.png",
-        "template": "empty.png"
-    },
     "Sarkaz@Roguelike@DeepExplorationNotUnlockedComplain": {
         "template": "empty.png"
     },
@@ -10292,6 +10302,9 @@
         "specificRect": [153, 79, 63, 29]
     },
     "Sarkaz@Roguelike@Continue": {},
+    "Sarkaz@Roguelike@DeepExplorationEnd": {
+        "template": "empty.png"
+    },
     "Sarkaz@Roguelike@DecreaseBurdenAbandon": {
         "templThreshold": 0.9,
         "roi": [499, 471, 167, 151],

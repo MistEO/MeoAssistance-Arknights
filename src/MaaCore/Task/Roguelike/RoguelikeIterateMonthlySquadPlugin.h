@@ -16,9 +16,13 @@ protected:
     virtual bool _run() override;
 
 private:
-    int m_current_difficulty = -1;
-    int monthly_squad_count;
+    // 月度小队数量
+    std::unordered_map<std::string, int> monthlySquadCount = { { "Phantom", 8 },
+                                                               { "Mizuki", 8 },
+                                                               { "Sami", 8 },
+                                                               { "Sarkaz", 1 } };
     bool checkComms;
     bool completed;
 };
+
 }

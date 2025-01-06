@@ -44,19 +44,12 @@ bool asst::RoguelikeIterateMonthlySquadPlugin::_run()
 {
     LogTraceFunction;
 
-    if (m_config->get_theme() == "Phantom" || m_config->get_theme() == "Mizuki" || m_config->get_theme() == "Sami") {
-        monthly_squad_count = 8;
-    }
-    else {
-        monthly_squad_count = 1;
-    }
-
     completed = true;
-    if (monthly_squad_count > 0) {
+    if (monthlySquadCount[m_config->get_theme()] > 0) {
         ProcessTask(*this, { m_config->get_theme() + "@Roguelike@ChooseMonthlySquad" }).run();
     }
 
-    for (int i = 0; i < monthly_squad_count; i++) {
+    for (int i = 0; i < monthlySquadCount[m_config->get_theme()]; i++) {
         if (checkComms) {
             ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadComms" }).run();
             if (!ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadCommsMiss" }).run()) {

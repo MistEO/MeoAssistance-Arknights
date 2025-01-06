@@ -30,8 +30,15 @@ bool asst::RoguelikeDifficultySelectionTaskPlugin::verify(AsstMsg msg, const jso
         Log.error("Roguelike name doesn't exist!");
         return false;
     }
+
+    const auto& mode = m_config->get_mode();
+    if (mode == RoguelikeMode::Exploration || mode == RoguelikeMode::Squad) {
+        return false;
+    }
+
     const std::string roguelike_name = m_config->get_theme() + "@";
     const std::string& task = details.get("details", "task", "");
+
     std::string_view task_view = task;
     if (task_view.starts_with(roguelike_name)) {
         task_view.remove_prefix(roguelike_name.length());

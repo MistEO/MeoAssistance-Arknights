@@ -43,28 +43,21 @@ bool asst::RoguelikeIterateDeepExplorationPlugin::_run()
 {
     LogTraceFunction;
 
-    if (m_config->get_theme() == "Phantom" || m_config->get_theme() == "Mizuki") {
-        deep_exploration_count = 12;
-    }
-    else if (m_config->get_theme() == "Sami") {
-        deep_exploration_count = 13;
-    }
-    else {
-        deep_exploration_count = 0;
-    }
-
-    if (deep_exploration_count > 0) {
+    completed = true;
+    if (deepExplorationCount[m_config->get_theme()] > 0) {
         ProcessTask(*this, { m_config->get_theme() + "@Roguelike@ChooseDeepExploration" }).run();
     }
 
-    while (deep_exploration_count > 0) {
-        deep_exploration_count--;
+    for (int i = 0; i < deepExplorationCount[m_config->get_theme()]; i++) {
         if (!ProcessTask(*this, { m_config->get_theme() + "@Roguelike@DeepExplorationRewardMiss" }).run()) {
+            completed = false;
             break;
         }
     }
     // todo: 深入调查目标识别+策略适配
-    if (ProcessTask(*this, { m_config->get_theme() + "@Roguelike@DeepExplorationComplete" }).run()) {
+
+    if (completed) {
+        ProcessTask(*this, { m_config->get_theme() + "@Roguelike@DeepExplorationComplain" }).run();
         m_task_ptr->set_enable(false);
     }
 

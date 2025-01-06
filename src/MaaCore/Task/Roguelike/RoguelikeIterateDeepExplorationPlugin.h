@@ -16,7 +16,12 @@ protected:
     virtual bool _run() override;
 
 private:
-    int m_current_difficulty = -1;
-    int deep_exploration_count;
+    // 深入调查数量
+    std::unordered_map<std::string, int> deepExplorationCount = { { "Phantom", 12 },
+                                                                  { "Mizuki", 12 },
+                                                                  { "Sami", 13 },
+                                                                  { "Sarkaz", 0 } };
+    bool checkComms;
+    bool completed;
 };
 }
