@@ -46,20 +46,24 @@ bool asst::RoguelikeIterateMonthlySquadPlugin::_run()
 
     completed = true;
     if (monthlySquadCount[m_config->get_theme()] > 0) {
-        ProcessTask(*this, { m_config->get_theme() + "@Roguelike@ChooseMonthlySquad" }).run();
+        ProcessTask(*this, { m_config->get_theme() + "@Roguelike@ChooseMonthlySquad" }).set_retry_times(1).run();
     }
 
     for (int i = 0; i < monthlySquadCount[m_config->get_theme()]; i++) {
         if (checkComms) {
             ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadComms" }).run();
-            if (!ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadCommsMiss" }).run()) {
+            if (!ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadCommsMiss" })
+                     .set_retry_times(1)
+                     .run()) {
                 ProcessTask(*this, { "Roguelike@MonthlySquadCommsBackTwice" }).run();
                 completed = false;
                 break;
             }
         }
 
-        if (!ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadRewardMiss" }).run()) {
+        if (!ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquadRewardMiss" })
+                 .set_retry_times(1)
+                 .run()) {
             completed = false;
             break;
         }
