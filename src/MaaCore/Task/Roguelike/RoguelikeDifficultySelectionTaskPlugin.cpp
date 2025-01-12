@@ -16,6 +16,11 @@ bool asst::RoguelikeDifficultySelectionTaskPlugin::load_params([[maybe_unused]] 
         return false;
     }
 
+    // 深入调查和月度小队模式不需要选择难度
+    if (m_config->get_mode() == RoguelikeMode::Exploration || m_config->get_mode() == RoguelikeMode::Squad) {
+        return false;
+    }
+
     auto opt = params.find<int>("difficulty");
     return opt && *opt != -1;
 }
@@ -28,11 +33,6 @@ bool asst::RoguelikeDifficultySelectionTaskPlugin::verify(AsstMsg msg, const jso
 
     if (!RoguelikeConfig::is_valid_theme(m_config->get_theme())) {
         Log.error("Roguelike name doesn't exist!");
-        return false;
-    }
-
-    const auto& mode = m_config->get_mode();
-    if (mode == RoguelikeMode::Exploration || mode == RoguelikeMode::Squad) {
         return false;
     }
 
