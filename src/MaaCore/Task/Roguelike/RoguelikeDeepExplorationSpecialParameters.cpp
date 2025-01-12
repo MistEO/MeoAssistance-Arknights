@@ -5,12 +5,6 @@
 #include "Task/ProcessTask.h"
 #include "Utils/Logger.hpp"
 
-bool asst::RoguelikeDeepExplorationSpecialParameters::load_params([[maybe_unused]] const json::value& params)
-{
-    LogTraceFunction;
-    return true;
-}
-
 bool asst::RoguelikeDeepExplorationSpecialParameters::verify(AsstMsg msg, const json::value& details) const
 {
     if (msg != AsstMsg::SubTaskStart || details.get("subtask", std::string()) != "ProcessTask") {
