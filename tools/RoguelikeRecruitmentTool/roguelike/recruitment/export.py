@@ -8,7 +8,7 @@ from .main import RecruitPriorityOffset, Oper, Configuration
 
 # contributed by Lancarus
 def export_config(output_path: Path, theme: Theme, config: Configuration) -> None:
-    filename = f"{theme.value}_priority.xlsx"
+    filename = f"{theme}_priority.xlsx"
     path = output_path / filename
 
     table = []

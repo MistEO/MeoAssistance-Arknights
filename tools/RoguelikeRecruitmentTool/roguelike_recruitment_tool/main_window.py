@@ -152,7 +152,7 @@ class MainWindow(QMainWindow):
         self.theme_combo_box = QComboBox(self.control_widget)
         self.theme_combo_box.setEnabled(False)
         for theme in Theme:
-            self.theme_combo_box.addItem(theme.value, theme)
+            self.theme_combo_box.addItem(theme, theme)
         self.theme_combo_box.setCurrentIndex(self.theme_combo_box.count() - 1)
         self.theme_combo_box.currentIndexChanged.connect(
             lambda: self.visualisation_model.set_configuration(self.configurations[self.theme_combo_box.currentData()])
@@ -244,10 +244,10 @@ class MainWindow(QMainWindow):
 
     def on_load(self):
         for theme in Theme:
-            self.log_widget.appendPlainText(f"Loading {theme.value} ...")
+            self.log_widget.appendPlainText(f"Loading {theme} ...")
             try:
                 config_path = Path(
-                    self.resource_dir_line_widget.text()) / "roguelike" / theme.value / "recruitment.json"
+                    self.resource_dir_line_widget.text()) / "roguelike" / theme / "recruitment.json"
                 with open(config_path, encoding="utf-8") as fp:
                     self.configurations[theme] = Configuration.json2config(fp.read())
             except Exception as e:
@@ -257,7 +257,7 @@ class MainWindow(QMainWindow):
                 self.visualisation_model.set_configuration(None)
 
                 self.log_widget.insertPlainText(f"Failed!")
-                self.process_exception(e, f"Error when loading {theme.value}")
+                self.process_exception(e, f"Error when loading {theme}")
                 break
             else:
                 self.log_widget.insertPlainText("Succeeded!")
@@ -311,12 +311,12 @@ class MainWindow(QMainWindow):
 
     def on_validate(self):
         for theme in Theme:
-            self.log_widget.appendPlainText(f"Validating {theme.value} ...")
+            self.log_widget.appendPlainText(f"Validating {theme} ...")
             try:
                 Configuration.model_validate(self.configurations[theme])
             except ValidationError as e:
                 self.log_widget.insertPlainText(f"Failed!")
-                self.process_exception(e, f"Error when validating {theme.value}")
+                self.process_exception(e, f"Error when validating {theme}")
                 break
             else:
                 self.log_widget.insertPlainText("Passed!")
@@ -325,10 +325,10 @@ class MainWindow(QMainWindow):
 
     def on_save(self):
         for theme in Theme:
-            self.log_widget.appendPlainText(f"Saving {theme.value} ...")
+            self.log_widget.appendPlainText(f"Saving {theme} ...")
             try:
                 config_path = Path(
-                    self.resource_dir_line_widget.text()) / "roguelike" / theme.value / "recruitment.json"
+                    self.resource_dir_line_widget.text()) / "roguelike" / theme / "recruitment.json"
                 json_str = Configuration.config2json(self.configurations[theme])
                 with open(config_path, "w", encoding="utf-8") as fp:
                     fp.write(json_str)
@@ -336,7 +336,7 @@ class MainWindow(QMainWindow):
                     system("prettier -w " + str(config_path))
             except Exception as e:
                 self.log_widget.insertPlainText(f"Failed!")
-                self.process_exception(e, f"Error when saving {theme.value}")
+                self.process_exception(e, f"Error when saving {theme}")
                 break
             else:
                 self.log_widget.insertPlainText("Succeeded!")
@@ -347,12 +347,12 @@ class MainWindow(QMainWindow):
         output_path = Path(__file__).resolve().parent.parent / "output"
         output_path.mkdir(parents=True, exist_ok=True)
         for theme in Theme:
-            self.log_widget.appendPlainText(f"Exporting {theme.value} ...")
+            self.log_widget.appendPlainText(f"Exporting {theme} ...")
             try:
                 export_config(output_path, theme, self.configurations[theme])
             except Exception as e:
                 self.log_widget.insertPlainText(f"Failed!")
-                self.process_exception(e, f"Error when exporting {theme.value}")
+                self.process_exception(e, f"Error when exporting {theme}")
                 break
             else:
                 self.log_widget.insertPlainText("Succeeded!")

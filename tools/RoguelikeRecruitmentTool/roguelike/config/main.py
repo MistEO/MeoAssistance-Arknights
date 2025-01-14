@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import StrEnum
 
 
-class Theme(Enum):
+class Theme(StrEnum):
     Phantom = "Phantom"
     Mizuki = "Mizuki"
     Sami = "Sami"
