@@ -2551,7 +2551,8 @@
     },
     "ReturnButton": {
         "template": ["Return.png", "Return-White.png"],
-        "templThreshold": [0.7, 0.8],
+        "Doc": "Return-White.png曾用0.8Threshold,#11461回报了一个介于0.7-0.8之间的score,先和Return.png对齐一下",
+        "templThreshold": [0.7, 0.7],
         "action": "ClickSelf",
         "roi": [0, 0, 180, 80],
         "next": [
