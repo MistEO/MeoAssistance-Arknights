@@ -2479,7 +2479,6 @@ namespace MaaWpfGui.Main
             bool monthlySquadAutoIterate,
             bool monthlySquadCheckComms,
             bool deepExplorationAutoIterate,
-            bool deepExplorationAutoIterate,
             bool stopAtMaxLevel,
             bool startWithSeed)
         {
