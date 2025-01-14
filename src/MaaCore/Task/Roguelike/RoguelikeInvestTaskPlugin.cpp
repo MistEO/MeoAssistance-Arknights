@@ -57,6 +57,9 @@ bool asst::RoguelikeInvestTaskPlugin::_run()
         image = ctrler()->get_image();
         if (is_investment_available(image)) { // 检查是否处于可投资状态
             if (auto ocr = ocr_count(image, "Roguelike@StageTraderInvest-Count"); ocr) {
+                if (is_investment_insufficient(image)) {
+                    break;
+                }
                 // 可继续投资 / 到达投资上限999
                 if (*ocr == *deposit || *ocr > 999 || *ocr < 1) {
                     retry++; // 可能是出错了，重试三次放弃
@@ -149,6 +152,13 @@ std::optional<int> asst::RoguelikeInvestTaskPlugin::ocr_count(const auto& img, c
 bool asst::RoguelikeInvestTaskPlugin::is_investment_available(const cv::Mat& image) const
 {
     auto task = ProcessTask(*this, { "Roguelike@StageTraderInvest-Arrow" });
+    task.set_reusable_image(image).set_task_delay(0).set_retry_times(0);
+    return task.run();
+}
+
+bool asst::RoguelikeInvestTaskPlugin::is_investment_insufficient(const cv::Mat& image) const
+{
+    auto task = ProcessTask(*this, { "Roguelike@StageTraderInvest-Insufficient" });
     task.set_reusable_image(image).set_task_delay(0).set_retry_times(0);
     return task.run();
 }

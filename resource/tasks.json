@@ -7549,6 +7549,10 @@
         "roi": [570, 335, 150, 60],
         "ocrReplace": [[">", ""]]
     },
+    "Roguelike@StageTraderInvest-Insufficient": {
+        "doc": "源石锭不足",
+        "roi": [880, 427, 212, 132]
+    },
     "Roguelike@StageTraderInvestCancel": {
         "action": "ClickSelf",
         "roi": [507, 418, 242, 149],
