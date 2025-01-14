@@ -9866,7 +9866,7 @@
         "roi": [589, 584, 231, 121],
         "templThreshold": 0.9,
         "action": "ClickRect",
-        "specificRect": [710, 680, 0, 0],
+        "specificRect": [600, 660, 220, 40],
         "postDelay": 500,
         "next": ["Sarkaz@Roguelike@ChooseBurdenOperator", "Sarkaz@Roguelike@ChooseBurdenOperatorQuit"]
     },
