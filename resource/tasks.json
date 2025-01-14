@@ -6450,12 +6450,14 @@
         "baseTask": "SlowlySwipeToTheLeft",
         "Doc": "为了保证每次滑动至少多出一列 且 不能跳过一列，应保证滑动距离在400-500之间。",
         "specificRect": [500, 340, 20, 20],
-        "rectMove": [980, 340, 20, 20]
+        "rectMove": [980, 340, 20, 20],
+        "postDelay": 500
     },
     "RoguelikeRecruitOperListSlowlySwipeToTheRight": {
         "baseTask": "SlowlySwipeToTheRight",
         "specificRect": [1150, 340, 20, 20],
-        "rectMove": [670, 340, 20, 20]
+        "rectMove": [670, 340, 20, 20],
+        "postDelay": 500
     },
     "RoguelikeRecruitOperListSwipeToTheLeft": {
         "baseTask": "RoguelikeRecruitOperListSlowlySwipeToTheLeft",
