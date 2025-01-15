@@ -1,4 +1,4 @@
-// <copyright file="ConnectSettingsUserControlModel.cs" company="MaaAssistantArknights">
+// <copyright file="StartUpSettingsUserControlModel.cs" company="MaaAssistantArknights">
 // MaaWpfGui - A part of the MaaCoreArknights project
 // Copyright (C) 2021 MistEO and Contributors
 //
@@ -13,11 +13,12 @@
 #nullable enable
 using MaaWpfGui.Constants;
 using MaaWpfGui.Helper;
-using Stylet;
+using MaaWpfGui.Main;
+using Newtonsoft.Json.Linq;
 
 namespace MaaWpfGui.ViewModels.UserControl.TaskQueue;
 
-public class StartUpSettingsUserControlModel : PropertyChangedBase
+public class StartUpSettingsUserControlModel : TaskViewModel
 {
     static StartUpSettingsUserControlModel()
     {
@@ -43,5 +44,13 @@ public class StartUpSettingsUserControlModel : PropertyChangedBase
     public void AccountSwitchManualRun()
     {
         Instances.TaskQueueViewModel.QuickSwitchAccount();
+    }
+
+    public override void ProcSubTaskMsg(AsstMsg msg, JObject details)
+    {
+        if (msg == AsstMsg.SubTaskExtraInfo && details["what"]?.ToString() == "AccountSwitch")
+        {
+            Instances.TaskQueueViewModel.AddLog(LocalizationHelper.GetString("AccountSwitch") + $" -->> {details["details"]!["account_name"]}", UiLogColor.Info); // subTaskDetails!["current_account"]
+        }
     }
 }
