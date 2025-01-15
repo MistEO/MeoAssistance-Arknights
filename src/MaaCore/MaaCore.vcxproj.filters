@@ -737,6 +737,15 @@
     <ClInclude Include="Vision\Battle\SupportListAnalyzer.h">
       <Filter>Source\Vision\Battle</Filter>
     </ClInclude>
+    <ClInclude Include="Task\Roguelike\RoguelikeIterateMonthlySquadPlugin.h">
+      <Filter>Source\Task\Roguelike</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\Roguelike\RoguelikeIterateDeepExplorationPlugin.h">
+      <Filter>Source\Task\Roguelike</Filter>
+    </ClInclude>
+    <ClInclude Include="Task\Roguelike\RoguelikeDeepExplorationSpecialParameters.h">
+      <Filter>Source\Task\Roguelike</Filter>
+    </ClInclude>
     <ClInclude Include="Task\Roguelike\RoguelikeLevelTaskPlugin.h">
       <Filter>Source\Task\Roguelike</Filter>
     </ClInclude>
@@ -1241,6 +1250,15 @@
     </ClCompile>
     <ClCompile Include="Vision\Battle\SupportListAnalyzer.cpp">
       <Filter>Source\Vision\Battle</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\Roguelike\RoguelikeIterateMonthlySquadPlugin.cpp">
+      <Filter>Source\Task\Roguelike</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\Roguelike\RoguelikeIterateDeepExplorationPlugin.cpp">
+      <Filter>Source\Task\Roguelike</Filter>
+    </ClCompile>
+    <ClCompile Include="Task\Roguelike\RoguelikeDeepExplorationSpecialParameters.cpp">
+      <Filter>Source\Task\Roguelike</Filter>
     </ClCompile>
     <ClCompile Include="Task\Roguelike\RoguelikeLevelTaskPlugin.cpp">
       <Filter>Source\Task\Roguelike</Filter>
