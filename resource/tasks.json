@@ -6717,12 +6717,14 @@
         "action": "ClickSelf",
         "template": "Return.png",
         "roi": [0, 0, 190, 80],
+        "postDelay": 500,
         "next": ["Roguelike@MonthlySquadCommsBackOnce"]
     },
     "Roguelike@MonthlySquadCommsBackOnce": {
         "action": "ClickSelf",
         "template": "Return.png",
-        "roi": [0, 0, 190, 80]
+        "roi": [0, 0, 190, 80],
+        "postDelay": 500
     },
     "Roguelike@MonthlySquadRewardMiss": {
         "Doc": "base_task 月度小队奖励已获取",
