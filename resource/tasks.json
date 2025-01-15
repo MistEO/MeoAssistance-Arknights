@@ -6694,11 +6694,12 @@
         "roi": [920, 25, 40, 20],
         "text": ["M", "A", "X"]
     },
-    "Roguelike@ChooseMonthlySquad": {
+    "Roguelike@MonthlySquad": {
         "Doc": "base_task 月度小队入口",
-        "template": "empty.png",
+        "algorithm": "OcrDetect",
         "action": "ClickSelf",
-        "roi": [520, 630, 270, 85]
+        "roi": [520, 630, 270, 85],
+        "text": []
     },
     "Roguelike@MonthlySquadComms": {
         "Doc": "base_task 月度小队通信",
@@ -7968,8 +7969,8 @@
     "Phantom@Roguelike@CheckLevel": {
         "text": ["古堡笔记"]
     },
-    "Phantom@Roguelike@ChooseMonthlySquad": {
-        "template": "Phantom@Roguelike@MonthlySquad.png"
+    "Phantom@Roguelike@MonthlySquad": {
+        "text": ["月度小队"]
     },
     "Phantom@Roguelike@MonthlySquadComms": {
         "template": "Phantom@Roguelike@Comms.png"
@@ -8280,8 +8281,8 @@
         "roi": [460, 525, 160, 55]
     },
     "Mizuki@Roguelike@Abandon": {},
-    "Mizuki@Roguelike@ChooseMonthlySquad": {
-        "template": "Mizuki@Roguelike@MonthlySquad.png"
+    "Mizuki@Roguelike@MonthlySquad": {
+        "text": ["追忆映射"]
     },
     "Mizuki@Roguelike@MonthlySquadComms": {
         "template": "Mizuki@Roguelike@Comms.png",
@@ -8818,8 +8819,8 @@
             "mask": []
         }
     },
-    "Sami@Roguelike@ChooseMonthlySquad": {
-        "template": "Sami@Roguelike@MonthlySquad.png"
+    "Sami@Roguelike@MonthlySquad": {
+        "text": ["探索者档案"]
     },
     "Sami@Roguelike@MonthlySquadComms": {
         "template": "Sami@Roguelike@Comms.png",
@@ -10123,8 +10124,8 @@
             "mask": []
         }
     },
-    "Sarkaz@Roguelike@ChooseMonthlySquad": {
-        "template": "Sarkaz@Roguelike@MonthlySquad.png"
+    "Sarkaz@Roguelike@MonthlySquad": {
+        "text": ["讲述者列表"]
     },
     "Sarkaz@Roguelike@MonthlySquadComms": {
         "template": "Sarkaz@Roguelike@Comms.png",

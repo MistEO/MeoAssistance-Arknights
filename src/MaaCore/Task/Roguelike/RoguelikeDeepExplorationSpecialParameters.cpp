@@ -5,6 +5,12 @@
 #include "Task/ProcessTask.h"
 #include "Utils/Logger.hpp"
 
+bool load_params([[maybe_unused]] const json::value& params)
+{
+    // 不显式声明mac/arm64编译会出错
+    return true;
+}
+
 bool asst::RoguelikeDeepExplorationSpecialParameters::verify(AsstMsg msg, const json::value& details) const
 {
     if (msg != AsstMsg::SubTaskStart || details.get("subtask", std::string()) != "ProcessTask") {

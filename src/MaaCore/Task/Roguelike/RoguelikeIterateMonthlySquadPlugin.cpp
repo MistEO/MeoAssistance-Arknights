@@ -46,7 +46,7 @@ bool asst::RoguelikeIterateMonthlySquadPlugin::_run()
 
     completed = true;
     if (monthlySquadCount[m_config->get_theme()] > 0) {
-        ProcessTask(*this, { m_config->get_theme() + "@Roguelike@ChooseMonthlySquad" }).set_retry_times(1).run();
+        ProcessTask(*this, { m_config->get_theme() + "@Roguelike@MonthlySquad" }).set_retry_times(1).run();
     }
 
     for (int i = 0; i < monthlySquadCount[m_config->get_theme()]; i++) {
