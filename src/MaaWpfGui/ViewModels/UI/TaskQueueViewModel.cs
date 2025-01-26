@@ -1854,7 +1854,8 @@ namespace MaaWpfGui.ViewModels.UI
                 RoguelikeTask.RoguelikeMonthlySquadCheckComms,
                 RoguelikeTask.RoguelikeDeepExplorationAutoIterate,
                 RoguelikeTask.RoguelikeStopAtMaxLevel,
-                RoguelikeTask.RoguelikeStartWithSeed);
+                RoguelikeTask.RoguelikeStartWithSeed,
+                RoguelikeTask.RoguelikeChooseBeautifulWish);
         }
 
         private static bool AppendReclamation()
