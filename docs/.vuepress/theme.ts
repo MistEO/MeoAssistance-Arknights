@@ -5,12 +5,16 @@ import { zhcnSidebar, zhtwSidebar, enusSidebar, jajpSidebar, kokrSidebar } from 
 
 export default hopeTheme({
   hostname: "https://maa.plus",
-  iconAssets: "iconify",
+  license: "AGPL-3.0",
   repo: "MaaAssistantArknights/MaaAssistantArknights",
   docsBranch: "dev",
   docsDir: "/docs",
 
+  lastUpdated: false,
+  contributors: false,
+
   locales: {
+    "/": {},
     "/zh-cn/": {
       navbar: zhcnNavbar,
       sidebar: zhcnSidebar,
@@ -53,6 +57,33 @@ export default hopeTheme({
     },
   },
 
+  markdown: {
+    align: true,
+    codeTabs: true,
+    //echarts: true,
+    footnote: true,
+    gfm: true,
+    hint: true,
+    imgLazyload: true,
+    imgMark: true,
+    imgSize: true,
+    //mathjax: true,
+    mark: true,
+    //mermaid: true,
+    tabs: true,
+    tasklist: true,
+    vPre: true,
+    component: true,
+
+    highlighter: {
+      'type': 'shiki',
+      themes: {
+        light: "light-plus",
+        dark: "nord",
+      }
+    },
+  },
+
   plugins: {
     activeHeaderLinks: false,
 
@@ -66,39 +97,14 @@ export default hopeTheme({
       strict: true,
     },
 
-    copyright: {
-      license: "AGPL-3.0",
-    },
-
     docsearch: DocSearchConfig,
 
-    mdEnhance: {
-      align: true,
-      codetabs: true,
-      //echarts: true,
-      footnote: true,
-      gfm: true,
-      hint: true,
-      imgLazyload: true,
-      imgMark: true,
-      imgSize: true,
-      //mathjax: true,
-      mark: true,
-      //mermaid: true,
-      tabs: true,
-      tasklist: true,
-      vPre: true,
-      component: true,
-    },
-
-    shiki: {
-      themes: {
-        light: "light-plus",
-        dark: "nord",
-      }
+    icon: {
+      assets: "iconify",
     },
 
     sitemap: true,
+    seo: true,
 
     notice: [
       {
@@ -113,7 +119,8 @@ export default hopeTheme({
             text: "我知道了",
             type: "primary",
           },
-          { text: "前往簡體中文",
+          {
+            text: "前往簡體中文",
             link: "/zh-cn/",
           },
         ],
@@ -130,7 +137,8 @@ export default hopeTheme({
             text: "Okay",
             type: "primary",
           },
-          { text: "Take me to zh-CN",
+          {
+            text: "Take me to zh-CN",
             link: "/zh-cn/",
           },
         ],
@@ -147,7 +155,8 @@ export default hopeTheme({
             text: "OK",
             type: "primary",
           },
-          { text: "中国語サイトへ行く",
+          {
+            text: "中国語サイトへ行く",
             link: "/zh-cn/",
           },
         ],
@@ -164,13 +173,12 @@ export default hopeTheme({
             text: "OK",
             type: "primary",
           },
-          { text: "중국어 간체로 이동",
+          {
+            text: "중국어 간체로 이동",
             link: "/zh-cn/",
           },
         ],
       },
     ],
-
   },
-
 });
