@@ -22,17 +22,23 @@ bool asst::InfrastReceptionTask::_run()
 
     close_end_of_clue_exchange();
 
-    // 防止送线索把可以填入的送了
-    use_clue();
-    back_to_reception_main();
+    // 优先送线索时跳过此段
+    if (!m_prioritize_sending_clue) {
+        // 防止送线索把可以填入的送了
+        use_clue();
+        back_to_reception_main();
+    }
 
     get_clue();
     if (need_exit()) {
         return false;
     }
 
-    use_clue();
-    back_to_reception_main();
+    // 优先送线索时跳过此段
+    if (!m_prioritize_sending_clue) {
+        use_clue();
+        back_to_reception_main();
+    }
 
     if (need_exit()) {
         return false;
@@ -220,4 +226,11 @@ bool asst::InfrastReceptionTask::shift()
     }
     click_confirm_button();
     return true;
+}
+
+asst::InfrastReceptionTask&
+    asst::InfrastReceptionTask::set_prioritize_sending_clue(bool prioritize_sending_clue) noexcept
+{
+    m_prioritize_sending_clue = prioritize_sending_clue;
+    return *this;
 }

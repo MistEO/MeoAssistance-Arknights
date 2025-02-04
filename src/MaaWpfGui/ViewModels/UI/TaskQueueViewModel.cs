@@ -1693,7 +1693,11 @@ namespace MaaWpfGui.ViewModels.UI
                 InfrastTask.OriginiumShardAutoReplenishment,
                 InfrastTask.CustomInfrastEnabled,
                 InfrastTask.CustomInfrastFile,
-                CustomInfrastPlanIndex);
+                CustomInfrastPlanIndex,
+                InfrastTask.PrioritizeSendingClue,
+                InfrastTask.SendClueToOCR,
+                InfrastTask.OnlySendClueToOCR,
+                InfrastTask.SendClueList);
         }
 
         private bool AppendInfrast()
@@ -1715,7 +1719,11 @@ namespace MaaWpfGui.ViewModels.UI
                 InfrastTask.OriginiumShardAutoReplenishment,
                 InfrastTask.CustomInfrastEnabled,
                 InfrastTask.CustomInfrastFile,
-                CustomInfrastPlanIndex);
+                CustomInfrastPlanIndex,
+                InfrastTask.PrioritizeSendingClue,
+                InfrastTask.SendClueToOCR,
+                InfrastTask.OnlySendClueToOCR,
+                InfrastTask.SendClueList);
         }
 
         private readonly Dictionary<string, IEnumerable<string>> _blackCharacterListMapping = new()

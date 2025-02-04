@@ -144,6 +144,9 @@ bool asst::InfrastTask::set_params(const json::value& params)
     bool replenish = params.get("replenish", false);
     m_replenish_task_ptr->set_enable(replenish);
 
+    bool prioritize_sending_clue = params.get("prioritize_sending_clue", false);
+    m_reception_task_ptr->set_prioritize_sending_clue(prioritize_sending_clue);
+
     if (is_custom && !m_running) {
         auto filename_opt = params.find<std::string>("filename");
         if (!filename_opt) {

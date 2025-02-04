@@ -2305,7 +2305,11 @@ namespace MaaWpfGui.Main
             bool originiumShardAutoReplenishment,
             bool isCustom,
             string filename,
-            int planIndex)
+            int planIndex,
+            bool prioritizeSendingClue,
+            bool sendClueToOCR,
+            bool onlySendClueToOCR,
+            string sendClueList)
         {
             var taskParams = new JObject
             {
@@ -2319,6 +2323,10 @@ namespace MaaWpfGui.Main
                 ["mode"] = isCustom ? 10000 : 0,
                 ["filename"] = filename,
                 ["plan_index"] = planIndex,
+                ["prioritize_sending_clue"] = prioritizeSendingClue,
+                ["send_clue_to_ocr"] = sendClueToOCR,
+                ["only_send_clue_to_ocr"] = onlySendClueToOCR,
+                ["send_clue_list"] = sendClueList,
             };
 
             return taskParams;
@@ -2348,6 +2356,10 @@ namespace MaaWpfGui.Main
         /// <param name="isCustom">是否开启自定义配置</param>
         /// <param name="filename">自定义配置文件路径</param>
         /// <param name="planIndex">自定义配置计划编号</param>
+        /// <param name="prioritizeSendingClue">是否优先发送线索</param>
+        /// <param name="sendClueToOCR">是否发送线索给指定ID</param>
+        /// <param name="onlySendClueToOCR">是否只发送线索给指定ID</param>
+        /// <param name="sendClueList">发送线索指定ID列表</param>
         /// <returns>是否成功。</returns>
         public bool AsstAppendInfrast(
             IEnumerable<string> order,
@@ -2359,7 +2371,11 @@ namespace MaaWpfGui.Main
             bool originiumShardAutoReplenishment,
             bool isCustom,
             string filename,
-            int planIndex)
+            int planIndex,
+            bool prioritizeSendingClue,
+            bool sendClueToOCR,
+            bool onlySendClueToOCR,
+            string sendClueList)
         {
             var taskParams = SerializeInfrastTaskParams(
                 order,
@@ -2371,7 +2387,11 @@ namespace MaaWpfGui.Main
                 originiumShardAutoReplenishment,
                 isCustom,
                 filename,
-                planIndex);
+                planIndex,
+                prioritizeSendingClue,
+                sendClueToOCR,
+                onlySendClueToOCR,
+                sendClueList);
             AsstTaskId id = AsstAppendTaskWithEncoding("Infrast", taskParams);
             _latestTaskId[TaskType.Infrast] = id;
             return id != 0;
@@ -2387,7 +2407,11 @@ namespace MaaWpfGui.Main
             bool originiumShardAutoReplenishment,
             bool isCustom,
             string filename,
-            int planIndex)
+            int planIndex,
+            bool prioritizeSendingClue,
+            bool sendClueToOCR,
+            bool onlySendClueToOCR,
+            string sendClueList)
         {
             const TaskType Type = TaskType.Infrast;
             if (!_latestTaskId.TryGetValue(Type, out var id))
@@ -2410,7 +2434,11 @@ namespace MaaWpfGui.Main
                 originiumShardAutoReplenishment,
                 isCustom,
                 filename,
-                planIndex);
+                planIndex,
+                prioritizeSendingClue,
+                sendClueToOCR,
+                onlySendClueToOCR,
+                sendClueList);
             return AsstSetTaskParamsWithEncoding(id, taskParams);
         }
 
