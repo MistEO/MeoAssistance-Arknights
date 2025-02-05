@@ -109,19 +109,6 @@ bool asst::InfrastReceptionTask::use_clue()
     return true;
 }
 
-// todo: 接管sendclue，起点在CloseCluePage->SendClueFlag
-// todo: m_prioritize_sending_clue送之前把线索都弹出来
-// todo: m_amount_of_clue_to_send定量
-// todo: m_send_clue_to_ocr定向, m_only_send_clue_to_ocr跳过fallback
-// todo: parse m_send_clue_list
-// todo: 没匹配上callback通知用户
-bool asst::InfrastReceptionTask::send_clue()
-{
-    LogTraceFunction;
-
-    return true;
-}
-
 bool asst::InfrastReceptionTask::proc_clue_vacancy()
 {
     LogTraceFunction;
@@ -177,8 +164,15 @@ bool asst::InfrastReceptionTask::back_to_reception_main()
     return ProcessTask(*this, { "BackToReceptionMain" }).run();
 }
 
+// todo: 接管sendclue，起点在CloseCluePage->SendClueFlag
+// todo: m_prioritize_sending_clue送之前把线索都弹出来
+// todo: m_amount_of_clue_to_send定量
+// todo: m_send_clue_to_ocr定向, m_only_send_clue_to_ocr跳过fallback
+// todo: parse m_send_clue_list
+// todo: 没匹配上callback通知用户
 bool asst::InfrastReceptionTask::send_clue()
 {
+    LogTraceFunction;
     ProcessTask task(*this, { "SendClues" });
     return task.run();
 }
