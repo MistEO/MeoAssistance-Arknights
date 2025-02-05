@@ -22,22 +22,23 @@ bool asst::InfrastReceptionTask::_run()
 
     close_end_of_clue_exchange();
 
-    // 优先送线索时跳过此段
-    if (!m_prioritize_sending_clue) {
-        // 防止送线索把可以填入的送了
+    if (m_prioritize_sending_clue) {
+        send_clue();
+        get_clue();
+        if (need_exit()) {
+            return false;
+        }
+        send_clue();
         use_clue();
-        back_to_reception_main();
     }
-
-    get_clue();
-    if (need_exit()) {
-        return false;
-    }
-
-    // 优先送线索时跳过此段
-    if (!m_prioritize_sending_clue) {
+    else {
         use_clue();
-        back_to_reception_main();
+        get_clue();
+        if (need_exit()) {
+            return false;
+        }
+        use_clue();
+        send_clue();
     }
 
     if (need_exit()) {
@@ -54,6 +55,13 @@ bool asst::InfrastReceptionTask::close_end_of_clue_exchange()
     return task_temp.run();
 }
 
+// get_clue的taskchain里面隐含一个满线索送走三个的task
+// SendClueFlag->SendClues->SelectClue->ClueSelected->ClueGiveTo1/2/3/4/NextPage->*Confirm->SelectClue--->CloseSendClue,
+// SelectClue.maxTimes=3
+//
+// todo: sendclue丢给send_clue接管
+// todo: use_clue/send_clue重构后确保至少一个空位
+// todo: need_exit到底是干啥的
 bool asst::InfrastReceptionTask::get_clue()
 {
     ProcessTask task_temp(
@@ -95,6 +103,21 @@ bool asst::InfrastReceptionTask::use_clue()
     }
     Log.trace("InfrastReceptionTask | product", product);
     set_product(product);
+
+    back_to_reception_main();
+
+    return true;
+}
+
+// todo: 接管sendclue，起点在CloseCluePage->SendClueFlag
+// todo: m_prioritize_sending_clue送之前把线索都弹出来
+// todo: m_amount_of_clue_to_send定量
+// todo: m_send_clue_to_ocr定向, m_only_send_clue_to_ocr跳过fallback
+// todo: parse m_send_clue_list
+// todo: 没匹配上callback通知用户
+bool asst::InfrastReceptionTask::send_clue()
+{
+    LogTraceFunction;
 
     return true;
 }
@@ -228,9 +251,17 @@ bool asst::InfrastReceptionTask::shift()
     return true;
 }
 
-asst::InfrastReceptionTask&
-    asst::InfrastReceptionTask::set_prioritize_sending_clue(bool prioritize_sending_clue) noexcept
+asst::InfrastReceptionTask& asst::InfrastReceptionTask::set_clue_sending_config(
+    bool prioritize_sending_clue,
+    int amount_of_clue_to_send,
+    bool send_clue_to_ocr,
+    bool only_send_clue_to_ocr,
+    std::string send_clue_list) noexcept
 {
     m_prioritize_sending_clue = prioritize_sending_clue;
+    m_amount_of_clue_to_send = amount_of_clue_to_send;
+    m_send_clue_to_ocr = send_clue_to_ocr;
+    m_only_send_clue_to_ocr = only_send_clue_to_ocr;
+    m_send_clue_list = send_clue_list;
     return *this;
 }

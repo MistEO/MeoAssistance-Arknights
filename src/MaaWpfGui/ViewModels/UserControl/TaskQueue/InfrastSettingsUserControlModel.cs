@@ -233,6 +233,22 @@ public class InfrastSettingsUserControlModel : TaskViewModel
         }
     }
 
+    private int _amountOfClueToSend = Convert.ToInt32(ConfigurationHelper.GetValue(ConfigurationKeys.AmountOfClueToSend, "3"));
+
+    /// <summary>
+    /// Gets or sets a value indicating how many clues to send.
+    /// </summary>
+    public int AmountOfClueToSend
+    {
+        get => _amountOfClueToSend;
+        set
+        {
+            SetAndNotify(ref _amountOfClueToSend, value);
+            DormThresholdLabel = LocalizationHelper.GetString("AmountOfClueToSend") + ": " + _amountOfClueToSend + "%";
+            ConfigurationHelper.SetValue(ConfigurationKeys.AmountOfClueToSend, value.ToString());
+        }
+    }
+
     private bool _prioritizeSendingClue = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.PrioritizeSendingClue, bool.FalseString));
 
     /// <summary>
@@ -278,7 +294,7 @@ public class InfrastSettingsUserControlModel : TaskViewModel
         }
     }
 
-    private string _sendClueList = ConfigurationHelper.GetValue(ConfigurationKeys.SendClueList, LocalizationHelper.GetString("SendClueListDefault"));
+    private string _sendClueList = ConfigurationHelper.GetValue(ConfigurationKeys.SendClueList, string.Empty);
 
     /// <summary>
     /// Gets or sets a list of OCR target to send clue to.
