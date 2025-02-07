@@ -36,8 +36,8 @@ bool asst::RoguelikeStageEncounterTaskPlugin::_run()
 
     const std::string& theme = m_config->get_theme();
     const RoguelikeMode mode = m_config->get_mode();
-    std::unordered_map<std::string, Config::RoguelikeEvent> event_map = RoguelikeStageEncounter.get_events(theme, mode);
-    std::vector<std::string> event_names = RoguelikeStageEncounter.get_event_names(theme);
+    Config::RoguelikeEventMap event_map = RoguelikeStageEncounter.get_events(theme, mode);
+    const std::vector<std::string>& event_names = RoguelikeStageEncounter.get_event_names(theme);
 
     const auto event_name_task_ptr = Task.get("Roguelike@StageEncounterOcr");
     sleep(event_name_task_ptr->pre_delay);
