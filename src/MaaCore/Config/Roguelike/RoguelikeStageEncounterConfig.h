@@ -47,7 +47,14 @@ public:
 
     using RoguelikeEventMap = std::unordered_map<std::string, RoguelikeEvent>;
 
-    [[nodiscard]] const RoguelikeEventMap& get_events(const std::string& theme, RoguelikeMode mode) const;
+    using RoguelikeEventDB =
+        std::unordered_map<std::pair<std::string, int>, RoguelikeEventMap, std::pair_hash<std::string, int>>;
+
+    [[nodiscard]] std::optional<std::reference_wrapper<const RoguelikeEvent>> get_event(
+        const std::string& theme,
+        RoguelikeMode mode,
+        const std::string& event_name,
+        const RoguelikeEventDB& m_modified_events = {}) const;
 
     [[nodiscard]] const std::vector<std::string>& get_event_names(const std::string& theme) const
     {
@@ -67,7 +74,7 @@ private:
     static constexpr ComparisonType parse_comparison_type(const std::string& type_str);
 
     // 从配置文件中读取的数据
-    std::unordered_map<std::pair<std::string, int>, RoguelikeEventMap, std::pair_hash<std::string, int>> m_events;
+    RoguelikeEventDB m_events;
     // 任务名列表，用于传给 OCRerConfig::set_required 作为 OCR 目标
     std::unordered_map<std::string, std::vector<std::string>> m_event_names;
 

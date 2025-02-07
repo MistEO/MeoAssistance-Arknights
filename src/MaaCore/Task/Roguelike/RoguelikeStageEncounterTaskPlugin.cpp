@@ -36,7 +36,6 @@ bool asst::RoguelikeStageEncounterTaskPlugin::_run()
 
     const std::string& theme = m_config->get_theme();
     const RoguelikeMode mode = m_config->get_mode();
-    Config::RoguelikeEventMap event_map = RoguelikeStageEncounter.get_events(theme, mode);
     const std::vector<std::string>& event_names = RoguelikeStageEncounter.get_event_names(theme);
 
     const auto event_name_task_ptr = Task.get("Roguelike@StageEncounterOcr");
@@ -60,7 +59,12 @@ bool asst::RoguelikeStageEncounterTaskPlugin::_run()
     }
     std::string text = result_vec.front().text;
 
-    Config::RoguelikeEvent event = event_map.at(text);
+    auto event_opt = RoguelikeStageEncounter.get_event(theme, mode, text);
+    if (!event_opt.has_value()) {
+        Log.error("__FUNCTION__", "| Failed to retrieve event data.");
+        return false;
+    }
+    const Config::RoguelikeEvent& event = RoguelikeStageEncounter.get_event(theme, mode, text).value();
 
     int special_val = 0;
     // 水月的不好识别，先试试萨米能不能用
