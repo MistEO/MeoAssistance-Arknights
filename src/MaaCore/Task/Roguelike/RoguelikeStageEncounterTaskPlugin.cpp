@@ -210,9 +210,8 @@ void asst::RoguelikeStageEncounterTaskPlugin::set_event(
 {
     const std::pair<std::string, int> key = std::make_pair(theme, static_cast<int>(mode));
 
-    m_modified_events[key][event_name] =
-        Config::RoguelikeEvent { .name = event_name,
-                                 .option_num = option_num,
-                                 .default_choose = choose,
-                                 .choice_require = {} };
+    m_modified_events[key][event_name] = Config::RoguelikeEvent { .name = event_name,
+                                                                  .option_num = option_num,
+                                                                  .default_choose = choose,
+                                                                  .choice_require = {} };
 }
