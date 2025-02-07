@@ -61,13 +61,6 @@ public:
         return m_event_names.at(theme);
     }
 
-    bool set_event(
-        const std::string& theme,
-        RoguelikeMode mode,
-        const std::string& event_name,
-        int choose,
-        int option_num);
-
 private:
     virtual bool parse(const json::value& json) override;
 

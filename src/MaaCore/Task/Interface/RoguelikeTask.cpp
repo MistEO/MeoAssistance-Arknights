@@ -72,8 +72,9 @@ asst::RoguelikeTask::RoguelikeTask(const AsstCallback& callback, Assistant* inst
         ->set_retry_times(2)
         .set_ignore_error(true);
 
-    m_roguelike_task_ptr->register_plugin<RoguelikeStageEncounterTaskPlugin>(m_config_ptr, m_control_ptr)
-        ->set_retry_times(0);
+    m_encounter_ptr =
+        m_roguelike_task_ptr->register_plugin<RoguelikeStageEncounterTaskPlugin>(m_config_ptr, m_control_ptr);
+    m_encounter_ptr->set_retry_times(0);
 
     m_roguelike_task_ptr->register_plugin<RoguelikeLastRewardTaskPlugin>(m_config_ptr, m_control_ptr);
     m_roguelike_task_ptr->register_plugin<RoguelikeLastRewardSelectTaskPlugin>(m_config_ptr, m_control_ptr);
@@ -167,13 +168,17 @@ bool asst::RoguelikeTask::set_params(const json::value& params)
         }
     }
     if (theme == RoguelikeTheme::Sarkaz) {
+        // 萨卡兹种子刷钱
+        if (params.get("start_with_seed", false)) {
+            m_encounter_ptr->set_event(theme, mode, "相遇", 3, 4);
+        }
         // 刷等级选择美愿
         if (params.get("choose_beautiful_wish", false)) {
-            RoguelikeStageEncounter.set_event(theme, mode, "相遇", 3, 4);
+            m_encounter_ptr->set_event(theme, mode, "相遇", 3, 4);
         }
         else {
             // 若取消勾选，需要重新设为希望时代的涂鸦
-            RoguelikeStageEncounter.set_event(theme, mode, "相遇", 1, 4);
+            m_encounter_ptr->set_event(theme, mode, "相遇", 1, 4);
         }
     }
 

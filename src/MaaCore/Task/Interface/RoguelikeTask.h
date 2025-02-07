@@ -11,6 +11,7 @@ class RoguelikeDebugTaskPlugin;
 class RoguelikeCustomStartTaskPlugin;
 class RoguelikeFoldartalStartTaskPlugin;
 class RoguelikeFoldartalUseTaskPlugin;
+class RoguelikeStageEncounterTaskPlugin;
 
 class RoguelikeTask : public InterfaceTask
 {
@@ -26,6 +27,7 @@ private:
     std::shared_ptr<ProcessTask> m_roguelike_task_ptr = nullptr;
     std::shared_ptr<RoguelikeConfig> m_config_ptr = nullptr;
     std::shared_ptr<RoguelikeControlTaskPlugin> m_control_ptr = nullptr;
+    std::shared_ptr<RoguelikeStageEncounterTaskPlugin> m_encounter_ptr  = nullptr;
     std::shared_ptr<RoguelikeInvestTaskPlugin> m_invest_ptr = nullptr;
     std::shared_ptr<RoguelikeDebugTaskPlugin> m_debug_ptr = nullptr;
     std::shared_ptr<RoguelikeCustomStartTaskPlugin> m_custom_ptr = nullptr;

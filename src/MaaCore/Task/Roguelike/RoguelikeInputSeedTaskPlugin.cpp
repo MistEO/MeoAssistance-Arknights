@@ -6,12 +6,8 @@
 
 bool asst::RoguelikeInputSeedTaskPlugin::load_params([[maybe_unused]] const json::value& params)
 {
-    // 萨卡兹种子刷钱
-    if (m_config->get_theme() == RoguelikeTheme::Sarkaz && params.get("start_with_seed", false)) {
-        RoguelikeStageEncounter.set_event(m_config->get_theme(), m_config->get_mode(), "相遇", 3, 4);
-        return true;
-    }
-    return false;
+    // 本插件暂仅用于萨卡兹种子刷钱
+    return m_config->get_theme() == RoguelikeTheme::Sarkaz && params.get("start_with_seed", false);
 }
 
 bool asst::RoguelikeInputSeedTaskPlugin::verify(AsstMsg msg, const json::value& details) const
