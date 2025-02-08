@@ -35,9 +35,8 @@ bool asst::RoguelikeStageEncounterTaskPlugin::_run()
     LogTraceFunction;
 
     const std::string& theme = m_config->get_theme();
-    const RoguelikeMode& mode = m_config->get_mode();
-    std::unordered_map<std::string, Config::RoguelikeEvent> event_map = RoguelikeStageEncounter.get_events(theme, mode);
-    std::vector<std::string> event_names = RoguelikeStageEncounter.get_event_names(theme);
+    const RoguelikeMode mode = m_config->get_mode();
+    const std::vector<std::string>& event_names = RoguelikeStageEncounter.get_event_names(theme);
 
     const auto event_name_task_ptr = Task.get("Roguelike@StageEncounterOcr");
     sleep(event_name_task_ptr->pre_delay);
@@ -60,7 +59,12 @@ bool asst::RoguelikeStageEncounterTaskPlugin::_run()
     }
     std::string text = result_vec.front().text;
 
-    Config::RoguelikeEvent event = event_map.at(text);
+    auto event_opt = RoguelikeStageEncounter.get_event(theme, mode, text, m_modified_events);
+    if (!event_opt.has_value()) {
+        Log.error("__FUNCTION__", "| Failed to retrieve event data.");
+        return false;
+    }
+    const Config::RoguelikeEvent& event = RoguelikeStageEncounter.get_event(theme, mode, text).value();
 
     int special_val = 0;
     // 水月的不好识别，先试试萨米能不能用
@@ -195,4 +199,19 @@ int asst::RoguelikeStageEncounterTaskPlugin::hp(const cv::Mat& image)
         return -1;
     }
     return utils::chars_to_number(res_vec_opt->front().text, hp_val) ? hp_val : 0;
+}
+
+void asst::RoguelikeStageEncounterTaskPlugin::set_event(
+    const std::string& theme,
+    const RoguelikeMode mode,
+    const std::string& event_name,
+    const int choose,
+    const int option_num)
+{
+    const std::pair<std::string, int> key = std::make_pair(theme, static_cast<int>(mode));
+
+    m_modified_events[key][event_name] = Config::RoguelikeEvent { .name = event_name,
+                                                                  .option_num = option_num,
+                                                                  .default_choose = choose,
+                                                                  .choice_require = {} };
 }
