@@ -63,25 +63,25 @@ public class RoguelikeSettingsUserControlModel : TaskViewModel
 
         RoguelikeModeList =
         [
-            new() { Display = LocalizationHelper.GetString("RoguelikeStrategyExp"), Value = "0" },
-            new() { Display = LocalizationHelper.GetString("RoguelikeStrategyGold"), Value = "1" },
+            new() { Display = LocalizationHelper.GetString("RoguelikeStrategyExp"), Value = 0 },
+            new() { Display = LocalizationHelper.GetString("RoguelikeStrategyGold"), Value = 1 },
 
             // new CombData { Display = "两者兼顾，投资过后退出", Value = "2" } // 弃用
             // new CombData { Display = Localization.GetString("3"), Value = "3" },  // 开发中
-            new() { Display = LocalizationHelper.GetString("RoguelikeStrategyLastReward"), Value = "4" },
-            new() { Display = LocalizationHelper.GetString("RoguelikeStrategyMonthlySquad"), Value = "6" },
-            new() { Display = LocalizationHelper.GetString("RoguelikeStrategyDeepExploration"), Value = "7" },
+            new() { Display = LocalizationHelper.GetString("RoguelikeStrategyLastReward"), Value = 4 },
+            new() { Display = LocalizationHelper.GetString("RoguelikeStrategyMonthlySquad"), Value = 6 },
+            new() { Display = LocalizationHelper.GetString("RoguelikeStrategyDeepExploration"), Value = 7 },
         ];
 
         switch (RoguelikeTheme)
         {
             case Theme.Sami:
-                RoguelikeModeList.Add(new() { Display = LocalizationHelper.GetString("RoguelikeStrategyCollapse"), Value = "5" });
+                RoguelikeModeList.Add(new() { Display = LocalizationHelper.GetString("RoguelikeStrategyCollapse"), Value = 5 });
 
                 break;
         }
 
-        RoguelikeMode = RoguelikeModeList.Any(x => x.Value == roguelikeMode) ? roguelikeMode : "0";
+        RoguelikeMode = RoguelikeModeList.Any(x => x.Value == roguelikeMode) ? roguelikeMode : 0;
     }
 
     private readonly Dictionary<string, List<(string Key, string Value)>> _squadDictionary = new()
@@ -233,12 +233,12 @@ public class RoguelikeSettingsUserControlModel : TaskViewModel
         set => SetAndNotify(ref _roguelikeDifficultyList, value);
     }
 
-    private ObservableCollection<CombinedData> _roguelikeModeList = [];
+    private ObservableCollection<GenericCombinedData<int>> _roguelikeModeList = [];
 
     /// <summary>
     /// Gets or sets the list of roguelike modes.
     /// </summary>
-    public ObservableCollection<CombinedData> RoguelikeModeList
+    public ObservableCollection<GenericCombinedData<int>> RoguelikeModeList
     {
         get => _roguelikeModeList;
         set => SetAndNotify(ref _roguelikeModeList, value);
@@ -310,23 +310,23 @@ public class RoguelikeSettingsUserControlModel : TaskViewModel
         }
     }
 
-    private string _roguelikeMode = ConfigurationHelper.GetValue(ConfigurationKeys.RoguelikeMode, "0");
+    private int _roguelikeMode = int.TryParse(ConfigurationHelper.GetValue(ConfigurationKeys.RoguelikeMode, "0"), out var outMode) ? outMode : 0;
 
     /// <summary>
     /// Gets or sets 策略，往后打 / 刷一层就退 / 烧热水
     /// </summary>
-    public string RoguelikeMode
+    public int RoguelikeMode
     {
         get => _roguelikeMode;
         set
         {
-            if (value == "1")
+            if (value == 1)
             {
                 RoguelikeInvestmentEnabled = true;
             }
 
             SetAndNotify(ref _roguelikeMode, value);
-            ConfigurationHelper.SetValue(ConfigurationKeys.RoguelikeMode, value);
+            ConfigurationHelper.SetValue(ConfigurationKeys.RoguelikeMode, Convert.ToString(value));
 
             UpdateRoguelikeSquadList();
         }
@@ -363,12 +363,12 @@ public class RoguelikeSettingsUserControlModel : TaskViewModel
     }
 
     public bool RoguelikeSquadIsProfessional =>
-        RoguelikeMode == "4" &&
+        RoguelikeMode == 4 &&
         RoguelikeTheme != Theme.Phantom &&
         RoguelikeSquad is "突击战术分队" or "堡垒战术分队" or "远程战术分队" or "破坏战术分队";
 
     public bool RoguelikeSquadIsFoldartal =>
-        RoguelikeMode == "4" &&
+        RoguelikeMode == 4 &&
         RoguelikeTheme == Theme.Sami &&
         RoguelikeSquad == "生活至上分队";
 
@@ -508,7 +508,7 @@ public class RoguelikeSettingsUserControlModel : TaskViewModel
         }
     }
 
-    public List<string> RoguelikeStartWithSelectList => (RoguelikeMode == "4" && !RoguelikeOnlyStartWithEliteTwo) ? _roguelikeStartWithSelectListRaw.Cast<KeyValuePair<string, string>>().Select(pair => pair.Key).ToList() : [];
+    public List<string> RoguelikeStartWithSelectList => (RoguelikeMode == 4 && !RoguelikeOnlyStartWithEliteTwo) ? _roguelikeStartWithSelectListRaw.Cast<KeyValuePair<string, string>>().Select(pair => pair.Key).ToList() : [];
 
     private bool _roguelike3FirstFloorFoldartal = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.Roguelike3FirstFloorFoldartal, bool.FalseString));
 
@@ -528,7 +528,7 @@ public class RoguelikeSettingsUserControlModel : TaskViewModel
     /// <summary>
     /// Gets a value indicating whether core char need start with elite two.
     /// </summary>
-    public bool Roguelike3FirstFloorFoldartal => _roguelike3FirstFloorFoldartal && RoguelikeMode == "4" && RoguelikeTheme == Theme.Sami;
+    public bool Roguelike3FirstFloorFoldartal => _roguelike3FirstFloorFoldartal && RoguelikeMode == 4 && RoguelikeTheme == Theme.Sami;
 
     private string _roguelike3StartFloorFoldartal = ConfigurationHelper.GetValue(ConfigurationKeys.Roguelike3StartFloorFoldartal, string.Empty);
 
@@ -673,7 +673,7 @@ public class RoguelikeSettingsUserControlModel : TaskViewModel
     /// <summary>
     /// Gets a value indicating whether investment is enabled.
     /// </summary>
-    public bool RoguelikeInvestmentWithMoreScore => _roguelikeInvestmentWithMoreScore && RoguelikeMode == "1";
+    public bool RoguelikeInvestmentWithMoreScore => _roguelikeInvestmentWithMoreScore && RoguelikeMode == 1;
 
     private bool _roguelikeCollectibleModeShopping = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.RoguelikeCollectibleModeShopping, bool.FalseString));
 
@@ -832,7 +832,7 @@ public class RoguelikeSettingsUserControlModel : TaskViewModel
         }
     }
 
-    public bool RoguelikeStartWithSeed => _roguelikeStartWithSeedRaw && RoguelikeTheme == Theme.Sarkaz && RoguelikeMode == "1" && RoguelikeSquad is "点刺成锭分队" or "后勤分队";
+    public bool RoguelikeStartWithSeed => _roguelikeStartWithSeedRaw && RoguelikeTheme == Theme.Sarkaz && RoguelikeMode == 1 && RoguelikeSquad is "点刺成锭分队" or "后勤分队";
 }
 
 public enum RoguelikeTheme
