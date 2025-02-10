@@ -144,6 +144,18 @@ bool asst::InfrastTask::set_params(const json::value& params)
     bool replenish = params.get("replenish", false);
     m_replenish_task_ptr->set_enable(replenish);
 
+    bool prioritize_sending_clue = params.get("prioritize_sending_clue", false);
+    int amount_of_clue_to_send = params.get("amount_of_clue_to_send", 3);
+    bool send_clue_to_ocr = params.get("send_clue_to_ocr", false);
+    bool only_send_clue_to_ocr = params.get("only_send_clue_to_ocr", false);
+    std::string send_clue_list = params.get("send_clue_list", "");
+    m_reception_task_ptr->set_clue_sending_config(
+        prioritize_sending_clue,
+        amount_of_clue_to_send,
+        send_clue_to_ocr,
+        only_send_clue_to_ocr,
+        send_clue_list);
+
     if (is_custom && !m_running) {
         auto filename_opt = params.find<std::string>("filename");
         if (!filename_opt) {
