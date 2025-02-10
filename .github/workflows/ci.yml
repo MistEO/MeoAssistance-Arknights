@@ -417,7 +417,7 @@ jobs:
 
       - name: Download Provisioning Profiles
         if: startsWith(github.ref, 'refs/tags/v')
-        uses: apple-actions/download-provisioning-profiles@v1
+        uses: apple-actions/download-provisioning-profiles@v3
         with:
           bundle-id: "com.hguandl.MeoAsstMac"
           issuer-id: ${{ secrets.HGUANDL_APPSTORE_ISSUER }}
