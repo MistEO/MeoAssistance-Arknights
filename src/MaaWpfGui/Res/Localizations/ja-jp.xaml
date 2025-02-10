@@ -159,10 +159,10 @@
     <system:String x:Key="IS3NewSquad2">生活重視分隊</system:String>
     <system:String x:Key="IS3NewSquad3">科学主義分隊</system:String>
     <system:String x:Key="IS3NewSquad4">特訓分隊</system:String>
-    <system:String x:Key="IS4NewSquad1">魂灵护送分队（占位）</system:String>
-    <system:String x:Key="IS4NewSquad2">博闻广记分队（占位）</system:String>
-    <system:String x:Key="IS4NewSquad3">蓝图测绘分队（占位）</system:String>
-    <system:String x:Key="IS4NewSquad4">因地制宜分队（占位）</system:String>
+    <system:String x:Key="IS4NewSquad1">霊魂護送分隊</system:String>
+    <system:String x:Key="IS4NewSquad2">博学多識分隊</system:String>
+    <system:String x:Key="IS4NewSquad3">位置測定分隊</system:String>
+    <system:String x:Key="IS4NewSquad4">臨機応変分隊</system:String>
     <system:String x:Key="IS4NewSquad5">异想天开分队（占位）</system:String>
     <system:String x:Key="IS4NewSquad6">点刺成锭分队（占位）</system:String>
     <system:String x:Key="IS4NewSquad7">拟态学者分队（占位）</system:String>
@@ -331,7 +331,7 @@
     <system:String x:Key="RoguelikeStartWithRandomReward">ランダム報酬</system:String>
     <system:String x:Key="RoguelikeStartWithKey">鍵</system:String>
     <system:String x:Key="RoguelikeStartWithDice">ダイスロール回数</system:String>
-    <system:String x:Key="RoguelikeStartWithIdea">構想（占位）</system:String>
+    <system:String x:Key="RoguelikeStartWithIdea">構想</system:String>
     <system:String x:Key="RefreshTraderWithDice">ダイスで品揃えを更新する（ミチビキリンジュウ）</system:String>
     <system:String x:Key="PenguinId">Penguin-StatsのレポートのID（デジタル部分のみ）</system:String>
     <system:String x:Key="EnablePenguin">Penguin-Statsへ報告</system:String>

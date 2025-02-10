@@ -1552,6 +1552,9 @@
     "BattleStartOCR": {
         "text": ["行動", "開始"]
     },
+    "BattleStartSimulationForTwo": {
+        "text": ["演算", "開始"]
+    },
     "BattleOperName": {
         "roi": [5, 177, 280, 37]
     },
@@ -1667,7 +1670,11 @@
             ["特訓分隊", "特训分队"],
             ["永久狩猟分隊", "永恒狩猎分队"],
             ["生活重視分隊", "生活至上分队"],
-            ["科学主義分隊", "科学主义分队"]
+            ["科学主義分隊", "科学主义分队"],
+            ["霊魂護送分隊", "魂灵护送分队"],
+            ["博学多識分隊", "博闻广记分队"],
+            ["位置測定分隊", "蓝图测绘分队"],
+            ["臨機応変分隊", "因地制宜分队"]
         ]
     },
     "RoguelikeRecruitLevel": {
@@ -3014,7 +3021,103 @@
         ]
     },
     "Sarkaz@Roguelike@CheckLevel": {
-        "text": ["TODO", "TODO"]
+        "text": ["仮説集"]
+    },
+    "Sarkaz@Roguelike@NextLevel": {
+        "text": ["溶魂の端緒", "錬鉄の根系", "灰燼の迷城", "蓋然の異域", "虚構の境目", "輝ける天上", "奇妙な断章"]
+    },
+    "Sarkaz@Roguelike@RoutingRefreshNodeConfirm": {
+        "text": ["確定"]
+    },
+    "Sarkaz@Roguelike@SelectTheme": {
+        "text": ["仮説集"]
+    },
+    "Sarkaz@Roguelike@StageSafeHouseReuse": {
+        "text": ["セーフハウスを利用する"]
+    },
+    "Sarkaz@Roguelike@StrategyChange-FastInvestment": {
+        "text": ["_fastInvestment", "_exit"],
+        "ocrReplace": [
+            ["溶魂の端緒", "_fastInvestment"],
+            ["錬鉄の根系", "_exit"],
+            ["灰燼の迷城", "_exit"],
+            ["蓋然の異域", "_exit"],
+            ["虚構の境目", "_exit"],
+            ["輝ける天上", "_exit"],
+            ["奇妙な断章", "_exit"]
+        ]
+    },
+    "Sarkaz@Roguelike@StrategyChange_mode0": {
+        "text": ["_default"],
+        "ocrReplace": [
+            ["溶魂の端緒", "_default"],
+            ["錬鉄の根系", "_default"],
+            ["灰燼の迷城", "_default"],
+            ["蓋然の異域", "_default"],
+            ["虚構の境目", "_default"],
+            ["輝ける天上", "_default"],
+            ["奇妙な断章", "_SKIP_"]
+        ]
+    },
+    "Sarkaz@Roguelike@StrategyChange_mode0_NOT_IN_USE": {
+        "text": ["_aggressive", "_pragmatic", "_default"],
+        "ocrReplace": [
+            ["溶魂の端緒", "_aggressive"],
+            ["錬鉄の根系", "_aggressive"],
+            ["灰燼の迷城", "_pragmatic"],
+            ["蓋然の異域", "_pragmatic"],
+            ["虚構の境目", "_default"],
+            ["輝ける天上", "_default"],
+            ["奇妙な断章", "_SKIP_"]
+        ]
+    },
+    "Sarkaz@Roguelike@StrategyChange_mode10001": {
+        "text": ["_routing", "_exit"],
+        "ocrReplace": [
+            ["溶魂の端緒", "_routing"],
+            ["錬鉄の根系", "_exit"],
+            ["灰燼の迷城", "_exit"],
+            ["蓋然の異域", "_exit"],
+            ["虚構の境目", "_exit"],
+            ["輝ける天上", "_exit"],
+            ["奇妙な断章", "_exit"]
+        ]
+    },
+    "Sarkaz@Roguelike@StrategyChange_mode4": {
+        "text": ["_default", "_exit"],
+        "ocrReplace": [
+            ["溶魂の端緒", "_default"],
+            ["錬鉄の根系", "_default"],
+            ["灰燼の迷城", "_exit"],
+            ["蓋然の異域", "_exit"],
+            ["虚構の境目", "_exit"],
+            ["輝ける天上", "_exit"],
+            ["奇妙な断章", "_exit"]
+        ]
+    },
+    "Sarkaz@Roguelike@StrategyChange_mode6": {
+        "text": ["_default", "_exit"],
+        "ocrReplace": [
+            ["溶魂の端緒", "_default"],
+            ["錬鉄の根系", "_default"],
+            ["灰燼の迷城", "_default"],
+            ["蓋然の異域", "_default"],
+            ["虚構の境目", "_exit"],
+            ["輝ける天上", "_exit"],
+            ["奇妙な断章", "_SKIP_"]
+        ]
+    },
+    "Sarkaz@Roguelike@StrategyChange_mode7": {
+        "text": ["_default", "_exit"],
+        "ocrReplace": [
+            ["溶魂の端緒", "_default"],
+            ["錬鉄の根系", "_default"],
+            ["灰燼の迷城", "_default"],
+            ["蓋然の異域", "_default"],
+            ["虚構の境目", "_default"],
+            ["輝ける天上", "_default"],
+            ["奇妙な断章", "_SKIP_"]
+        ]
     },
     "Reclamation2Begin": {
         "text": ["開", "始"]
