@@ -14,6 +14,10 @@ bool asst::RoguelikeInvestTaskPlugin::verify(AsstMsg msg, const json::value& det
         return false;
     }
 
+    if (m_invset_error) {
+        return false;
+    }
+
     const auto& task_name = details.get("details", "task", "");
     if (task_name.ends_with("Roguelike@StageTraderInvestConfirm")) {
         return m_invest_count < m_maximum;
@@ -78,6 +82,7 @@ bool asst::RoguelikeInvestTaskPlugin::_run()
             }
         }
         else if (is_investment_error(image)) {
+            m_invset_error = true;
             Log.info(__FUNCTION__, "投资系统错误, 退出投资");
 
             sleep(300); // 此处UI有一个从左往右的移动，等待后重新截图，防止UI错位

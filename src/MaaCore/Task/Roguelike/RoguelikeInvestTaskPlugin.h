@@ -14,6 +14,8 @@ public:
     virtual bool verify(AsstMsg msg, const json::value& details) const override;
     virtual bool load_params([[maybe_unused]] const json::value& params) override;
 
+    virtual void reset_in_run_variables() override { m_invset_error = false; }
+
 private:
     virtual bool _run() override;
     std::optional<int> ocr_count(const auto& img, const auto& task_name) const;
@@ -24,5 +26,6 @@ private:
     int m_invest_count = 0;
     int m_maximum = 0;
     bool m_stop_when_full = false; // 存款满了就停止
+    bool m_invset_error = false;
 };
 } // namespace asst
