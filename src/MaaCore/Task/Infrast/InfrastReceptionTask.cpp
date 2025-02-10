@@ -55,11 +55,6 @@ bool asst::InfrastReceptionTask::close_end_of_clue_exchange()
     return task_temp.run();
 }
 
-// get_clue的taskchain里面隐含一个满线索送走三个的task
-// SendClueFlag->SendClues->SelectClue->ClueSelected->ClueGiveTo1/2/3/4/NextPage->*Confirm->SelectClue--->CloseSendClue,
-// SelectClue.maxTimes=3
-//
-// todo: sendclue丢给send_clue接管
 // todo: use_clue/send_clue重构后确保至少一个空位
 // todo: need_exit到底是干啥的
 bool asst::InfrastReceptionTask::get_clue()
@@ -173,8 +168,37 @@ bool asst::InfrastReceptionTask::back_to_reception_main()
 bool asst::InfrastReceptionTask::send_clue()
 {
     LogTraceFunction;
-    ProcessTask task(*this, { "SendClues" });
-    return task.run();
+
+    // 放个OCRer在这里
+
+    if (m_prioritize_sending_clue) {
+        // 把线索都弹出来
+        //  ProcessTask(*this, { "RemoveAllClues" }).run();
+    }
+
+    for (int i = 0; i < m_amount_of_clue_to_send; i++) {
+        if (m_send_clue_to_ocr) {
+            // OCRer + m_send_clue_list
+            //
+            // OCRer ocr(ctrler()->get_image());
+            // ocr.set_task_info("AccountCurrentOCR");
+            // ocr.set_required({ m_account });
+            // if (!ocr.analyze()) {
+            //     return false;
+            // }
+            // return true;
+        }
+        else {
+            ProcessTask(*this, { "SendClues" }).run();
+        }
+    }
+
+    callback(AsstMsg::SubTaskExtraInfo, basic_info_with_what("DeepExplorationCompleted"));
+
+    return true;
+
+    // ProcessTask task(*this, { "SendClues" });
+    // return task.run();
 }
 
 bool asst::InfrastReceptionTask::shift()
@@ -256,6 +280,6 @@ asst::InfrastReceptionTask& asst::InfrastReceptionTask::set_clue_sending_config(
     m_amount_of_clue_to_send = amount_of_clue_to_send;
     m_send_clue_to_ocr = send_clue_to_ocr;
     m_only_send_clue_to_ocr = only_send_clue_to_ocr;
-    m_send_clue_list = send_clue_list;
+    m_send_clue_list = std::move(send_clue_list);
     return *this;
 }

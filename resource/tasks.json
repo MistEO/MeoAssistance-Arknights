@@ -4506,13 +4506,7 @@
     "CloseCluePage": {
         "action": "ClickSelf",
         "roi": [930, 50, 120, 120],
-        "next": ["CloseCluePage", "SendClueFlag", "InfrastClueFriendNew", "ReceptionFlag"]
-    },
-    "SendClueFlag": {
-        "Doc": "这里识别的是自己的线索的new：如果获取完自己的线索、再获取完好友送的线索，自己的线索new还亮着，则说明自己的线索没获取成功，即线索满了",
-        "next": ["SendClues"],
-        "roi": [1150, 100, 130, 80],
-        "template": "ClueNew.png"
+        "next": ["CloseCluePage", "InfrastClueFriendNew", "ReceptionFlag"]
     },
     "UnlockClues": {
         "action": "ClickSelf",
