@@ -27,53 +27,41 @@ bool asst::RoguelikeCustomStartTaskPlugin::verify(AsstMsg msg, const json::value
         task_view.remove_prefix(roguelike_name.length());
     }
     static const std::array<std::tuple<AsstMsg, std::string_view, RoguelikeCustomType>, 4> TaskMap = {
-        std::make_tuple(AsstMsg::SubTaskCompleted, "Roguelike@SquadDefault", RoguelikeCustomType::Squad),
+        std::make_tuple(AsstMsg::SubTaskCompleted, "Roguelike@Squad-EnterPoint", RoguelikeCustomType::Squad),
         std::make_tuple(AsstMsg::SubTaskStart, "Roguelike@LastReward-EnterPoint", RoguelikeCustomType::Reward),
         std::make_tuple(AsstMsg::SubTaskCompleted, "Roguelike@RolesDefault", RoguelikeCustomType::Roles),
         std::make_tuple(AsstMsg::SubTaskStart, "Roguelike@RecruitMain", RoguelikeCustomType::CoreChar),
     };
 
-    RoguelikeCustomType type = RoguelikeCustomType::None;
+    m_waiting_to_run = RoguelikeCustomType::None;
     for (const auto& [t_msg, t_task, t] : TaskMap) {
         if (t_msg == msg && t_task == task_view) {
-            type = t;
+            m_waiting_to_run = t;
             break;
         }
     }
 
-    if (type == RoguelikeCustomType::None) {
+    if (m_waiting_to_run == RoguelikeCustomType::None) {
         return false;
     }
-    if (type == RoguelikeCustomType::Reward) {
-        m_waiting_to_run = type;
+    if (m_waiting_to_run == RoguelikeCustomType::Reward) {
         return true;
     }
-    if (type == RoguelikeCustomType::Squad) {
+    if (m_waiting_to_run == RoguelikeCustomType::Squad) {
         if (m_config->get_run_for_collectible()) { // 烧水分队
-            if (m_collectible_mode_squad.empty()) {
-                return false;
-            }
-            m_waiting_to_run = type;
-            return true;
         }
-        else {
-            if (m_squad.empty()) { // 开局分队
-                return false;
-            }
-            m_waiting_to_run = type;
-            return true;
+        else {                                     // 开局分队
         }
-        return false;
+        return true;
     }
 
-    if (auto it = m_customs.find(type); it == m_customs.cend()) {
+    if (auto it = m_customs.find(m_waiting_to_run); it == m_customs.cend()) {
         return false;
     }
     else if (it->second.empty()) {
         return false;
     }
 
-    m_waiting_to_run = type;
     return true;
 }
 
@@ -143,8 +131,19 @@ bool asst::RoguelikeCustomStartTaskPlugin::hijack_squad()
     LogTraceFunction;
 
     std::string squad = !m_config->get_run_for_collectible() ? m_squad : m_collectible_mode_squad;
+    if (squad.empty()) { // 简单处理，认为指挥分队无需滑屏，没有就随机
+        return ProcessTask(
+                   *this,
+                   { m_config->get_theme() + "@Roguelike@SquadDefault",
+                     m_config->get_theme() + "@Roguelike@Squad-Random" })
+            .run();
+    }
+
     constexpr size_t SwipeTimes = 7;
     for (size_t i = 0; i != SwipeTimes; ++i) {
+        if (need_exit()) {
+            return false;
+        }
         auto image = ctrler()->get_image();
         OCRer analyzer(image);
         analyzer.set_task_info("RoguelikeCustom-HijackSquad");

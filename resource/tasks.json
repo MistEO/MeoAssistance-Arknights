@@ -7421,11 +7421,22 @@
         "postDelay": 500
     },
     "Roguelike@SquadDefault": {
-        "Doc": "base_task",
+        "Doc": "base_task, 指挥分队logo",
         "template": "empty.png",
         "action": "ClickSelf",
-        "roi": [0, 153, 1280, 532],
+        "roi": [0, 153, 1280, 532]
+    },
+    "Roguelike@Squad-EnterPoint": {
+        "algorithm": "OcrDetect",
+        "text": ["分队"],
+        "roi": [620, 20, 100, 34],
         "next": ["Roguelike@SquadConfirm"]
+    },
+    "Roguelike@Squad-Random": {
+        "Doc": "没得指挥分队，随便选一个",
+        "baseTask": "Roguelike@Squad-EnterPoint",
+        "action": "ClickSelf",
+        "roi": [60, 410, 1180, 80]
     },
     "Roguelike@SquadSlowlySwipeToTheRight": {
         "algorithm": "JustReturn",
@@ -7887,7 +7898,7 @@
         "postDelay": 2000,
         "exceededNext": ["RoguelikeControlTaskPlugin-Stop"],
         "next": [
-            "Roguelike@SquadDefault",
+            "Roguelike@Squad-EnterPoint",
             "Roguelike@InitialDrop",
             "Roguelike@ChooseDifficulty",
             "Roguelike@StartExplore-EnterCheck"

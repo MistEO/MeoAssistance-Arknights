@@ -1690,6 +1690,9 @@
         "text": ["查看全部主題", "查看", "TODO: image of //INTEGRATED STRATEGIES"],
         "roi": [450, 480, 160, 45]
     },
+    "Roguelike@Squad-EnterPoint": {
+        "text": ["分队"]
+    },
     "Roguelike@StageEncounterOcr": {
         "ocrReplace": [
             ["紮營", "扎营"],

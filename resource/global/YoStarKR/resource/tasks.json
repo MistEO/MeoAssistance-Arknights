@@ -2189,6 +2189,9 @@
         "text": ["모든테마보기", "테마", "TODO: image of //INTEGRATED STRATEGIES"],
         "roi": [450, 480, 160, 45]
     },
+    "Roguelike@Squad-EnterPoint": {
+        "text": ["分队"]
+    },
     "Roguelike@StageEncounterOcr": {
         "ocrReplace": [
             ["(\\s|\\$|\\(|\\)|\\.|\"|/|'| | |—|_|-|=|,)", ""],

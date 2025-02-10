@@ -2525,6 +2525,9 @@
         "text": ["全テーマ一覧", "全テ", "TODO: image of //INTEGRATED STRATEGIES"],
         "roi": [450, 480, 160, 45]
     },
+    "Roguelike@Squad-EnterPoint": {
+        "text": ["分队"]
+    },
     "Roguelike@StageEncounterOcr": {
         "ocrReplace": [
             ["野営", "扎营"],
