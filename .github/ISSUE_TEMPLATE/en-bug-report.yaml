@@ -9,19 +9,19 @@ body:
     attributes:
       label: Before raising the issue...
       description: |
-        Please ensure that you have completed the requirements before checking the box.  
+        Please ensure that you have completed the requirements before checking the box.\
         Issues with the checkbox checked but not completed will be directly closed.
       options:
         - label: |
-            I understand that Issues are for feedback and problem solving,  
+            I understand that Issues are for feedback and problem solving,\
             not trolling the comments section, and will provide as much information as possible to help solve the problem.
           required: true
         - label: |
-            I filled in a short, clear title so that developers could quickly identify the general problem when going through the issue list.  
+            I filled in a short, clear title so that developers could quickly identify the general problem when going through the issue list.\
             Instead of "Some suggestions", "Stuck", etc.
           required: true
         - label: |
-            I am using the latest version of the current update version and have reviewed both the [Unreleased changes](https://github.com/MaaAssistantArknights/MaaAssistantArknights/commits/dev/) and the [Pull requests](https://github.com/MaaAssistantArknights/MaaAssistantArknights/pulls),  
+            I am using the latest version of the current update version and have reviewed both the [Unreleased changes](https://github.com/MaaAssistantArknights/MaaAssistantArknights/commits/dev/) and the [Pull requests](https://github.com/MaaAssistantArknights/MaaAssistantArknights/pulls),\
             there is no mention of the bug being fixed.
           required: true
         - label: |
@@ -38,8 +38,9 @@ body:
     id: version
     attributes:
       label: Version
-      description: >-
-        Please provide the MAA version. Can be found in MAA -> Settings -> Update. (Click to copy)
+      description: |
+        Please provide the MAA version. Can be found in MAA -> Settings -> Update. Click to copy.\
+        Click on `Resource Version` and `MAA Version` and paste them respectively. There should be 5 lines of version information in total.
       placeholder: |
         Resource Version:
         MAA Version:

@@ -26,8 +26,9 @@ body:
     id: version
     attributes:
       label: Version
-      description: >-
-        请提供 MAA 版本。可在 MAA -> 设置 -> 软件更新中找到（点击图标可复制）。
+      description: |
+        请提供 MAA 版本。可在 MAA -> 设置 -> 软件更新中找到。点击图标可复制。\
+        请分别点击 `资源版本` 和 `MAA 版本` 并粘贴，最终应有 5 行版本信息。
       placeholder: |
         Resource Version:
         MAA Version:
