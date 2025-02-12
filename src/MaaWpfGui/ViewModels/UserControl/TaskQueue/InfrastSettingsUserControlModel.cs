@@ -233,6 +233,82 @@ public class InfrastSettingsUserControlModel : TaskViewModel
         }
     }
 
+    private int _amountOfClueToSend = Convert.ToInt32(ConfigurationHelper.GetValue(ConfigurationKeys.AmountOfClueToSend, "3"));
+
+    /// <summary>
+    /// Gets or sets a value indicating how many clues to send.
+    /// </summary>
+    public int AmountOfClueToSend
+    {
+        get => _amountOfClueToSend;
+        set
+        {
+            SetAndNotify(ref _amountOfClueToSend, value);
+            DormThresholdLabel = LocalizationHelper.GetString("AmountOfClueToSend") + ": " + _amountOfClueToSend + "%";
+            ConfigurationHelper.SetValue(ConfigurationKeys.AmountOfClueToSend, value.ToString());
+        }
+    }
+
+    private bool _prioritizeSendingClue = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.PrioritizeSendingClue, bool.FalseString));
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to send clue before filling own clue inventory.
+    /// </summary>
+    public bool PrioritizeSendingClue
+    {
+        get => _prioritizeSendingClue;
+        set
+        {
+            SetAndNotify(ref _prioritizeSendingClue, value);
+            ConfigurationHelper.SetValue(ConfigurationKeys.PrioritizeSendingClue, value.ToString());
+        }
+    }
+
+    private bool _sendClueToOCR = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.SendClueToOCR, bool.FalseString));
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to send clue to specfic OCR target.
+    /// </summary>
+    public bool SendClueToOCR
+    {
+        get => _sendClueToOCR;
+        set
+        {
+            SetAndNotify(ref _sendClueToOCR, value);
+            ConfigurationHelper.SetValue(ConfigurationKeys.SendClueToOCR, value.ToString());
+        }
+    }
+
+    private bool _onlySendClueToOCR = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.OnlySendClueToOCR, bool.FalseString));
+
+    /// <summary>
+    /// Gets or sets a value indicating whether to send clue to specfic OCR target.
+    /// </summary>
+    public bool OnlySendClueToOCR
+    {
+        get => _onlySendClueToOCR;
+        set
+        {
+            SetAndNotify(ref _onlySendClueToOCR, value);
+            ConfigurationHelper.SetValue(ConfigurationKeys.OnlySendClueToOCR, value.ToString());
+        }
+    }
+
+    private string _sendClueList = ConfigurationHelper.GetValue(ConfigurationKeys.SendClueList, string.Empty);
+
+    /// <summary>
+    /// Gets or sets a list of OCR target to send clue to.
+    /// </summary>
+    public string SendClueList
+    {
+        get => _sendClueList;
+        set
+        {
+            SetAndNotify(ref _sendClueList, value);
+            ConfigurationHelper.SetValue(ConfigurationKeys.SendClueList, value);
+        }
+    }
+
     private string _defaultInfrast = ConfigurationHelper.GetValue(ConfigurationKeys.DefaultInfrast, UserDefined);
 
     private const string UserDefined = "user_defined";

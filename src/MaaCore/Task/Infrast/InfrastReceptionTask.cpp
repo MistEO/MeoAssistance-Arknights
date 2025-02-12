@@ -22,17 +22,24 @@ bool asst::InfrastReceptionTask::_run()
 
     close_end_of_clue_exchange();
 
-    // 防止送线索把可以填入的送了
-    use_clue();
-    back_to_reception_main();
-
-    get_clue();
-    if (need_exit()) {
-        return false;
+    if (m_prioritize_sending_clue) {
+        send_clue();
+        get_clue();
+        if (need_exit()) {
+            return false;
+        }
+        send_clue();
+        use_clue();
     }
-
-    use_clue();
-    back_to_reception_main();
+    else {
+        use_clue();
+        get_clue();
+        if (need_exit()) {
+            return false;
+        }
+        use_clue();
+        send_clue();
+    }
 
     if (need_exit()) {
         return false;
@@ -48,6 +55,8 @@ bool asst::InfrastReceptionTask::close_end_of_clue_exchange()
     return task_temp.run();
 }
 
+// todo: use_clue/send_clue重构后确保至少一个空位
+// todo: need_exit到底是干啥的
 bool asst::InfrastReceptionTask::get_clue()
 {
     ProcessTask task_temp(
@@ -89,6 +98,8 @@ bool asst::InfrastReceptionTask::use_clue()
     }
     Log.trace("InfrastReceptionTask | product", product);
     set_product(product);
+
+    back_to_reception_main();
 
     return true;
 }
@@ -148,10 +159,46 @@ bool asst::InfrastReceptionTask::back_to_reception_main()
     return ProcessTask(*this, { "BackToReceptionMain" }).run();
 }
 
+// todo: 接管sendclue，起点在CloseCluePage->SendClueFlag
+// todo: m_prioritize_sending_clue送之前把线索都弹出来
+// todo: m_amount_of_clue_to_send定量
+// todo: m_send_clue_to_ocr定向, m_only_send_clue_to_ocr跳过fallback
+// todo: parse m_send_clue_list
+// todo: 没匹配上callback通知用户
 bool asst::InfrastReceptionTask::send_clue()
 {
-    ProcessTask task(*this, { "SendClues" });
-    return task.run();
+    LogTraceFunction;
+
+    // 放个OCRer在这里
+
+    if (m_prioritize_sending_clue) {
+        // 把线索都弹出来
+        //  ProcessTask(*this, { "RemoveAllClues" }).run();
+    }
+
+    for (int i = 0; i < m_amount_of_clue_to_send; i++) {
+        if (m_send_clue_to_ocr) {
+            // OCRer + m_send_clue_list
+            //
+            // OCRer ocr(ctrler()->get_image());
+            // ocr.set_task_info("AccountCurrentOCR");
+            // ocr.set_required({ m_account });
+            // if (!ocr.analyze()) {
+            //     return false;
+            // }
+            // return true;
+        }
+        else {
+            ProcessTask(*this, { "SendClues" }).run();
+        }
+    }
+
+    callback(AsstMsg::SubTaskExtraInfo, basic_info_with_what("DeepExplorationCompleted"));
+
+    return true;
+
+    // ProcessTask task(*this, { "SendClues" });
+    // return task.run();
 }
 
 bool asst::InfrastReceptionTask::shift()
@@ -220,4 +267,19 @@ bool asst::InfrastReceptionTask::shift()
     }
     click_confirm_button();
     return true;
+}
+
+asst::InfrastReceptionTask& asst::InfrastReceptionTask::set_clue_sending_config(
+    bool prioritize_sending_clue,
+    int amount_of_clue_to_send,
+    bool send_clue_to_ocr,
+    bool only_send_clue_to_ocr,
+    std::string send_clue_list) noexcept
+{
+    m_prioritize_sending_clue = prioritize_sending_clue;
+    m_amount_of_clue_to_send = amount_of_clue_to_send;
+    m_send_clue_to_ocr = send_clue_to_ocr;
+    m_only_send_clue_to_ocr = only_send_clue_to_ocr;
+    m_send_clue_list = std::move(send_clue_list);
+    return *this;
 }
