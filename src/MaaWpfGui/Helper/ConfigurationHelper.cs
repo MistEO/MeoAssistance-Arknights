@@ -72,6 +72,18 @@ namespace MaaWpfGui.Helper
             return defaultValue;
         }
 
+        /// <summary>
+        /// Get a configuration value
+        /// </summary>
+        /// <param name="key">The config key</param>
+        /// <param name="defaultValue">The default value to return if the key is not existed</param>
+        /// <returns>The config value</returns>
+        public static int GetValue(string key, int defaultValue)
+        {
+            var value = GetValue(key, defaultValue.ToString());
+            return int.TryParse(value, out var result) ? result : defaultValue;
+        }
+
         public static string GetGlobalValue(string key, string defaultValue)
         {
             var hasValue = _globalKvs.TryGetValue(key, out var value);
@@ -147,6 +159,8 @@ namespace MaaWpfGui.Helper
 
             return result;
         }
+
+        public static bool ContainsKey(string key, bool isGlobal = false) => isGlobal ? _globalKvs.ContainsKey(key) : _kvs.ContainsKey(key);
 
         /// <summary>
         /// Deletes a configuration
