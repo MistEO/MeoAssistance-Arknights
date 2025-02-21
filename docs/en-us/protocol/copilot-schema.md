@@ -138,6 +138,11 @@ Usage of `resource/copilot/*.json` and field description.
         "details": "对练度要求很低balabala……",      // You can write your name here, video link, walkthrough link, etc.
         "details_color": "dark"
     },
+    "difficulty": 0 // The difficulty of the task, optional, the default value is 0.
+    // 0: Default, not set
+    // 1: Support normal difficulty
+    // 2: Support raid difficulty
+    // 3: Support normal and raid difficulty
 }
 ```
 

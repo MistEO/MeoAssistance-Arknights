@@ -948,6 +948,9 @@
             ["Guardian Bulwark", "圣卫坚盾"]
         ]
     },
+    "GameStartUpdateOCR": {
+        "text": ["Releasing", "neurotransmitter"]
+    },
     "StartToWakeUpOCR": {
         "text": ["START"]
     },
@@ -1437,6 +1440,9 @@
     "SSSBattleOperName": {
         "roi": [0, 105, 300, 31]
     },
+    "StageDrops-TimesCheck": {
+        "text": ["Continuous", "Auto", "Operation"]
+    },
     "StageDrops-DropType-ExpAndLMB": {
         "templThreshold": 0.7
     },
@@ -1529,6 +1535,9 @@
     "GachaLastOnceResult": {
         "text": ["Certificate", "Token", "Duplicate"]
     },
+    "GachaLastTenTimesResult2": {
+        "text": ["Resource", "Gained"]
+    },
     "GachaOncePrefix@DoGacha": {
         "fullMatch": true,
         "text": ["Headhunt x1"]
@@ -1574,6 +1583,7 @@
     },
     "RoguelikeCustom-HijackSquad": {
         "ocrReplace": [
+            ["Sguad", "Squad"],
             ["Leader Squad", "指挥分队"],
             ["Gathering Squad", "集群分队"],
             ["Support Squad", "后勤分队"],
@@ -2261,6 +2271,9 @@
     "Roguelike@IntegratedStrategies": {
         "templThreshold": 0.75
     },
+    "Roguelike@NoneSelected": {
+        "text": ["without recruiting"]
+    },
     "Roguelike@PreSelectTheme": {
         "text": ["View all Themes", "Themes", "TODO: image of //INTEGRATED STRATEGIES"],
         "roi": [450, 480, 160, 45]
@@ -2276,198 +2289,200 @@
     },
     "Roguelike@StageEncounterOcr": {
         "ocrReplace": [
+            [" ", ""],
             ["<", ""],
             ["\\.", ""],
+            [">", ""],
             ["Camp", "扎营"],
-            ["The Kind Puppet", "善良的木偶"],
-            ["Teller of Tales", "讲故事的人"],
-            ["Adventurer Comm[ission]*", "委托冒险者"],
-            ["Royal Rumble'?", "皇家争执"],
-            ["Advance Squad", "先遣小队"],
-            ["Gaulish Veteran", "高卢老兵"],
-            ["Hallucinatory Candlelights", "迷幻烛火"],
-            ["Columbian Brewer", "哥伦比亚酒商"],
-            ["Tin Man", "锡人"],
-            ["Crimson Masquerade", "猩红舞会"],
-            ["Theatrical Necessities", "剧目需求"],
-            ["Dancing Mad", "狂舞之人"],
-            ["Musical Challenge", "音乐挑战"],
-            ["The Sword in the Stone", "石中剑"],
-            ["Trapped Man", "被困的人"],
-            ["Eccentric Hunchback", "佝偻怪客"],
-            ["Sleeping Statue", "沉睡石像"],
-            ["Shackled Bloodline", "受缚之血"],
-            ["Phantom Ramblings", "幽影狂言"],
-            ["Art and Madness", "艺术与疯狂"],
-            ["Duck Lord the Lead Actor", "鸭爵主演"],
-            ["Duck Lord.*s Party", "鸭爵的宴会"],
-            ["Duck Lord.*s Improv", "即兴鸭子演出"],
-            ["About That Ursus Man", "有关那位乌萨斯人"],
-            ["Coffin of Evil", "邪恶之棺"],
-            ["Eye For an Eye", "以血还血"],
-            ["Secret Entrance", "暗门"],
-            ["Secret Chamber", "密室"],
-            ["Junkyard Bazaar", "废品地摊"],
-            ["Art Connoisseur", "鉴赏家"],
+            ["TheKindPuppet", "善良的木偶"],
+            ["TellerofTales", "讲故事的人"],
+            ["AdventurerComm[ission]*", "委托冒险者"],
+            ["RoyalRumble'?", "皇家争执"],
+            ["AdvanceSquad", "先遣小队"],
+            ["GaulishVeteran", "高卢老兵"],
+            ["HallucinatoryCandlelights", "迷幻烛火"],
+            ["ColumbianBrewer", "哥伦比亚酒商"],
+            ["TinMan", "锡人"],
+            ["CrimsonMasquerade", "猩红舞会"],
+            ["TheatricalNecessities", "剧目需求"],
+            ["DancingMad", "狂舞之人"],
+            ["MusicalChallenge", "音乐挑战"],
+            ["TheSwordintheStone", "石中剑"],
+            ["TrappedMan", "被困的人"],
+            ["EccentricHunchback", "佝偻怪客"],
+            ["SleepingStatue", "沉睡石像"],
+            ["ShackledBloodline", "受缚之血"],
+            ["PhantomRamblings", "幽影狂言"],
+            ["ArtandMadness", "艺术与疯狂"],
+            ["DuckLordtheLeadActor", "鸭爵主演"],
+            ["DuckLord.*sParty", "鸭爵的宴会"],
+            ["DuckLord.*sImprov", "即兴鸭子演出"],
+            ["AboutThatUrsusMan", "有关那位乌萨斯人"],
+            ["CoffinofEvil", "邪恶之棺"],
+            ["EyeForanEye", "以血还血"],
+            ["SecretEntrance", "暗门"],
+            ["SecretChamber", "密室"],
+            ["JunkyardBazaar", "废品地摊"],
+            ["ArtConnoisseur", "鉴赏家"],
             ["Reprieve", "解脱"],
-            ["Crazy Puppets", "疯狂玩偶"],
-            ["Attending a Banquet", "赴宴"],
-            ["A Gathering of Followers", "追随者集会"],
-            ["Don.*t disturb them", "别打扰他们"],
-            ["Revenge Story", "复仇剧"],
-            ["Safe House", "安全的角落"],
-            ["A Tiny Stage", "微型舞台"],
-            ["Curio Keeper", "珍品处理者"],
-            ["Potent Potables", "暴殄天物"],
-            ["The Rat Thieves", "鼠胆神偷"],
-            ["Gift of History", "历史馈赠"],
-            ["Gift of Fate", "命运馈赠"],
-            ["Cliffside Burial", "悬高之葬"],
+            ["CrazyPuppets", "疯狂玩偶"],
+            ["AttendingaBanquet", "赴宴"],
+            ["AGatheringofFollowers", "追随者集会"],
+            ["Don.*tdisturbthem", "别打扰他们"],
+            ["RevengeStory", "复仇剧"],
+            ["SafeHouse", "安全的角落"],
+            ["ATinyStage", "微型舞台"],
+            ["CurioKeeper", "珍品处理者"],
+            ["PotentPotables", "暴殄天物"],
+            ["TheRatThieves", "鼠胆神偷"],
+            ["GiftofHistory", "历史馈赠"],
+            ["GiftofFate", "命运馈赠"],
+            ["CliffsideBurial", "悬高之葬"],
             ["Inheritance", "继承"],
             ["Homecoming", "重返家园"],
-            ["Like Flames to Wood", "引火之木"],
-            ["Lighthouse Keeper", "灯塔看守人"],
-            ["Seaborn Scholar", "海嗣学者"],
-            ["Singer by the Sea", "海边的歌者"],
-            ["Overseas Export", "远销海外"],
-            ["Traditional Technology", "传统技术"],
-            ["The Last Tidewatcher", "最后的观潮者"],
-            ["The Wares Peddler", "变卖身家"],
-            ["Ignorance is Bliss", "无知是福"],
-            ["A Faint Spark", "点滴星火"],
-            ["Lingering Glimmer", "残存微光"],
-            ["Chance Meeting", "相逢"],
-            ["Devouring Dust", "噬尘扩散"],
-            ["Catastrophe Messenger", "天灾信使"],
-            ["Gathering Stormclouds", "阴云如聚"],
-            ["Lonely Elder", "孤行的老者"],
-            ["For Survival", "为了生存"],
-            ["Path of Suffering", "苦路"],
+            ["LikeFlamestoWood", "引火之木"],
+            ["LighthouseKeeper", "灯塔看守人"],
+            ["SeabornScholar", "海嗣学者"],
+            ["SingerbytheSea", "海边的歌者"],
+            ["OverseasExport", "远销海外"],
+            ["TraditionalTechnology", "传统技术"],
+            ["TheLastTidewatcher", "最后的观潮者"],
+            ["TheWaresPeddler", "变卖身家"],
+            ["IgnoranceisBliss", "无知是福"],
+            ["AFaintSpark", "点滴星火"],
+            ["LingeringGlimmer", "残存微光"],
+            ["ChanceMeeting", "相逢"],
+            ["DevouringDust", "噬尘扩散"],
+            ["CatastropheMessenger", "天灾信使"],
+            ["GatheringStormclouds", "阴云如聚"],
+            ["LonelyElder", "孤行的老者"],
+            ["ForSurvival", "为了生存"],
+            ["PathofSuffering", "苦路"],
             ["Empathy", "设身处地"],
             ["Faith", "信念"],
-            ["Neither Black nor White", "是非黑白"],
-            ["Ocean.*s Legacy", "大海的遗产"],
-            ["King No More", "诸王不再"],
-            ["Medic.*s Will", "医者之志"],
-            ["Heart of a Fool", "愚者之心"],
-            ["Worship the Flame", "敬奉火焰"],
-            ["Booty Bay", "藏宝港湾"],
-            ["Dancing Chests", "宝箱之舞"],
-            ["Puppy.*Dog Eyes", "狗眼婆娑"],
-            ["Duckforce Test", "鸭力测试"],
-            ["Some Time to Kill", "打发时间"],
-            ["A Passion for Work", "工作热情"],
-            ["Business Empire", "商业帝国"],
-            ["Delusions of Lunacy", "狂徒妄念"],
-            ["The Knight Persists", "骑士仍在"],
-            ["The Beginning", "开端"],
-            ["Caerula Animus", "深蓝之心"],
-            ["Caerula Ritual", "深蓝仪式"],
+            ["NeitherBlacknorWhite", "是非黑白"],
+            ["Ocean.*sLegacy", "大海的遗产"],
+            ["KingNoMore", "诸王不再"],
+            ["Medic.*sWill", "医者之志"],
+            ["HeartofaFool", "愚者之心"],
+            ["WorshiptheFlame", "敬奉火焰"],
+            ["BootyBay", "藏宝港湾"],
+            ["DancingChests", "宝箱之舞"],
+            ["Puppy.*DogEyes", "狗眼婆娑"],
+            ["DuckforceTest", "鸭力测试"],
+            ["SomeTimetoKill", "打发时间"],
+            ["APassionforWork", "工作热情"],
+            ["BusinessEmpire", "商业帝国"],
+            ["DelusionsofLunacy", "狂徒妄念"],
+            ["TheKnightPersists", "骑士仍在"],
+            ["TheBeginning", "开端"],
+            ["CaerulaAnimus", "深蓝之心"],
+            ["CaerulaRitual", "深蓝仪式"],
             ["Sublimation", "升华"],
             ["Paean", "赞歌"],
-            ["Safe House", "安全屋"],
-            ["Buy Now.*Print Now", "现买现印"],
-            ["Mutual Aid", "守望相助"],
-            ["Bygone Customs", "消失的习俗"],
-            ["Emergency Dispatch", "紧急调遣"],
-            ["At a Glance", "瞥视"],
-            ["Tulip.*s Commission", "郁金香的委托"],
-            ["Bob's ?Emporium", "鲍勃杂货店"],
-            ["Vacation ?Spot", "度假胜地"],
-            ["'?The ?Sword ?in ?the ?Stone'?", "“石中剑”"],
-            ["'?Tin ?Man'?", "“锡人”"],
-            ["Missing ?Mountains", "不见群山"],
+            ["SafeHouse", "安全屋"],
+            ["BuyNow.*PrintNow", "现买现印"],
+            ["MutualAid", "守望相助"],
+            ["BygoneCustoms", "消失的习俗"],
+            ["EmergencyDispatch", "紧急调遣"],
+            ["AtaGlance", "瞥视"],
+            ["Tulip.*sCommission", "郁金香的委托"],
+            ["Bob'sEmporium", "鲍勃杂货店"],
+            ["VacationSpot", "度假胜地"],
+            ["'?TheSwordintheStone'?", "“石中剑”"],
+            ["'?TinMan'?", "“锡人”"],
+            ["MissingMountains", "不见群山"],
             ["Reprieve\\??", "解脱？"],
-            ["On-site ?at ?Public ?Signal ?Amplification ?Station ?756", "在地公共信号放大站756号"],
-            ["'?Art ?Connoisseur'?", "“鉴赏家”"],
-            ["'?Royal ?Rumble'?", "“皇家争执”"],
-            ["Searching ?For ?A ?Path ?Forward", "探寻前路"],
-            ["Operation ?Rewards", "行动奖励"],
-            ["Duck ?Lord ?the ?Lead ?Actor\\??", "鸭爵主演？"],
-            ["Ceremony ?of ?Healing", "疗愈仪式"],
-            ["Wilderness ?Survival ?Expert", "野外生存专家"],
-            ["Always ?on ?Alert", "时刻警惕"],
-            ["Chain ?of ?Suspicion", "猜疑链"],
-            ["Meeting ?in ?a ?Dream", "梦中之会"],
-            ["Lowland ?Market", "低地市集"],
-            ["A ?Passion ?for ?Work\\??", "工作热情？"],
-            ["Business ?Empire\\??", "商业帝国？"],
-            ["A ?Dark ?Room", "昏黑之室"],
-            ["Regular ?Maintenance", "定期维护"],
-            ["Auspicious ?Sign", "吉兆"],
+            ["On-siteatPublicSignalAmplificationStation756", "在地公共信号放大站756号"],
+            ["'?ArtConnoisseur'?", "“鉴赏家”"],
+            ["'?RoyalRumble'?", "“皇家争执”"],
+            ["SearchingForAPathForward", "探寻前路"],
+            ["OperationRewards", "行动奖励"],
+            ["DuckLordtheLeadActor\\??", "鸭爵主演？"],
+            ["CeremonyofHealing", "疗愈仪式"],
+            ["WildernessSurvivalExpert", "野外生存专家"],
+            ["AlwaysonAlert", "时刻警惕"],
+            ["ChainofSuspicion", "猜疑链"],
+            ["MeetinginaDream", "梦中之会"],
+            ["LowlandMarket", "低地市集"],
+            ["APassionforWork\\??", "工作热情？"],
+            ["BusinessEmpire\\??", "商业帝国？"],
+            ["ADarkRoom", "昏黑之室"],
+            ["RegularMaintenance", "定期维护"],
+            ["AuspiciousSign", "吉兆"],
             ["Rain!", "雨！"],
-            ["Sobbing ?in ?the ?Swamp", "沼泽里的抽泣声"],
-            ["A ?Profitable ?Plan", "有利可图"],
+            ["SobbingintheSwamp", "沼泽里的抽泣声"],
+            ["AProfitablePlan", "有利可图"],
             ["Entourage", "随行人员"],
-            ["Duck ?Lord's ?Sinister ?Plot", "邪恶计划鸭"],
-            ["Chain ?of ?Camps", "百里连营"],
-            ["On-stage ?Invitation", "请君入戏"],
-            ["Northwind ?Witch", "北风女巫"],
-            ["Northwizard ?Cup", "北地巫师竞技"],
-            ["Best ?Buddies", "最好的朋友"],
-            ["Entrance ?to ?the ?Abyss", "深渊入口"],
-            ["Wounded ?Prime ?Tree", "负伤的主树"],
-            ["Research ?Outpost", "科考站"],
-            ["Sami's ?Language", "萨米之语"],
+            ["DuckLord'sSinisterPlot", "邪恶计划鸭"],
+            ["ChainofCamps", "百里连营"],
+            ["On-stageInvitation", "请君入戏"],
+            ["NorthwindWitch", "北风女巫"],
+            ["NorthwizardCup", "北地巫师竞技"],
+            ["BestBuddies", "最好的朋友"],
+            ["EntrancetotheAbyss", "深渊入口"],
+            ["WoundedPrimeTree", "负伤的主树"],
+            ["ResearchOutpost", "科考站"],
+            ["Sami'sLanguage", "萨米之语"],
             ["Ursus", "乌萨斯"],
-            ["Useless ?Item", "无用之物"],
-            ["Clairvoyance's ?Direction", "远见所向"],
-            ["Forward ?Forest", "前行的林地"],
-            ["Trimounts ?Travel ?Agency ?Dispatch", "特里蒙旅行社特派团"],
-            ["On-site ?at ?Public ?Nomadic ?Station ?N6", "在地公共移动站N6号"],
-            ["Grab ?and ?Go", "随到随取"],
-            ["Black ?Footprints", "黑色足迹"],
-            ["Unfreezing ?River", "不冻河"],
-            ["Fence ?of ?Wood ?and ?Snow", "雪与木的笆篱"],
-            ["Amma ?Tal", "安玛塔卢"],
-            ["Crossing ?Sami's ?Arm", "走过萨米的臂膀"],
-            ["Shattered ?Omen", "木裂前兆"],
-            ["Pessimist's ?Cage", "悲观者囚笼"],
+            ["UselessItem", "无用之物"],
+            ["Clairvoyance'sDirection", "远见所向"],
+            ["ForwardForest", "前行的林地"],
+            ["TrimountsTravelAgencyDispatch", "特里蒙旅行社特派团"],
+            ["On-siteatPublicNomadicStationN6", "在地公共移动站N6号"],
+            ["GrabandGo", "随到随取"],
+            ["BlackFootprints", "黑色足迹"],
+            ["UnfreezingRiver", "不冻河"],
+            ["FenceofWoodandSnow", "雪与木的笆篱"],
+            ["AmmaTal", "安玛塔卢"],
+            ["CrossingSami'sArm", "走过萨米的臂膀"],
+            ["ShatteredOmen", "木裂前兆"],
+            ["Pessimist'sCage", "悲观者囚笼"],
             ["Change", "变化"],
             ["Reconstruction", "重构"],
-            ["One ?Small ?Step ?for ?Expeditioners", "探索者的一小步"],
-            ["Story's End", "解惑"],
-            ["Falling Objects", "高空坠物"],
-            ["Kind Lady", "好心的女士"],
-            ["After the Story Ends", "在故事结束之后"],
-            ["Story to be Told", "待诉说的故事"],
-            ["Inauguration Ceremony", "竣工仪式"],
-            ["Lost Treasure", "失落财宝"],
-            ["Shifting City", "变幻之城"],
-            ["Present and Future", "前瞻"],
+            ["OneSmallStepforExpeditioners", "探索者的一小步"],
+            ["Story.*sEnd", "解惑"],
+            ["FallingObjects", "高空坠物"],
+            ["KindLady", "好心的女士"],
+            ["AftertheStoryEnds", "在故事结束之后"],
+            ["StorytobeTold", "待诉说的故事"],
+            ["InaugurationCeremony", "竣工仪式"],
+            ["LostTreasure", "失落财宝"],
+            ["ShiftingCity", "变幻之城"],
+            ["PresentandFuture", "前瞻"],
             ["Shortcut", "捷径"],
-            ["Grace Before Fire", "淡然面对"],
-            ["Future Hunter", "未来猎手"],
-            ["Burdenbeast Traveler", "驮兽旅行家"],
-            ["Popular Attraction", "热门景点"],
-            ["Crater Treasure", "深坑秘宝"],
-            ["Eve of Defense", "卫国前夜"],
-            ["Epochal Revision", "修正时代"],
-            ["The Uninvited", "不请自来"],
-            ["Haunting Cries", "阴魂不散"],
-            ["The Silent Champ", "沉默拳王"],
-            ["Quacking Mad", "气打鸭处来"],
-            ["The Pious Worshiper", "敬虔之人"],
-            ["Employee of Babel", "巴别塔雇员"],
-            ["Soul Experiences: Twin Gargoyles", "魂灵见闻：石心双子"],
-            ["Final Page", "尾页"],
-            ["The Dissident's Sound", "扣响异音"],
-            ["Soul Tales: Eye For an Eye", "魂灵见闻：以血还血"],
-            ["Deciphering Evolution", "解读变迁"],
-            ["Tower of Thoughts", "聚思成塔"],
-            ["Highest Bidder Wins", "价高者得"],
-            ["Truth to be Told", "待诉说的真相"],
+            ["GraceBeforeFire", "淡然面对"],
+            ["FutureHunter", "未来猎手"],
+            ["BurdenbeastTraveler", "驮兽旅行家"],
+            ["PopularAttraction", "热门景点"],
+            ["CraterTreasure", "深坑秘宝"],
+            ["EveofDefense", "卫国前夜"],
+            ["EpochalRevision", "修正时代"],
+            ["TheUninvited", "不请自来"],
+            ["HauntingCries", "阴魂不散"],
+            ["TheSilentChamp", "沉默拳王"],
+            ["QuackingMad", "气打鸭处来"],
+            ["ThePiousWorshiper", "敬虔之人"],
+            ["EmployeeofBabel", "巴别塔雇员"],
+            ["SoulExperiences.*TwinGargoyles", "魂灵见闻：石心双子"],
+            ["FinalPage", "尾页"],
+            ["TheDissident'sSound", "扣响异音"],
+            ["SoulTales:EyeForanEye", "魂灵见闻：以血还血"],
+            ["DecipheringEvolution", "解读变迁"],
+            ["TowerofThoughts", "聚思成塔"],
+            ["HighestBidderWins", "价高者得"],
+            ["TruthtobeTold", "待诉说的真相"],
             ["Coronation", "戴冠式"],
-            ["Courtyard of the Departed", "离去者的庭院"],
-            ["Ominous Portal", "造物倒影"],
+            ["CourtyardoftheDeparted", "离去者的庭院"],
+            ["OminousPortal", "造物倒影"],
             ["Slugkaz!", "虫卡兹！"],
-            ["Fated Encounter", "相遇"],
-            ["Dealings in Blood", "刀口舔血"],
-            ["Scarmarket Nexus", "疤痕国际"],
-            ["Decision in Despair", "绝境？抉择？"],
-            ["The Origins", "原初异途"],
-            ["Soul Tales: Unity of Extremes", "魂灵见闻：善恶同道"],
-            ["Warm and Cozy", "温暖余韵"]
+            ["FatedEncounter", "相遇"],
+            ["DealingsinBlood", "刀口舔血"],
+            ["ScarmarketNexus", "疤痕国际"],
+            ["DecisioninDespair", "绝境？抉择？"],
+            ["TheOrigins", "原初异途"],
+            ["SoulTales.*UnityofExtremes", "魂灵见闻：善恶同道"],
+            ["WarmandCozy", "温暖余韵"]
         ]
     },
     "Roguelike@StageTraderInvestSystem": {
@@ -2481,6 +2496,14 @@
     },
     "Roguelike@StageTraderSpecialShoppingAfterRefresh": {
         "text": ["Pathfinder Fins"]
+    },
+    "Roguelike@StartExploreCD": {
+        "text": [
+            "Awaiting return to castle",
+            "Waiting for return to land",
+            "Awaiting expedition reconstruction",
+            "Organizing Thoughts"
+        ]
     },
     "Phantom@Roguelike@CheckLevel": {
         "text": ["Castle", "Notes"]
@@ -2507,7 +2530,6 @@
     },
     "Phantom@Roguelike@StrategyChange_mode0": {
         "roi": [541, 5, 241, 71],
-        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             ["Mist-stricken Missteps", "_aggressive"],
             ["Sunset Courtyard", "_aggressive"],
@@ -2519,7 +2541,6 @@
     },
     "Phantom@Roguelike@StrategyChange_mode4": {
         "roi": [541, 5, 241, 71],
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["Mist-stricken Missteps", "_default"],
             ["Sunset Courtyard", "_default"],
@@ -2531,7 +2552,6 @@
     },
     "Phantom@Roguelike@StrategyChange_mode6": {
         "roi": [541, 5, 241, 71],
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["Mist-stricken Missteps", "_aggressive"],
             ["Sunset Courtyard", "_aggressive"],
@@ -2543,7 +2563,6 @@
     },
     "Phantom@Roguelike@StrategyChange_mode7": {
         "roi": [541, 5, 241, 71],
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["Mist-stricken Missteps", "_aggressive"],
             ["Sunset Courtyard", "_aggressive"],
@@ -2585,7 +2604,6 @@
         "text": ["Use the Safe House again", "Use the Safe"]
     },
     "Mizuki@Roguelike@StrategyChange_mode0": {
-        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             ["Sunshine Coast", "_aggressive"],
             ["Offshore Island", "_aggressive"],
@@ -2597,7 +2615,6 @@
         ]
     },
     "Mizuki@Roguelike@StrategyChange_mode4": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["Sunshine Coast", "_default"],
             ["Offshore Island", "_default"],
@@ -2609,7 +2626,6 @@
         ]
     },
     "Mizuki@Roguelike@StrategyChange_mode6": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["Sunshine Coast", "_aggressive"],
             ["Offshore Island", "_aggressive"],
@@ -2621,7 +2637,6 @@
         ]
     },
     "Mizuki@Roguelike@StrategyChange_mode7": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["Sunshine Coast", "_aggressive"],
             ["Offshore Island", "_aggressive"],
@@ -2676,6 +2691,12 @@
     "Sami@Roguelike@CheckLevel": {
         "roi": [1108, 26, 126, 52],
         "text": ["EXPEDITION", "RECORDS"]
+    },
+    "Sami@Roguelike@Collapsal": {
+        "text": ["Partial", "Partial Cecity", "Image", "Image Corruption"]
+    },
+    "Sami@Roguelike@CollapsalParadigmTaskBannerCheckConfig": {
+        "text": ["Collapsal Paradigm intensifies"]
     },
     "Sami@Roguelike@ContinueClick": {
         "text": [
@@ -2809,7 +2830,6 @@
     "Sami@Roguelike@StrategyChange_mode0": {
         "doc": "Ocr can't read 3rd floor, use temperature instead (experimental)",
         "roi": [593, 48, 135, 27],
-        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             [".*Brisk ?M?arshlands", "_aggressive"],
             [".*Placid ?Forests", "_aggressive"],
@@ -2825,7 +2845,6 @@
     "Sami@Roguelike@StrategyChange_mode4": {
         "doc": "Ocr can't read 3rd floor, use temperature instead (experimental)",
         "roi": [593, 48, 135, 27],
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             [".*Brisk ?M?arshlands", "_default"],
             [".*Placid ?Forests", "_default"],
@@ -2840,7 +2859,6 @@
     },
     "Sami@Roguelike@StrategyChange_mode5": {
         "roi": [593, 48, 135, 27],
-        "text": ["_collapsal_paradigms"],
         "ocrReplace": [
             [".*Brisk ?M?arshlands", "_collapsal_paradigms"],
             [".*Placid ?Forests", "_collapsal_paradigms"],
@@ -2856,7 +2874,6 @@
     "Sami@Roguelike@StrategyChange_mode6": {
         "doc": "Ocr can't read 3rd floor, use temperature instead (experimental)",
         "roi": [593, 48, 135, 27],
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             [".*Brisk ?M?arshlands", "_aggressive"],
             [".*Placid ?Forests", "_aggressive"],
@@ -2872,7 +2889,6 @@
     "Sami@Roguelike@StrategyChange_mode7": {
         "doc": "Ocr can't read 3rd floor, use temperature instead (experimental)",
         "roi": [593, 48, 135, 27],
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             [".*Brisk ?M?arshlands", "_aggressive"],
             [".*Placid ?Forests", "_aggressive"],
@@ -2888,11 +2904,32 @@
     "Sarkaz@Roguelike@CheckLevel": {
         "text": ["HYPOTHESES", "COMPILATION"]
     },
+    "Sarkaz@Roguelike@ChooseBurdenOperatorAtStart": {
+        "roi": [589, 584, 231, 121]
+    },
+    "Sarkaz@Roguelike@NextLevel": {
+        "text": [
+            "Furnace Origin",
+            "Wrought Ironroots",
+            "Ashforged Ruins",
+            "Probable Divergence",
+            "Border of Truth",
+            "Radiant Zenith",
+            "Bizarre Fragment"
+        ],
+        "roi": [513, 564, 248, 63]
+    },
+    "Sarkaz@Roguelike@RoutingRefreshNodeConfirm": {
+        "text": ["Confirm"]
+    },
     "Sarkaz@Roguelike@SelectTheme": {
+        "ocrReplace": [["Hypothese.*", "Hypotheses Compilation"]],
         "text": ["Hypotheses Compilation"]
     },
+    "Sarkaz@Roguelike@StageSafeHouseReuse": {
+        "text": ["Use the Safe House again", "Use the Safe"]
+    },
     "Sarkaz@Roguelike@StrategyChange-FastInvestment": {
-        "text": ["_fastInvestment", "_exit"],
         "ocrReplace": [
             ["Furnace Origin", "_fastInvestment"],
             ["Wrought Ironroots", "_exit"],
@@ -2904,7 +2941,6 @@
         ]
     },
     "Sarkaz@Roguelike@StrategyChange_mode0": {
-        "text": ["_default"],
         "ocrReplace": [
             ["Furnace Origin", "_default"],
             ["Wrought Ironroots", "_default"],
@@ -2916,7 +2952,6 @@
         ]
     },
     "Sarkaz@Roguelike@StrategyChange_mode0_NOT_IN_USE": {
-        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             ["Furnace Origin", "_aggressive"],
             ["Wrought Ironroots", "_aggressive"],
@@ -2928,7 +2963,6 @@
         ]
     },
     "Sarkaz@Roguelike@StrategyChange_mode10001": {
-        "text": ["_routing", "_exit"],
         "ocrReplace": [
             ["Furnace Origin", "_routing"],
             ["Wrought Ironroots", "_exit"],
@@ -2940,7 +2974,6 @@
         ]
     },
     "Sarkaz@Roguelike@StrategyChange_mode4": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["Furnace Origin", "_default"],
             ["Wrought Ironroots", "_default"],
@@ -2952,7 +2985,6 @@
         ]
     },
     "Sarkaz@Roguelike@StrategyChange_mode6": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["Furnace Origin", "_default"],
             ["Wrought Ironroots", "_default"],
@@ -2964,7 +2996,6 @@
         ]
     },
     "Sarkaz@Roguelike@StrategyChange_mode7": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["Furnace Origin", "_default"],
             ["Wrought Ironroots", "_default"],

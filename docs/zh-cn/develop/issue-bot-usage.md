@@ -29,7 +29,7 @@ Issue Bot 使用的 action 为 [issue-checker](https://github.com/zzyyyl/issue-c
 Issue Bot 会对拉取请求标题的格式进行简单审查。它会增加 `ambiguous` 标签，除非拉取请求标题以下列任一单词开头：
 
 - `build` `chore` `ci` `doc` `docs` `feat` `fix` `perf` `refactor` `rfc` `style` `test`
-- `Merge` `merge` `Revert` `revert`
+- `Merge` `merge` `Revert` `revert` `Reapply` `Reapply`
 
 ### 手动触发
 

@@ -924,6 +924,10 @@
             "OfflineConfirm"
         ]
     },
+    "GameStartUpdateOCR": {
+        "text": ["신경", "전달물질", "MB"],
+        "roi": [280, 650, 720, 60]
+    },
     "StartToWakeUp": {
         "Doc": "CN서버보다 ROI를 크게 조절하세요",
         "roi": [540, 480, 192, 56]
@@ -1386,6 +1390,9 @@
     "BattleStartSimulationForTwo": {
         "text": ["시작", "시뮬레이션"]
     },
+    "StageDrops-TimesCheck": {
+        "text": ["연속", "대리", "지휘"]
+    },
     "StageDrops-Quantity": {
         "maskRange": [200, 255],
         "template": "empty.png",
@@ -1449,6 +1456,9 @@
     },
     "GachaLastOnceResult": {
         "text": ["증명서", "증표", "중복"]
+    },
+    "GachaLastTenTimesResult2": {
+        "text": ["물자", "획득"]
     },
     "GachaOncePrefix@DoGacha": {
         "text": ["1회진행"]
@@ -2177,6 +2187,9 @@
     "Roguelike@IntegratedStrategies": {
         "templThreshold": 0.75
     },
+    "Roguelike@NoneSelected": {
+        "text": ["편성하지", "않은상태"]
+    },
     "Roguelike@PreSelectTheme": {
         "text": ["모든테마보기", "테마", "TODO: image of //INTEGRATED STRATEGIES"],
         "roi": [450, 480, 160, 45]
@@ -2384,6 +2397,10 @@
     "Roguelike@StageTraderSpecialShoppingAfterRefresh": {
         "text": ["패스파인더", "패스파인더 핀"]
     },
+    "Roguelike@StartExploreCD": {
+        "doc": "로그라이크 재시작 딜레이",
+        "text": ["복귀", "재정비", "정리", "중"]
+    },
     "Phantom@Roguelike@CheckLevel": {
         "roi": [1106, 32, 117, 36],
         "text": ["고성", "노트"]
@@ -2418,6 +2435,26 @@
             ["욕망의로비", "_exit"]
         ]
     },
+    "Phantom@Roguelike@StrategyChange_mode6": {
+        "ocrReplace": [
+            ["안개의기로", "_aggressive"],
+            ["석양의정원", "_aggressive"],
+            ["고향의잔.+$", "_aggressive"],
+            ["악몽의시작", "_pragmatic"],
+            ["붉은달회랑", "_pragmatic"],
+            ["욕망의로비", "_default"]
+        ]
+    },
+    "Phantom@Roguelike@StrategyChange_mode7": {
+        "ocrReplace": [
+            ["안개의기로", "_aggressive"],
+            ["석양의정원", "_aggressive"],
+            ["고향의잔.+$", "_aggressive"],
+            ["악몽의시작", "_pragmatic"],
+            ["붉은달회랑", "_pragmatic"],
+            ["욕망의로비", "_default"]
+        ]
+    },
     "Mizuki@Roguelike@CheckLevel": {
         "roi": [1114, 36, 91, 28],
         "text": ["생태", "계보"]
@@ -2435,7 +2472,6 @@
         "text": ["안전가옥활용"]
     },
     "Mizuki@Roguelike@StrategyChange_mode0": {
-        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             ["하늘빛해안", "_aggressive"],
             ["연안외딴섬", "_aggressive"],
@@ -2447,7 +2483,6 @@
         ]
     },
     "Mizuki@Roguelike@StrategyChange_mode4": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["하늘빛해안", "_default"],
             ["연안외딴섬", "_default"],
@@ -2456,6 +2491,28 @@
             ["신성한동굴", "_exit"],
             ["심해의숲", "_exit"],
             ["짙푸른요람", "_exit"]
+        ]
+    },
+    "Mizuki@Roguelike@StrategyChange_mode6": {
+        "ocrReplace": [
+            ["하늘빛해안", "_aggressive"],
+            ["연안외딴섬", "_aggressive"],
+            ["맹렬한파도", "_pragmatic"],
+            ["은밀한온상", "_pragmatic"],
+            ["신성한동굴", "_default"],
+            ["심해의숲", "_default"],
+            ["짙푸른요람", "_SKIP_"]
+        ]
+    },
+    "Mizuki@Roguelike@StrategyChange_mode7": {
+        "ocrReplace": [
+            ["하늘빛해안", "_aggressive"],
+            ["연안외딴섬", "_aggressive"],
+            ["맹렬한파도", "_pragmatic"],
+            ["은밀한온상", "_pragmatic"],
+            ["신성한동굴", "_default"],
+            ["심해의숲", "_default"],
+            ["짙푸른요람", "_SKIP_"]
         ]
     },
     "Sami@Roguelike@CheckCollapsalParadigms": {
@@ -2503,6 +2560,9 @@
     },
     "Sami@Roguelike@Collapsal": {
         "text": ["선택적", "선택적무시", "이미지", "이미지에러"]
+    },
+    "Sami@Roguelike@CollapsalParadigmTaskBannerCheckConfig": {
+        "ocrReplace": [["붕괴패러다임심화", "坍缩范式加深"]]
     },
     "Sami@Roguelike@ContinueClick": {
         "ocrReplace": [
@@ -2625,7 +2685,6 @@
         "text": ["안전가옥활용"]
     },
     "Sami@Roguelike@StrategyChange_mode0": {
-        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             [".*은빛의호.+", "_aggressive"],
             [".*고요한숲", "_aggressive"],
@@ -2637,7 +2696,6 @@
         ]
     },
     "Sami@Roguelike@StrategyChange_mode4": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             [".*은빛의호.+", "_default"],
             [".*고요한숲", "_default"],
@@ -2649,7 +2707,6 @@
         ]
     },
     "Sami@Roguelike@StrategyChange_mode5": {
-        "text": ["_collapsal_paradigms"],
         "ocrReplace": [
             [".*은빛의호.+", "_collapsal_paradigms"],
             [".*고요한숲", "_collapsal_paradigms"],
@@ -2660,10 +2717,33 @@
             [".*숨겨진비경", "_SKIP_"]
         ]
     },
+    "Sami@Roguelike@StrategyChange_mode6": {
+        "ocrReplace": [
+            [".*은빛의호.+", "_aggressive"],
+            [".*고요한숲", "_aggressive"],
+            [".*여명의.+", "_pragmatic"],
+            [".*얼어붙은바위", "_pragmatic"],
+            [".*무결점의정원", "_default"],
+            [".*예견의구상", "_default"],
+            [".*숨겨진비경", "_SKIP_"]
+        ]
+    },
+    "Sami@Roguelike@StrategyChange_mode7": {
+        "ocrReplace": [
+            [".*은빛의호.+", "_aggressive"],
+            [".*고요한숲", "_aggressive"],
+            [".*여명의.+", "_pragmatic"],
+            [".*얼어붙은바위", "_pragmatic"],
+            [".*무결점의정원", "_default"],
+            [".*예견의구상", "_default"],
+            [".*숨겨진비경", "_SKIP_"]
+        ]
+    },
     "Sarkaz@Roguelike@CheckLevel": {
         "text": ["가설", "수록"]
     },
     "Sarkaz@Roguelike@ChooseBurdenOperatorAtStart": {
+        "roi": [589, 584, 231, 121],
         "templThreshold": 0.7
     },
     "Sarkaz@Roguelike@NextLevel": {
@@ -2686,11 +2766,17 @@
             "괴이한 단장"
         ]
     },
+    "Sarkaz@Roguelike@RoutingRefreshNodeConfirm": {
+        "text": ["확인"]
+    },
     "Sarkaz@Roguelike@SelectTheme": {
         "text": ["가설", "수록"]
     },
     "Sarkaz@Roguelike@StageRefresh": {
         "templThreshold": 0.7
+    },
+    "Sarkaz@Roguelike@StageSafeHouseReuse": {
+        "text": ["안전가옥활용"]
     },
     "Sarkaz@Roguelike@StrategyChange-FastInvestment": {
         "ocrReplace": [

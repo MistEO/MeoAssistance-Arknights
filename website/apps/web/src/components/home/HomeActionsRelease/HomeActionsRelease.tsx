@@ -42,27 +42,6 @@ type GITHUB_MIRROR_TYPE = {
 }
 
 const GITHUB_MIRRORS: GITHUB_MIRROR_TYPE[] = [
-  // {
-  //   name: '99988866',
-  //   transform: (original: URL) =>
-  //     `https://gh.api.99988866.xyz/${original.toString()}`,
-  // },
-  // {
-  //   name: 'maa.r2.imgg.dev',
-  //   transform: (original: URL) => `https://maa.r2.imgg.dev${original.pathname}`,
-  // },
-  // {
-  //   name: 'agent.imgg.dev',
-  //   transform: (original: URL) => `https://agent.imgg.dev${original.pathname}`,
-  // },
-  // {
-  //   name: 'maverick',
-  //   transform: (original: URL) => `https://qz.minasan.xyz${original.pathname}`,
-  // },
-  {
-    name: 'ghproxy',
-    transform: (original: URL) => `https://ghproxy.com/${original.toString()}`,
-  },
   {
     name: 'origin',
     transform: (original: URL) => original.toString(),
@@ -536,13 +515,22 @@ export const DownloadButtons: FC<{ release: Release }> = ({ release }) => {
         />
       )}
       {!viewAll && (
-        <GlowButton
-          key="view-all-switch"
-          bordered
-          onClick={() => setViewAll(true)}
-        >
-          查看全部
-        </GlowButton>
+        <div className="flex-row gap-4 items-center flex flex-col md:flex-row">
+          <GlowButton
+            key="view-all-switch"
+            bordered
+            onClick={() => setViewAll(true)}
+          >
+            查看全部
+          </GlowButton>
+          <div className="text-xs leading-5 text-center text-white/70">
+            <a href="https://mirrorchyan.com/zh/download?rid=MAA&os=windows&arch=x64&channel=stable" target="_blank">
+              <span><i><u>已有 Mirror酱 CDK？</u></i></span>
+              <br></br>
+              <span><i><u>前往 Mirror酱 高速下载</u></i></span>
+            </a>
+          </div>
+        </div>
       )}
     </AnimatePresence>
   )

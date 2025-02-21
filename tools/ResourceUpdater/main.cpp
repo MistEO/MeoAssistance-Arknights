@@ -1313,7 +1313,7 @@ bool ocr_replace_overseas(const fs::path& input_dir, const fs::path& tasks_path,
             }
 
             name_buffer = encounter_obj["title"].as_string();
-            if (remove_spaces) {
+            if (remove_spaces || input_dir.string().ends_with("en\\gamedata\\excel")) {
                 name_buffer.erase(std::remove(name_buffer.begin(), name_buffer.end(), ' '), name_buffer.end());
             }
             encounter_names.emplace(id, name_buffer);

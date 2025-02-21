@@ -128,11 +128,10 @@ bool asst::RoguelikeSettlementTaskPlugin::wait_for_whole_page()
 {
     int retry = 0;
     cv::Mat image;
-    Matcher matcher;
-    matcher.set_task_info(m_config->get_theme() + "@RoguelikeSettlementConfirm");
     do {
         image = ctrler()->get_image();
-        matcher.set_image(image);
+        Matcher matcher(image);
+        matcher.set_task_info(m_config->get_theme() + "@RoguelikeSettlementConfirm");
         if (matcher.analyze()) {
             return true;
         }

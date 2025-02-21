@@ -18,6 +18,7 @@ using System.IO;
 using System.Linq;
 using MaaWpfGui.Constants;
 using MaaWpfGui.ViewModels.UI;
+using MaaWpfGui.ViewModels.UserControl.Settings;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -51,13 +52,21 @@ namespace MaaWpfGui.Helper
 
         public static Dictionary<string, (string DisplayName, string ClientName)> RecruitTags { get; private set; } = [];
 
+        public static List<MapInfo> MapData { get; private set; } = [];
+
         static DataHelper()
         {
-            ReloadBattleData();
             InitRecruitTag();
+            Reload();
         }
 
-        public static void ReloadBattleData()
+        public static void Reload()
+        {
+            LoadBattleData();
+            LoadMapData();
+        }
+
+        private static void LoadBattleData()
         {
             const string FilePath = "resource/battle_data.json";
             if (!File.Exists(FilePath))
@@ -88,14 +97,14 @@ namespace MaaWpfGui.Helper
 
         private static void InitRecruitTag()
         {
-            var clientType = ConfigurationHelper.GetValue(ConfigurationKeys.ClientType, string.Empty);
+            var clientType = GameSettingsUserControlModel.Instance.ClientType;
             var clientPath = clientType switch
             {
                 "" or "Official" or "Bilibili" => string.Empty,
                 _ => Path.Combine("global", clientType, "resource"),
             };
 
-            var displayLanguage = ConfigurationHelper.GetGlobalValue(ConfigurationKeys.Localization, LocalizationHelper.DefaultLanguage);
+            var displayLanguage = GuiSettingsUserControlModel.Instance.Language;
             var displayPath = displayLanguage switch
             {
                 "zh-tw" or "en-us" or "ja-jp" or "ko-kr" => Path.Combine("global", ClientDirectoryMapper[displayLanguage], "resource"),
@@ -141,6 +150,31 @@ namespace MaaWpfGui.Helper
                 return clientTags.Where(i => !string.IsNullOrEmpty(i.Value)).ToDictionary();
             }
         }
+
+        private static void LoadMapData()
+        {
+            MapData = [];
+            var path = Path.Combine("resource", "Arknights-Tile-Pos", "overview.json");
+            if (!File.Exists(path))
+            {
+                return;
+            }
+
+            try
+            {
+                var jObj = JsonConvert.DeserializeObject<Dictionary<string, MapInfo>>(File.ReadAllText(path));
+                if (jObj is not null && jObj.Count > 0)
+                {
+                    MapData = [.. jObj.Values];
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        public static MapInfo? FindMap(string mapId)
+            => MapData.FirstOrDefault(map => map.Code == mapId || map.Name == mapId || map.StageId == mapId || map.LevelId == mapId);
 
         private static Action<CharacterInfo> GetCharacterNamesAddAction(string str)
         {
@@ -257,6 +291,35 @@ namespace MaaWpfGui.Helper
 
             [JsonProperty("rarity")]
             public int Rarity { get; set; }
+        }
+
+        public class MapInfo
+        {
+            // 1-7
+            [JsonProperty("code")]
+            public string? Code { get; set; }
+
+            // main_01-07#f#-obt-main-level_main_01-07.json
+            [JsonProperty("filename")]
+            public string? Filename { get; set; }
+
+            // obt/main/level_main_01-07
+            [JsonProperty("levelId")]
+            public string? LevelId { get; set; }
+
+            // 暴君
+            [JsonProperty("name")]
+            public string? Name { get; set; }
+
+            // main_01-07#f#, #f#是突袭关卡
+            [JsonProperty("stageId")]
+            public string? StageId { get; set; }
+
+            [JsonProperty("height")]
+            public int Height { get; set; }
+
+            [JsonProperty("width")]
+            public int Width { get; set; }
         }
     }
 }

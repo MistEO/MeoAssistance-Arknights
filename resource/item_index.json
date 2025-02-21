@@ -1847,6 +1847,14 @@
         "sortId": -10000,
         "usage": "用于对遏制单元进行数据迭代。"
     },
+    "act3collection_point_token": {
+        "classifyType": "NONE",
+        "description": "为了激励在各项集成战略行动中做出贡献的外勤人员，罗德岛发放了一定量的特殊奖励兑换点数。凭借兑换点数可兑换急需的物资。",
+        "icon": "act3collection_point_token.png",
+        "name": "“战略家”点数",
+        "sortId": -10000,
+        "usage": "用于兑换相应的阶段性活动奖励。"
+    },
     "act40side_token_yumyum": {
         "classifyType": "NONE",
         "description": "饭香不怕巷子深。平日肉眼不可见，沿街细嗅可闻到的缥缈香气，至饭馆前则扑面而来。循着百灶街头的饭菜香，自可走出一幅百灶盛景图。",

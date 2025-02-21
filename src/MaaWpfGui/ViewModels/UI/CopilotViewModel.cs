@@ -46,6 +46,13 @@ namespace MaaWpfGui.ViewModels.UI
         private readonly RunningState _runningState;
         private static readonly ILogger _logger = Log.ForContext<CopilotViewModel>();
         private readonly List<int> _copilotIdList = []; // 用于保存作业列表中的作业的Id，对于同一个作业，只有都执行成功才点赞
+        private readonly List<int> _recentlyRatedCopilotId = []; // TODO: 可能考虑加个持久化
+        private AsstTaskType _taskType = AsstTaskType.Copilot;
+        private const string CopilotIdPrefix = "maa://";
+        private const string TempCopilotFile = "cache/_temp_copilot.json";
+        private static readonly string[] _supportExt = [".json", ".mp4", ".m4s", ".mkv", ".flv", ".avi"];
+        private const string CopilotJsonDir = "cache/copilot";
+        private const string StageNameRegex = @"(?:[a-z]{0,3})(?:\d{0,2})-(?:(?:A|B|C|D|EX|S|TR|MO)-?)?(?:\d{1,2})(\(Raid\)(?=\.json))?";
 
         /// <summary>
         /// Gets the view models of log items.
@@ -73,42 +80,24 @@ namespace MaaWpfGui.ViewModels.UI
                 return;
             }
 
-            JArray jArray = JArray.Parse(copilotTaskList);
-            foreach (var it in jArray)
+            var list = JsonConvert.DeserializeObject<List<CopilotItemViewModel>>(copilotTaskList) ?? [];
+            for (int i = 0; i < list.Count; i++)
             {
-                if (it is not JObject item || !item.TryGetValue("file_path", out var pathToken) || !File.Exists(pathToken.ToString()))
-                {
-                    continue;
-                }
-
-                int copilotIdInFile = item.TryGetValue("copilot_id", out var copilotIdToken) ? (int)copilotIdToken : -1;
-                var name = (string?)item["name"];
-                if (string.IsNullOrEmpty(name))
-                {
-                    continue;
-                }
-
-                bool isRaid = false;
-                if (item.TryGetValue("is_raid", out var value))
-                {
-                    isRaid = (bool)value;
-                }
-                else if (name.EndsWith("-Adverse"))
-                {
-                    name = name[..^8];
-                    isRaid = true; // 用于迁移配置 (since 5.1.0, 后期移除)
-                }
-
-                CopilotItemViewModels.Add(new CopilotItemViewModel(name, (string)pathToken!, isRaid, copilotIdInFile, (bool?)item?["is_checked"] ?? true));
+                list[i].Index = i;
+                CopilotItemViewModels.Add(list[i]);
             }
 
-            CopilotItemIndexChanged();
+            SaveCopilotTask();
         }
 
         private void RunningState_IdleChanged(object? sender, bool e)
         {
             Idle = e;
         }
+
+        #region UI绑定及操作
+
+        #region Log
 
         /// <summary>
         /// Adds log.
@@ -130,6 +119,18 @@ namespace MaaWpfGui.ViewModels.UI
 
             // LogItemViewModels.Insert(0, new LogItemViewModel(time + content, color, weight));
         }
+
+        /// <summary>
+        /// Clears log.
+        /// </summary>
+        private void ClearLog()
+        {
+            Execute.OnUIThread(() => LogItemViewModels.Clear());
+        }
+
+        #endregion Log
+
+        #region 属性
 
         private bool _idle;
 
@@ -153,14 +154,6 @@ namespace MaaWpfGui.ViewModels.UI
             set => SetAndNotify(ref _startEnabled, value);
         }
 
-        /// <summary>
-        /// Clears log.
-        /// </summary>
-        private void ClearLog()
-        {
-            Execute.OnUIThread(() => LogItemViewModels.Clear());
-        }
-
         private string _filename = string.Empty;
 
         /// <summary>
@@ -177,6 +170,379 @@ namespace MaaWpfGui.ViewModels.UI
             }
         }
 
+        private bool _form;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use auto-formation.
+        /// </summary>
+        public bool Form
+        {
+            get => _form;
+            set => SetAndNotify(ref _form, value);
+        }
+
+        private bool _addTrust;
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use auto-formation.
+        /// </summary>
+        public bool AddTrust
+        {
+            get => _addTrust;
+            set => SetAndNotify(ref _addTrust, value);
+        }
+
+        private bool _useSanityPotion;
+
+        public bool UseSanityPotion
+        {
+            get => _useSanityPotion;
+            set => SetAndNotify(ref _useSanityPotion, value);
+        }
+
+        private bool _addUserAdditional = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.CopilotAddUserAdditional, bool.FalseString));
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use auto-formation.
+        /// </summary>
+        public bool AddUserAdditional
+        {
+            get => _addUserAdditional;
+            set
+            {
+                SetAndNotify(ref _addUserAdditional, value);
+                ConfigurationHelper.SetValue(ConfigurationKeys.CopilotAddUserAdditional, value.ToString());
+            }
+        }
+
+        private string _userAdditional = ConfigurationHelper.GetValue(ConfigurationKeys.CopilotUserAdditional, string.Empty);
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use auto-formation.
+        /// </summary>
+        public string UserAdditional
+        {
+            get => _userAdditional;
+            set
+            {
+                SetAndNotify(ref _userAdditional, value);
+                ConfigurationHelper.SetValue(ConfigurationKeys.CopilotUserAdditional, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use auto-formation.
+        /// </summary>
+        private bool _useCopilotList;
+
+        public bool UseCopilotList
+        {
+            get => _useCopilotList;
+            set
+            {
+                if (value)
+                {
+                    _taskType = AsstTaskType.Copilot;
+                    Form = true;
+                }
+
+                SetAndNotify(ref _useCopilotList, value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to use auto-formation.
+        /// </summary>
+        private string? _copilotTaskName = string.Empty;
+
+        public string? CopilotTaskName
+        {
+            get => _copilotTaskName;
+            set
+            {
+                SetAndNotify(ref _copilotTaskName, value);
+            }
+        }
+
+        public bool Loop { get; set; }
+
+        private int _loopTimes = int.Parse(ConfigurationHelper.GetValue(ConfigurationKeys.CopilotLoopTimes, "1"));
+
+        public int LoopTimes
+        {
+            get => _loopTimes;
+            set
+            {
+                SetAndNotify(ref _loopTimes, value);
+                ConfigurationHelper.SetValue(ConfigurationKeys.CopilotLoopTimes, value.ToString());
+            }
+        }
+
+        private string _urlText = LocalizationHelper.GetString("PrtsPlus");
+
+        /// <summary>
+        /// Gets or private sets the UrlText.
+        /// </summary>
+        public string UrlText
+        {
+            get => _urlText;
+            private set => SetAndNotify(ref _urlText, value);
+        }
+
+        private const string CopilotUiUrl = MaaUrls.PrtsPlus;
+
+        private string _copilotUrl = CopilotUiUrl;
+
+        /// <summary>
+        /// Gets or private sets the copilot URL.
+        /// </summary>
+        public string CopilotUrl
+        {
+            get => _copilotUrl;
+            private set
+            {
+                UrlText = value == CopilotUiUrl ? LocalizationHelper.GetString("PrtsPlus") : LocalizationHelper.GetString("VideoLink");
+                SetAndNotify(ref _copilotUrl, value);
+            }
+        }
+
+        private const string MapUiUrl = MaaUrls.MapPrts;
+
+        private string _mapUrl = MapUiUrl;
+
+        public string MapUrl
+        {
+            get => _mapUrl;
+            private set => SetAndNotify(ref _mapUrl, value);
+        }
+
+        private bool _couldLikeWebJson;
+
+        public bool CouldLikeWebJson
+        {
+            get => _couldLikeWebJson;
+            set => SetAndNotify(ref _couldLikeWebJson, value);
+        }
+
+        #endregion 属性
+
+        #region 方法
+
+        /// <summary>
+        /// Selects file.
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        public void SelectFile()
+        {
+            var dialog = new OpenFileDialog
+            {
+                Filter = "JSON|*.json|Video|*.mp4;*.m4s;*.mkv;*.flv;*.avi",
+            };
+
+            if (dialog.ShowDialog() == true)
+            {
+                Filename = dialog.FileName;
+            }
+        }
+
+        /// <summary>
+        /// Paste clipboard contents.
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        public void PasteClipboard()
+        {
+            if (Clipboard.ContainsText())
+            {
+                Filename = Clipboard.GetText().Trim();
+            }
+            else if (Clipboard.ContainsFileDropList())
+            {
+                DropFile(Clipboard.GetFileDropList()[0]);
+            }
+        }
+
+        /// <summary>
+        /// Paste clipboard contents.
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        public void PasteClipboardCopilotSet()
+        {
+            IsCopilotSet = true;
+            PasteClipboard();
+        }
+
+        /// <summary>
+        /// 批量导入作业
+        /// </summary>
+        // ReSharper disable once UnusedMember.Global
+        public async void ImportFiles()
+        {
+            var dialog = new OpenFileDialog
+            {
+                Filter = "JSON|*.json",
+                Multiselect = true,
+            };
+
+            if (dialog.ShowDialog() != true)
+            {
+                return;
+            }
+
+            Dictionary<string, string> taskPairs = new();
+            foreach (var file in dialog.FileNames)
+            {
+                var fileInfo = new FileInfo(file);
+                if (!fileInfo.Exists)
+                {
+                    AddLog($"{file} not exists", showTime: false);
+                    return;
+                }
+
+                try
+                {
+                    using var reader = new StreamReader(File.OpenRead(file));
+                    var jsonStr = await reader.ReadToEndAsync();
+
+                    var json = (JObject?)JsonConvert.DeserializeObject(jsonStr);
+                    if (json is null || !json.ContainsKey("stage_name") || !json.ContainsKey("actions"))
+                    {
+                        AddLog($"{file} is broken", UiLogColor.Error, showTime: false);
+                        return;
+                    }
+
+                    var fileName = fileInfo.Name[..^fileInfo.Extension.Length];
+                    var stageName = FindStageName(fileInfo.Name, fileName);
+
+                    if (string.IsNullOrEmpty(stageName))
+                    {
+                        AddLog($"invalid name to navigate: {fileName}[{fileInfo.FullName}]", UiLogColor.Error, showTime: false);
+                        return;
+                    }
+
+                    taskPairs.Add(stageName, file);
+                }
+                catch (Exception)
+                {
+                    AddLog($"{file}: " + LocalizationHelper.GetString("CopilotFileReadError"), UiLogColor.Error, showTime: false);
+                    return;
+                }
+            }
+
+            try
+            {
+                Directory.CreateDirectory(CopilotJsonDir);
+            }
+            catch (Exception)
+            {
+                // ignored
+            }
+
+            foreach (var taskPair in taskPairs)
+            {
+                var jsonPath = $"{CopilotJsonDir}/{taskPair.Key}.json";
+                if (new FileInfo(jsonPath).FullName != taskPair.Value)
+                {
+                    // 相同路径跳拷贝
+                    File.Copy(taskPair.Value, jsonPath, true);
+                }
+
+                var navigateName = taskPair.Key;
+                var isRaid = navigateName.EndsWith("(Raid)");
+                var item = new CopilotItemViewModel(taskPair.Key.Replace("(Raid)", string.Empty), jsonPath, isRaid)
+                {
+                    Index = CopilotItemViewModels.Count,
+                };
+                CopilotItemViewModels.Add(item);
+                AddLog("append task: " + taskPair.Key, showTime: false);
+            }
+
+            SaveCopilotTask();
+        }
+
+        // UI 绑定的方法
+        // ReSharper disable once UnusedMember.Global
+        public void AddCopilotTask()
+        {
+            AddCopilotTaskToList(CopilotTaskName, false);
+        }
+
+        // UI 绑定的方法
+        // ReSharper disable once UnusedMember.Global
+        public void AddCopilotTask_Adverse()
+        {
+            AddCopilotTaskToList(CopilotTaskName, true);
+        }
+
+        // UI 绑定的方法
+        // ReSharper disable once UnusedMember.Global
+        public void SelectCopilotTask(int index)
+        {
+            Filename = CopilotItemViewModels[index].FilePath;
+        }
+
+        // UI 绑定的方法
+        // ReSharper disable once UnusedMember.Global
+        public void DeleteCopilotTask(int index)
+        {
+            CopilotItemViewModels.RemoveAt(index);
+            CopilotItemIndexChanged();
+        }
+
+        // UI 绑定的方法
+        // ReSharper disable once UnusedMember.Global
+        public void CleanUnableCopilotTask()
+        {
+            foreach (var item in CopilotItemViewModels.Where(model => !model.IsChecked).ToList())
+            {
+                CopilotItemViewModels.Remove(item);
+            }
+
+            CopilotItemIndexChanged();
+        }
+
+        // UI 绑定的方法
+        // ReSharper disable once UnusedMember.Global
+        public void ClearCopilotTask()
+        {
+            CopilotItemViewModels.Clear();
+            SaveCopilotTask();
+
+            try
+            {
+                Directory.Delete(CopilotJsonDir, true);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        // ReSharper disable once UnusedMember.Global
+        public void LikeWebJson()
+        {
+            RateWebJson("Like", CopilotId);
+        }
+
+        // ReSharper disable once UnusedMember.Global
+        public void DislikeWebJson()
+        {
+            RateWebJson("Dislike", CopilotId);
+        }
+
+        private void EasterEgg(string text)
+        {
+            switch (text)
+            {
+                case "/help":
+                    AddLog(LocalizationHelper.GetString("HelloWorld"), UiLogColor.Message, showTime: false);
+                    break;
+            }
+        }
+
+        #endregion 方法
+
+        #endregion UI绑定及操作
+
         private async void UpdateFilename()
         {
             StartEnabled = false;
@@ -184,8 +550,6 @@ namespace MaaWpfGui.ViewModels.UI
             IsCopilotSet = false;
             StartEnabled = true;
         }
-
-        private const string CopilotIdPrefix = "maa://";
 
         private async Task UpdateFileDoc(string filename)
         {
@@ -279,10 +643,6 @@ namespace MaaWpfGui.ViewModels.UI
             AddLog(LocalizationHelper.GetString("CopilotNoFound"), UiLogColor.Error, showTime: false);
             return string.Empty;
         }
-
-        private const string TempCopilotFile = "cache/_temp_copilot.json";
-        private AsstTaskType _taskType = AsstTaskType.Copilot;
-        private const string StageNameRegex = @"(?:[a-z]{0,3})(?:\d{0,2})-(?:(?:A|B|C|D|EX|S|TR|MO)-?)?(?:\d{1,2})(\(Raid\)(?=\.json))?";
 
         /// <summary>
         /// 为自动战斗列表匹配名字
@@ -525,139 +885,6 @@ namespace MaaWpfGui.ViewModels.UI
         }
 
         /// <summary>
-        /// Selects file.
-        /// </summary>
-        // ReSharper disable once UnusedMember.Global
-        public void SelectFile()
-        {
-            var dialog = new OpenFileDialog
-            {
-                Filter = "JSON|*.json|Video|*.mp4;*.m4s;*.mkv;*.flv;*.avi",
-            };
-
-            if (dialog.ShowDialog() == true)
-            {
-                Filename = dialog.FileName;
-            }
-        }
-
-        /// <summary>
-        /// Paste clipboard contents.
-        /// </summary>
-        // ReSharper disable once UnusedMember.Global
-        public void PasteClipboard()
-        {
-            if (Clipboard.ContainsText())
-            {
-                Filename = Clipboard.GetText().Trim();
-            }
-            else if (Clipboard.ContainsFileDropList())
-            {
-                DropFile(Clipboard.GetFileDropList()[0]);
-            }
-        }
-
-        /// <summary>
-        /// Paste clipboard contents.
-        /// </summary>
-        // ReSharper disable once UnusedMember.Global
-        public void PasteClipboardCopilotSet()
-        {
-            IsCopilotSet = true;
-            PasteClipboard();
-        }
-
-        /// <summary>
-        /// 批量导入作业
-        /// </summary>
-        // ReSharper disable once UnusedMember.Global
-        public async void ImportFiles()
-        {
-            var dialog = new OpenFileDialog
-            {
-                Filter = "JSON|*.json",
-                Multiselect = true,
-            };
-
-            if (dialog.ShowDialog() != true)
-            {
-                return;
-            }
-
-            Dictionary<string, string> taskPairs = new();
-            foreach (var file in dialog.FileNames)
-            {
-                var fileInfo = new FileInfo(file);
-                if (!fileInfo.Exists)
-                {
-                    AddLog($"{file} not exists", showTime: false);
-                    return;
-                }
-
-                try
-                {
-                    using var reader = new StreamReader(File.OpenRead(file));
-                    var jsonStr = await reader.ReadToEndAsync();
-
-                    var json = (JObject?)JsonConvert.DeserializeObject(jsonStr);
-                    if (json is null || !json.ContainsKey("stage_name") || !json.ContainsKey("actions"))
-                    {
-                        AddLog($"{file} is broken", UiLogColor.Error, showTime: false);
-                        return;
-                    }
-
-                    var fileName = fileInfo.Name[..^fileInfo.Extension.Length];
-                    var stageName = FindStageName(fileInfo.Name, fileName);
-
-                    if (string.IsNullOrEmpty(stageName))
-                    {
-                        AddLog($"invalid name to navigate: {fileName}[{fileInfo.FullName}]", UiLogColor.Error, showTime: false);
-                        return;
-                    }
-
-                    taskPairs.Add(stageName, file);
-                }
-                catch (Exception)
-                {
-                    AddLog($"{file}: " + LocalizationHelper.GetString("CopilotFileReadError"), UiLogColor.Error, showTime: false);
-                    return;
-                }
-            }
-
-            try
-            {
-                Directory.CreateDirectory(CopilotJsonDir);
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-            foreach (var taskPair in taskPairs)
-            {
-                var jsonPath = $"{CopilotJsonDir}/{taskPair.Key}.json";
-                if (new FileInfo(jsonPath).FullName != taskPair.Value)
-                {
-                    // 相同路径跳拷贝
-                    File.Copy(taskPair.Value, jsonPath, true);
-                }
-
-                var navigateName = taskPair.Key;
-                var isRaid = navigateName.EndsWith("(Raid)");
-                var item = new CopilotItemViewModel(taskPair.Key.Replace("(Raid)", string.Empty), jsonPath, isRaid)
-                {
-                    Index = CopilotItemViewModels.Count,
-                };
-                CopilotItemViewModels.Add(item);
-                AddLog("append task: " + taskPair.Key, showTime: false);
-            }
-
-            SaveCopilotTask();
-        }
-
-        private static readonly string[] _supportExt = { ".json", ".mp4", ".m4s", ".mkv", ".flv", ".avi" };
-
-        /// <summary>
         /// Drops file.
         /// </summary>
         /// <param name="sender">The sender.</param>
@@ -723,118 +950,6 @@ namespace MaaWpfGui.ViewModels.UI
             }
         }
 
-        private bool _form;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to use auto-formation.
-        /// </summary>
-        public bool Form
-        {
-            get => _form;
-            set => SetAndNotify(ref _form, value);
-        }
-
-        private bool _addTrust;
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to use auto-formation.
-        /// </summary>
-        public bool AddTrust
-        {
-            get => _addTrust;
-            set => SetAndNotify(ref _addTrust, value);
-        }
-
-        private bool _useSanityPotion;
-
-        public bool UseSanityPotion
-        {
-            get => _useSanityPotion;
-            set => SetAndNotify(ref _useSanityPotion, value);
-        }
-
-        private bool _addUserAdditional = Convert.ToBoolean(ConfigurationHelper.GetValue(ConfigurationKeys.CopilotAddUserAdditional, bool.FalseString));
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to use auto-formation.
-        /// </summary>
-        public bool AddUserAdditional
-        {
-            get => _addUserAdditional;
-            set
-            {
-                SetAndNotify(ref _addUserAdditional, value);
-                ConfigurationHelper.SetValue(ConfigurationKeys.CopilotAddUserAdditional, value.ToString());
-            }
-        }
-
-        private string _userAdditional = ConfigurationHelper.GetValue(ConfigurationKeys.CopilotUserAdditional, string.Empty);
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to use auto-formation.
-        /// </summary>
-        public string UserAdditional
-        {
-            get => _userAdditional;
-            set
-            {
-                SetAndNotify(ref _userAdditional, value);
-                ConfigurationHelper.SetValue(ConfigurationKeys.CopilotUserAdditional, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to use auto-formation.
-        /// </summary>
-        private bool _useCopilotList;
-
-        public bool UseCopilotList
-        {
-            get => _useCopilotList;
-            set
-            {
-                if (value)
-                {
-                    _taskType = AsstTaskType.Copilot;
-                    Form = true;
-                }
-
-                SetAndNotify(ref _useCopilotList, value);
-            }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether to use auto-formation.
-        /// </summary>
-        private string _copilotTaskName = string.Empty;
-
-        public string CopilotTaskName
-        {
-            get => _copilotTaskName;
-            set
-            {
-                SetAndNotify(ref _copilotTaskName, value);
-            }
-        }
-
-        private const string CopilotJsonDir = "cache/copilot";
-
-        // UI 绑定的方法
-        // ReSharper disable once UnusedMember.Global
-        public void AddCopilotTask()
-        {
-            var stageName = CopilotTaskName.Trim();
-            AddCopilotTaskToList(stageName, false);
-        }
-
-        // UI 绑定的方法
-        // ReSharper disable once UnusedMember.Global
-        public void AddCopilotTask_Adverse()
-        {
-            var stageName = CopilotTaskName.Trim();
-            AddCopilotTaskToList(stageName, true);
-        }
-
         private void AddCopilotTaskToList(string? stageName, bool isRaid)
         {
             var invalidChar = @"[:',\.\(\)\|\[\]\?，。【】｛｝；：]"; // 无效字符
@@ -885,61 +1000,8 @@ namespace MaaWpfGui.ViewModels.UI
 
         public void SaveCopilotTask()
         {
-            JArray jArray = new JArray(CopilotItemViewModels.Select(item => new JObject
-            {
-                ["name"] = item.Name,
-                ["file_path"] = item.FilePath,
-                ["copilot_id"] = item.CopilotId,
-                ["is_raid"] = item.IsRaid,
-                ["is_checked"] = item.IsChecked,
-            }).ToList());
-            ConfigurationHelper.SetValue(ConfigurationKeys.CopilotTaskList, JsonConvert.SerializeObject(jArray));
-        }
-
-        // UI 绑定的方法
-        // ReSharper disable once UnusedMember.Global
-        public void SelectCopilotTask(int index)
-        {
-            Filename = CopilotItemViewModels[index].FilePath;
-            ClearLog();
-            UpdateFilename();
-        }
-
-        // UI 绑定的方法
-        // ReSharper disable once UnusedMember.Global
-        public void DeleteCopilotTask(int index)
-        {
-            CopilotItemViewModels.RemoveAt(index);
-            CopilotItemIndexChanged();
-        }
-
-        // UI 绑定的方法
-        // ReSharper disable once UnusedMember.Global
-        public void CleanUnableCopilotTask()
-        {
-            foreach (var item in CopilotItemViewModels.Where(model => !model.IsChecked).ToList())
-            {
-                CopilotItemViewModels.Remove(item);
-            }
-
-            CopilotItemIndexChanged();
-        }
-
-        // UI 绑定的方法
-        // ReSharper disable once UnusedMember.Global
-        public void ClearCopilotTask()
-        {
-            CopilotItemViewModels.Clear();
-            SaveCopilotTask();
-
-            try
-            {
-                Directory.Delete(CopilotJsonDir, true);
-            }
-            catch
-            {
-                // ignored
-            }
+            var task = JsonConvert.SerializeObject(CopilotItemViewModels, new JsonSerializerSettings() { DefaultValueHandling = DefaultValueHandling.Ignore });
+            ConfigurationHelper.SetValue(ConfigurationKeys.CopilotTaskList, task);
         }
 
         /// <summary>
@@ -987,20 +1049,6 @@ namespace MaaWpfGui.ViewModels.UI
 
                 SaveCopilotTask();
             });
-        }
-
-        public bool Loop { get; set; }
-
-        private int _loopTimes = int.Parse(ConfigurationHelper.GetValue(ConfigurationKeys.CopilotLoopTimes, "1"));
-
-        public int LoopTimes
-        {
-            get => _loopTimes;
-            set
-            {
-                SetAndNotify(ref _loopTimes, value);
-                ConfigurationHelper.SetValue(ConfigurationKeys.CopilotLoopTimes, value.ToString());
-            }
         }
 
         /// <summary>
@@ -1125,16 +1173,6 @@ namespace MaaWpfGui.ViewModels.UI
 
         private bool _isVideoTask;
 
-        private readonly List<int> _recentlyRatedCopilotId = new(); // TODO: 可能考虑加个持久化
-
-        private bool _couldLikeWebJson;
-
-        public bool CouldLikeWebJson
-        {
-            get => _couldLikeWebJson;
-            set => SetAndNotify(ref _couldLikeWebJson, value);
-        }
-
         private void UpdateCouldLikeWebJson()
         {
             CouldLikeWebJson = IsDataFromWeb &&
@@ -1174,18 +1212,6 @@ namespace MaaWpfGui.ViewModels.UI
             }
         }
 
-        // ReSharper disable once UnusedMember.Global
-        public void LikeWebJson()
-        {
-            RateWebJson("Like", CopilotId);
-        }
-
-        // ReSharper disable once UnusedMember.Global
-        public void DislikeWebJson()
-        {
-            RateWebJson("Dislike", CopilotId);
-        }
-
         private async void RateWebJson(string rating, int copilotId)
         {
             if (!CouldLikeWebJson)
@@ -1212,44 +1238,6 @@ namespace MaaWpfGui.ViewModels.UI
 
             _recentlyRatedCopilotId.Add(copilotId);
             AddLog(LocalizationHelper.GetString("ThanksForLikeWebJson"), UiLogColor.Info, showTime: false);
-        }
-
-        private string _urlText = LocalizationHelper.GetString("PrtsPlus");
-
-        /// <summary>
-        /// Gets or private sets the UrlText.
-        /// </summary>
-        public string UrlText
-        {
-            get => _urlText;
-            private set => SetAndNotify(ref _urlText, value);
-        }
-
-        private const string CopilotUiUrl = MaaUrls.PrtsPlus;
-
-        private string _copilotUrl = CopilotUiUrl;
-
-        /// <summary>
-        /// Gets or private sets the copilot URL.
-        /// </summary>
-        public string CopilotUrl
-        {
-            get => _copilotUrl;
-            private set
-            {
-                UrlText = value == CopilotUiUrl ? LocalizationHelper.GetString("PrtsPlus") : LocalizationHelper.GetString("VideoLink");
-                SetAndNotify(ref _copilotUrl, value);
-            }
-        }
-
-        private const string MapUiUrl = MaaUrls.MapPrts;
-
-        private string _mapUrl = MapUiUrl;
-
-        public string MapUrl
-        {
-            get => _mapUrl;
-            private set => SetAndNotify(ref _mapUrl, value);
         }
 
         /// <summary>
@@ -1292,16 +1280,6 @@ namespace MaaWpfGui.ViewModels.UI
             DependencyObject scope = FocusManager.GetFocusScope(element);
             FocusManager.SetFocusedElement(scope, element);
             Keyboard.ClearFocus();
-        }
-
-        private void EasterEgg(string text)
-        {
-            switch (text)
-            {
-                case "/help":
-                    AddLog(LocalizationHelper.GetString("HelloWorld"), UiLogColor.Message, showTime: false);
-                    break;
-            }
         }
     }
 }

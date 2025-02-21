@@ -735,7 +735,7 @@
         "text": ["開始行動"]
     },
     "PRTS3": {
-        "text": ["可放置角色"]
+        "text": ["角色"]
     },
     "EndOfActionAnnihilation": {
         "text": ["行動結束"]
@@ -1033,6 +1033,12 @@
         "roi": [417, 567, 444, 153],
         "method": "Ccoeff",
         "colorScales": []
+    },
+    "StageDrops-TimesCheck": {
+        "text": ["連續", "成功", "代理", "作戰"]
+    },
+    "StageDrops-Stage12-TripleFlag": {
+        "text": ["後勤", "急派"]
     },
     "SSSBegin": {
         "text": ["開始保全作戰"]
@@ -1674,6 +1680,9 @@
     "Roguelike@IntegratedStrategies": {
         "templThreshold": 0.75
     },
+    "Roguelike@NoneSelected": {
+        "text": ["不編入"]
+    },
     "Roguelike@PreSelectTheme": {
         "text": ["查看全部主題", "查看", "TODO: image of //INTEGRATED STRATEGIES"],
         "roi": [450, 480, 160, 45]
@@ -1836,11 +1845,14 @@
     "Roguelike@StageTraderSpecialShoppingAfterRefresh": {
         "text": ["指路", "指路鱗"]
     },
+    "Roguelike@StartExploreCD": {
+        "text": ["等待重返城堡入口", "等待重返陸地", "等待科考隊重建", "等待"]
+    },
     "Phantom@Roguelike@CheckLevel": {
         "text": ["古堡筆記", "古堡", "筆記"]
     },
     "Phantom@Roguelike@NextLevel": {
-        "text": ["迷霧歧途", "落陽庭院", "故土殘軀", "噩夢之始", "血月長廊", "渴欲大廳"]
+        "text": ["迷霧歧途", "落陽庭院", "故(土|士)殘軀", "噩夢之始", "血月長廊", "渴欲(大|太)廳"]
     },
     "Phantom@Roguelike@SelectTheme": {
         "text": ["古堡筆記", "古堡", "筆記"]
@@ -1852,20 +1864,40 @@
         "ocrReplace": [
             ["迷霧歧途", "_aggressive"],
             ["落陽庭院", "_aggressive"],
-            ["故土殘軀", "_aggressive"],
+            ["故(土|士)殘軀", "_aggressive"],
             ["噩夢之始", "_pragmatic"],
             ["血月長廊", "_pragmatic"],
-            ["渴欲大廳", "_default"]
+            ["渴欲(大|太)廳", "_default"]
         ]
     },
     "Phantom@Roguelike@StrategyChange_mode4": {
         "ocrReplace": [
             ["迷霧歧途", "_default"],
             ["落陽庭院", "_default"],
-            ["故土殘軀", "_exit"],
+            ["故(土|士)殘軀", "_exit"],
             ["噩夢之始", "_exit"],
             ["血月長廊", "_exit"],
-            ["渴欲大廳", "_exit"]
+            ["渴欲(大|太)廳", "_exit"]
+        ]
+    },
+    "Phantom@Roguelike@StrategyChange_mode6": {
+        "ocrReplace": [
+            ["迷霧歧途", "_aggressive"],
+            ["落陽庭院", "_aggressive"],
+            ["故(土|士)殘軀", "_aggressive"],
+            ["噩夢之始", "_pragmatic"],
+            ["血月長廊", "_pragmatic"],
+            ["渴欲(大|太)廳", "_default"]
+        ]
+    },
+    "Phantom@Roguelike@StrategyChange_mode7": {
+        "ocrReplace": [
+            ["迷霧歧途", "_aggressive"],
+            ["落陽庭院", "_aggressive"],
+            ["故(土|士)殘軀", "_aggressive"],
+            ["噩夢之始", "_pragmatic"],
+            ["血月長廊", "_pragmatic"],
+            ["渴欲(大|太)廳", "_default"]
         ]
     },
     "Mizuki@Roguelike@CheckLevel": {
@@ -1899,8 +1931,29 @@
             ["紺碧搖籃", "_exit"]
         ]
     },
+    "Mizuki@Roguelike@StrategyChange_mode6": {
+        "ocrReplace": [
+            ["天光海岸", "_aggressive"],
+            ["離岸孤島", "_aggressive"],
+            ["波濤略地", "_pragmatic"],
+            ["隱秘溫床", "_pragmatic"],
+            ["失塵岩洞", "_default"],
+            ["幽海叢林", "_default"],
+            ["紺碧搖籃", "_SKIP_"]
+        ]
+    },
+    "Mizuki@Roguelike@StrategyChange_mode7": {
+        "ocrReplace": [
+            ["天光海岸", "_aggressive"],
+            ["離岸孤島", "_aggressive"],
+            ["波濤略地", "_pragmatic"],
+            ["隱秘溫床", "_pragmatic"],
+            ["失塵岩洞", "_default"],
+            ["幽海叢林", "_default"],
+            ["紺碧搖籃", "_SKIP_"]
+        ]
+    },
     "Sami@Roguelike@CheckCollapsalParadigms": {
-        "doc": "The translations are not verified.",
         "ocrReplace": [
             ["去量化", "去量化"],
             ["去量深化", "去量深化"],
@@ -1925,14 +1978,12 @@
         ]
     },
     "Sami@Roguelike@CheckCollapsalParadigmsOnBanner": {
-        "doc": "The translations are not verified.",
         "ocrReplace": [
             ["坍縮範式加深", "坍缩范式加深"],
             ["坍縮範式消退", "坍缩范式消退"]
         ]
     },
     "Sami@Roguelike@CheckCollapsalParadigmsOnPanel": {
-        "doc": "The translations are not verified.",
         "ocrReplace": [["當前坍縮值", "当前坍缩值"]]
     },
     "Sami@Roguelike@CheckCollapsalParadigms_loading": {
@@ -2030,9 +2081,7 @@
         "ocrReplace": [
             ["初霜湖澤", "_aggressive"],
             ["密靜林地", "_aggressive"],
-            [".*明凍土", "昧明凍土"],
-            ["味明凍士", "昧明凍土"],
-            ["昧明凍土", "_pragmatic"],
+            [".*明凍(土|士)", "_pragmatic"],
             ["積冰巖骸", "_pragmatic"],
             ["無瑕花園", "_default"],
             ["遠見之構", "_default"],
@@ -2043,7 +2092,7 @@
         "ocrReplace": [
             ["初霜湖澤", "_default"],
             ["密靜林地", "_default"],
-            ["昧明凍土", "_exit"],
+            [".*明凍(土|士)", "_exit"],
             ["積冰巖骸", "_exit"],
             ["無瑕花園", "_exit"],
             ["遠見之構", "_exit"],
@@ -2051,14 +2100,35 @@
         ]
     },
     "Sami@Roguelike@StrategyChange_mode5": {
-        "text": ["_collapsal_paradigms"],
         "ocrReplace": [
             ["初霜湖澤", "_collapsal_paradigms"],
             ["密靜林地", "_collapsal_paradigms"],
-            ["昧明凍土", "_SKIP_"],
+            [".*明凍(土|士)", "_SKIP_"],
             ["積冰岩骸", "_SKIP_"],
             ["無瑕花園", "_SKIP_"],
             ["遠見之構", "_SKIP_"],
+            ["深埋迷境", "_SKIP_"]
+        ]
+    },
+    "Sami@Roguelike@StrategyChange_mode6": {
+        "ocrReplace": [
+            ["初霜湖澤", "_aggressive"],
+            ["密靜林地", "_aggressive"],
+            [".*明凍(土|士)", "_pragmatic"],
+            ["積冰岩骸", "_pragmatic"],
+            ["無瑕花園", "_default"],
+            ["遠見之構", "_default"],
+            ["深埋迷境", "_SKIP_"]
+        ]
+    },
+    "Sami@Roguelike@StrategyChange_mode7": {
+        "ocrReplace": [
+            ["初霜湖澤", "_aggressive"],
+            ["密靜林地", "_aggressive"],
+            [".*明凍(土|士)", "_pragmatic"],
+            ["積冰岩骸", "_pragmatic"],
+            ["無瑕花園", "_default"],
+            ["遠見之構", "_default"],
             ["深埋迷境", "_SKIP_"]
         ]
     },

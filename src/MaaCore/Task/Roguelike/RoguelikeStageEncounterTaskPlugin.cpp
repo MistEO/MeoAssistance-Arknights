@@ -4,6 +4,7 @@
 #include "Controller/Controller.h"
 #include "Task/ProcessTask.h"
 #include "Utils/Logger.hpp"
+#include "Vision/Matcher.h"
 
 bool asst::RoguelikeStageEncounterTaskPlugin::verify(AsstMsg msg, const json::value& details) const
 {
@@ -87,6 +88,18 @@ bool asst::RoguelikeStageEncounterTaskPlugin::_run()
     info["details"]["default_choose"] = event.default_choose;
     info["details"]["choose_option"] = choose_option;
     callback(AsstMsg::SubTaskExtraInfo, info);
+
+    // 萨卡兹内容拓展 II，#11861
+    if (event.name.starts_with("魂灵见闻：")) {
+        Matcher matcher(image);
+        matcher.set_task_info("Sarkaz@Roguelike@CloseCollectionClose");
+        if (matcher.analyze()) {
+            Log.trace("Found extra 'Plans', click CloseCollectionClose and StageEncounterJudgeClick");
+            ctrler()->click(matcher.get_result().rect);
+            ProcessTask(*this, { "Roguelike@StageEncounterJudgeClick" }).run();
+            ProcessTask(*this, { "Roguelike@StageEncounterJudgeClick2" }).run();
+        }
+    }
 
     const auto click_option_task_name = [&](const int item, const int total) {
         if (item > total) {

@@ -29,10 +29,16 @@
     "Mizuki@Roguelike@MissionFailedFlag": {
         "templThreshold": 0.75
     },
-    "Sarkaz@Roguelike@StageRefresh": {
+    "Sarkaz@Roguelike@ChooseBurdenOperatorAtStart": {
         "templThreshold": 0.7
     },
     "Sarkaz@Roguelike@DecreaseBurdenAbandonThought": {
         "templThreshold": 0.9
+    },
+    "Sarkaz@Roguelike@DecreaseBurdenRetardation": {
+        "templThreshold": 0.8
+    },
+    "Sarkaz@Roguelike@StageRefresh": {
+        "templThreshold": 0.7
     }
 }

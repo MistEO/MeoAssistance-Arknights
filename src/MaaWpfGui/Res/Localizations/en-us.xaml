@@ -128,7 +128,7 @@
     <system:String x:Key="RoguelikeStrategyCollapse">Farm collapse paradigms, restart immediately after encountering a non-rare collapse paradigm</system:String>
     <system:String x:Key="RoguelikeCollectibleModeSquad">Squad to get collectibles</system:String>
     <system:String x:Key="RoguelikeStrategyMonthlySquad">Grind Monthly Squad, clear as far as possible</system:String>
-    <system:String x:Key="RoguelikeStrategyDeepExploration">Grind Deep Exploration, clear as far as possible</system:String>
+    <system:String x:Key="RoguelikeStrategyDeepExploration">Grind Deep Investigation, clear as far as possible</system:String>
     <system:String x:Key="StartingSquad">Starting Squad</system:String>
     <system:String x:Key="StartingRoles">Starting Roles</system:String>
     <system:String x:Key="StartingCoreChar">Starting Operator (single)</system:String>
@@ -150,7 +150,7 @@
     <system:String x:Key="RoguelikeStartWithSeed">Enable Investment Seed</system:String>
     <system:String x:Key="RoguelikeMonthlySquadAutoIterate">Monthly Squad Auto-Switch</system:String>
     <system:String x:Key="RoguelikeMonthlySquadCheckComms">Monthly Squad Communication</system:String>
-    <system:String x:Key="RoguelikeDeepExplorationAutoIterate">In-Depth Investigation Auto-Switch</system:String>
+    <system:String x:Key="RoguelikeDeepExplorationAutoIterate">Deep Investigation Auto-Switch</system:String>
     <system:String x:Key="DeploymentWithPause" xml:space="preserve">Pause Deployment (Pause Trick) (Experimental)</system:String>
     <system:String x:Key="AdbLiteEnabled">Use ADB Lite (Experimental)</system:String>
     <system:String x:Key="KillAdbOnExit">Kill ADB On Exit</system:String>
@@ -382,11 +382,11 @@ Please do not check it when the stage OF-1 is not unlocked.</system:String>
     <system:String x:Key="PromptRestartForSettingsChange">Restart immediately to apply changes?</system:String>
     <system:String x:Key="SwitchResolutionTip">Change the emulator resolution to 1920x1080!</system:String>
     <system:String x:Key="ResolutionInfoYoStarEN">Make sure the emulator is set to 1920x1080</system:String>
-    <system:String x:Key="AllowUseStoneSave">Save "Use Originium" Setting</system:String>
+    <system:String x:Key="AllowUseStoneSave">Save "Use Originium"</system:String>
     <system:String x:Key="AllowUseStoneSaveWarning">This function is considered dangerous. Pressing the "Confirm" button indicates that you understand and are willing to accept the potential risks.</system:String>
     <system:String x:Key="UseAlternateStage">Use alternative stage</system:String>
     <system:String x:Key="UseRemainingSanityStage">Use remaining sanity stage</system:String>
-    <system:String x:Key="UseRemainingSanityStageTip">Farm the specified stage after completing the main task, won't use sanity potion or stone</system:String>
+    <system:String x:Key="UseRemainingSanityStageTip">Farm the specified stage after completing the main task, won't use sanity potion or Originium</system:String>
     <system:String x:Key="UseExpiringMedicine">Unlimited use of expiring (&lt;48h) sanity potion</system:String>
     <system:String x:Key="HideUnavailableStage">Hide today's not open stages</system:String>
     <system:String x:Key="HideSeries">Hide series</system:String>
@@ -782,12 +782,12 @@ The video aspect ratio needs to be 16:9 without interference factors such as bla
     <system:String x:Key="RoguelikeGamePass">Exploration completed! Congratulations!</system:String>
     <system:String x:Key="RoguelikeSpecialItemBought">Special Item Purchased!</system:String>
     <system:String x:Key="MonthlySquadCompleted">Monthly squad all clear! Congratulations!</system:String>
-    <system:String x:Key="DeepExplorationCompleted">Deep exploration all clear! Congratulations!</system:String>
-    <system:String x:Key="DeepExplorationNotUnlockedComplain">Deep exploration not unlocked yet</system:String>
+    <system:String x:Key="DeepExplorationCompleted">Deep Investigation all clear! Congratulations!</system:String>
+    <system:String x:Key="DeepExplorationNotUnlockedComplain">Deep Investigation not unlocked yet</system:String>
     <system:String x:Key="SSSGamePass">Game cleared! congratulations!</system:String>
     <system:String x:Key="Trader">Node: Rogue Trader</system:String>
     <system:String x:Key="SafeHouse">Node: Safe House</system:String>
-    <system:String x:Key="FilterTruth">Node: Filter Truth</system:String>
+    <system:String x:Key="FilterTruth">Node: Idea Filter</system:String>
     <system:String x:Key="CombatDps">Node: Combat Operation</system:String>
     <system:String x:Key="EmergencyDps">Node: Emergency Operation</system:String>
     <system:String x:Key="DreadfulFoe">Node: Dreadful Foe</system:String>

@@ -30,6 +30,7 @@
             <ComboBox
                 Margin="0,5"
                 hc:InfoElement.Title="{DynamicResource Strategy}"
+                DisplayMemberPath="Display"
                 IsHitTestVisible="{Binding Idle, Source={x:Static setting:TaskQueueViewModel.TaskSettingDataContext}}"
                 ItemsSource="{Binding ReclamationModeList}"
                 SelectedValue="{Binding ReclamationMode}"

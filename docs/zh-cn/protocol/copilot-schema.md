@@ -154,7 +154,12 @@ icon: ph:sword-bold
         "title_color": "dark",
         "details": "对练度要求很低balabala……", // 建议在这里写上你的名字！（作者名）、参考的视频攻略链接等
         "details_color": "dark"
-    }
+    },
+    "difficulty": 0 // 作业对应难度，可选，默认值为0。
+    // 0: 缺省，未设置
+    // 1: 支持普通难度
+    // 2: 支持突袭难度
+    // 3: 支持普通、突袭难度
 }
 ```
 

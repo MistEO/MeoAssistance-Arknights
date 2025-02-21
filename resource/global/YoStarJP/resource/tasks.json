@@ -1330,7 +1330,7 @@
             ["ボイラーマン志願隊", "炉工志愿队"],
             ["次の方どうぞ", "有序清场"],
             ["時代の断層", "年代断层"],
-            ["計画的な開墾", "计划耕种"],
+            ["計画的な開.*", "计划耕种"],
             ["仮説の衝突", "假想对冲"],
             ["巫術とアーツの同盟", "巫咒同盟"],
             ["無辜なる浄土", "无罪净土"],
@@ -2573,7 +2573,6 @@
         "templThreshold": 0.95
     },
     "Phantom@Roguelike@StrategyChange_mode0": {
-        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             ["迷霧の岐路", "_aggressive"],
             ["落陽の庭園", "_aggressive"],
@@ -2584,7 +2583,6 @@
         ]
     },
     "Phantom@Roguelike@StrategyChange_mode4": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["迷霧の岐路", "_default"],
             ["落陽の庭園", "_default"],
@@ -2595,7 +2593,6 @@
         ]
     },
     "Phantom@Roguelike@StrategyChange_mode6": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["迷霧の岐路", "_aggressive"],
             ["落陽の庭園", "_aggressive"],
@@ -2606,7 +2603,6 @@
         ]
     },
     "Phantom@Roguelike@StrategyChange_mode7": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["迷霧の岐路", "_aggressive"],
             ["落陽の庭園", "_aggressive"],
@@ -2638,7 +2634,6 @@
         "text": ["セーフハウスを利用する"]
     },
     "Mizuki@Roguelike@StrategyChange_mode0": {
-        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             ["陽の射す海岸", "_aggressive"],
             ["離れの孤島", "_aggressive"],
@@ -2650,7 +2645,6 @@
         ]
     },
     "Mizuki@Roguelike@StrategyChange_mode4": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["陽の射す海岸", "_default"],
             ["離れの孤島", "_default"],
@@ -2662,7 +2656,6 @@
         ]
     },
     "Mizuki@Roguelike@StrategyChange_mode6": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["陽の射す海岸", "_aggressive"],
             ["離れの孤島", "_aggressive"],
@@ -2674,7 +2667,6 @@
         ]
     },
     "Mizuki@Roguelike@StrategyChange_mode7": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["陽の射す海岸", "_aggressive"],
             ["離れの孤島", "_aggressive"],
@@ -2832,7 +2824,6 @@
         "text": ["セーフハウスを利用する"]
     },
     "Sami@Roguelike@StrategyChange_mode0": {
-        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             ["初霜の湖沼", "_aggressive"],
             ["静謐な.*", "_aggressive"],
@@ -2844,7 +2835,6 @@
         ]
     },
     "Sami@Roguelike@StrategyChange_mode4": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["初霜の湖沼", "_default"],
             ["静謐な.*", "_default"],
@@ -2856,7 +2846,6 @@
         ]
     },
     "Sami@Roguelike@StrategyChange_mode5": {
-        "text": ["_collapsal_paradigms"],
         "ocrReplace": [
             ["初霜の湖沼", "_collapsal_paradigms"],
             ["静謐な.*", "_collapsal_paradigms"],
@@ -2868,7 +2857,6 @@
         ]
     },
     "Sami@Roguelike@StrategyChange_mode6": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["初霜の湖沼", "_aggressive"],
             ["静謐な.*", "_aggressive"],
@@ -2880,7 +2868,6 @@
         ]
     },
     "Sami@Roguelike@StrategyChange_mode7": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["初霜の湖沼", "_aggressive"],
             ["静謐な.*", "_aggressive"],
@@ -2893,6 +2880,9 @@
     },
     "Sarkaz@Roguelike@CheckLevel": {
         "text": ["仮説集"]
+    },
+    "Sarkaz@Roguelike@ChooseBurdenOperatorAtStart": {
+        "roi": [589, 584, 231, 121]
     },
     "Sarkaz@Roguelike@NextLevel": {
         "text": ["溶魂の端緒", "錬鉄の根系", "灰燼の迷城", "蓋然の異域", "虚構の境(目)?", "輝ける天上", "奇妙な断章"]
@@ -2910,7 +2900,6 @@
         "text": ["セーフハウスを利用する"]
     },
     "Sarkaz@Roguelike@StrategyChange-FastInvestment": {
-        "text": ["_fastInvestment", "_exit"],
         "ocrReplace": [
             ["溶魂の端緒", "_fastInvestment"],
             ["錬鉄の根系", "_exit"],
@@ -2922,7 +2911,6 @@
         ]
     },
     "Sarkaz@Roguelike@StrategyChange_mode0": {
-        "text": ["_default"],
         "ocrReplace": [
             ["溶魂の端緒", "_default"],
             ["錬鉄の根系", "_default"],
@@ -2934,7 +2922,6 @@
         ]
     },
     "Sarkaz@Roguelike@StrategyChange_mode0_NOT_IN_USE": {
-        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             ["溶魂の端緒", "_aggressive"],
             ["錬鉄の根系", "_aggressive"],
@@ -2946,7 +2933,6 @@
         ]
     },
     "Sarkaz@Roguelike@StrategyChange_mode10001": {
-        "text": ["_routing", "_exit"],
         "ocrReplace": [
             ["溶魂の端緒", "_routing"],
             ["錬鉄の根系", "_exit"],
@@ -2958,7 +2944,6 @@
         ]
     },
     "Sarkaz@Roguelike@StrategyChange_mode4": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["溶魂の端緒", "_default"],
             ["錬鉄の根系", "_default"],
@@ -2970,7 +2955,6 @@
         ]
     },
     "Sarkaz@Roguelike@StrategyChange_mode6": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["溶魂の端緒", "_default"],
             ["錬鉄の根系", "_default"],
@@ -2982,7 +2966,6 @@
         ]
     },
     "Sarkaz@Roguelike@StrategyChange_mode7": {
-        "text": ["_default", "_exit"],
         "ocrReplace": [
             ["溶魂の端緒", "_default"],
             ["錬鉄の根系", "_default"],

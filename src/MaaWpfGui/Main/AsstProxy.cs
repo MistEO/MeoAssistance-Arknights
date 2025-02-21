@@ -760,23 +760,6 @@ namespace MaaWpfGui.Main
                                 Instances.TaskQueueViewModel.IncreaseCustomInfrastPlanIndex();
                                 Instances.TaskQueueViewModel.RefreshCustomInfrastPlanIndexByPeriod();
                                 break;
-
-                            case "Mall":
-                                {
-                                    if (TaskQueueViewModel.FightTask.Stage != string.Empty && TaskQueueViewModel.MallTask.CreditFightTaskEnabled)
-                                    {
-                                        TaskQueueViewModel.MallTask.LastCreditFightTaskTime = DateTime.UtcNow.ToYjDate().ToFormattedString();
-                                        Instances.TaskQueueViewModel.AddLog(LocalizationHelper.GetString("CompleteTask") + LocalizationHelper.GetString("CreditFight"));
-                                    }
-
-                                    if (TaskQueueViewModel.MallTask.CreditVisitFriendsEnabled)
-                                    {
-                                        TaskQueueViewModel.MallTask.LastCreditVisitFriendsTime = DateTime.UtcNow.ToYjDate().ToFormattedString();
-                                        Instances.TaskQueueViewModel.AddLog(LocalizationHelper.GetString("CompleteTask") + LocalizationHelper.GetString("Visiting"));
-                                    }
-
-                                    break;
-                                }
                         }
 
                         if (taskChain == "Fight" && SanityReport.HasSanityReport)
@@ -1233,16 +1216,39 @@ namespace MaaWpfGui.Main
             switch (subTask)
             {
                 case "ProcessTask":
+                    var taskchain = details["taskchain"]?.ToString();
+                    switch (taskchain)
                     {
-                        string taskName = details!["details"]!["task"]!.ToString();
-                        int execTimes = (int)details!["details"]!["exec_times"]!;
+                        case "Roguelike":
+                            {
+                                var taskName = details!["details"]!["task"]!.ToString();
+                                int execTimes = (int)details!["details"]!["exec_times"]!;
 
-                        switch (taskName)
-                        {
-                            case "StartExplore":
-                                Instances.TaskQueueViewModel.AddLog(LocalizationHelper.GetString("BegunToExplore") + $" {execTimes} " + LocalizationHelper.GetString("UnitTime"), UiLogColor.Info);
+                                if (taskName == "StartExplore")
+                                {
+                                    Instances.TaskQueueViewModel.AddLog(LocalizationHelper.GetString("BegunToExplore") + $" {execTimes} " + LocalizationHelper.GetString("UnitTime"), UiLogColor.Info);
+                                }
+
                                 break;
-                        }
+                            }
+
+                        case "Mall":
+                            {
+                                var taskName = details["details"]!["task"]!.ToString();
+                                switch (taskName)
+                                {
+                                    case "EndOfActionThenStop":
+                                        TaskQueueViewModel.MallTask.LastCreditFightTaskTime = DateTime.UtcNow.ToYjDate().ToFormattedString();
+                                        Instances.TaskQueueViewModel.AddLog(LocalizationHelper.GetString("CompleteTask") + LocalizationHelper.GetString("CreditFight"));
+                                        break;
+                                    case "VisitLimited" or "VisitNextBlack":
+                                        TaskQueueViewModel.MallTask.LastCreditVisitFriendsTime = DateTime.UtcNow.ToYjDate().ToFormattedString();
+                                        Instances.TaskQueueViewModel.AddLog(LocalizationHelper.GetString("CompleteTask") + LocalizationHelper.GetString("Visiting"));
+                                        break;
+                                }
+
+                                break;
+                            }
                     }
 
                     break;
@@ -1581,7 +1587,7 @@ namespace MaaWpfGui.Main
                         if (ret == VersionUpdateViewModel.CheckUpdateRetT.OnlyGameResourceUpdated)
                         {
                             Instances.AsstProxy.LoadResource();
-                            DataHelper.ReloadBattleData();
+                            DataHelper.Reload();
                             SettingsViewModel.VersionUpdateSettings.ResourceInfoUpdate();
                             ToastNotification.ShowDirect(LocalizationHelper.GetString("GameResourceUpdated"));
                         }

@@ -13121,6 +13121,15 @@
         "stageId": "camp_r_26",
         "width": 13
     },
+    "camp_r_27-obt/campaign/level_camp_r_27": {
+        "code": "莱塔尼亚",
+        "filename": "camp_r_27-obt-campaign-level_camp_r_27.json",
+        "height": 9,
+        "levelId": "obt/campaign/level_camp_r_27",
+        "name": "选帝侯广场",
+        "stageId": "camp_r_27",
+        "width": 13
+    },
     "easy_09-01-obt/main/level_easy_09-01": {
         "code": "9-2",
         "filename": "easy_09-01-obt-main-level_easy_09-01.json",

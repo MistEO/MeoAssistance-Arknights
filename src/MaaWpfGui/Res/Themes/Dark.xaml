@@ -51,7 +51,7 @@
     <SolidColorBrush x:Key="SafehouseIS" Color="DodgerBlue" />
     <SolidColorBrush x:Key="TraderIS" Color="MediumSeaGreen" />
     <SolidColorBrush x:Key="EventIS" Color="LightSkyBlue" />
-    <SolidColorBrush x:Key="TrustIS" Color="SlateGray"/>
+    <SolidColorBrush x:Key="TruthIS" Color="#8D701C"/>
     <SolidColorBrush x:Key="CombatIS" Color="DarkOrange" />
     <SolidColorBrush x:Key="EmergencyIS" Color="MediumVioletRed" />
     <SolidColorBrush x:Key="BossIS" Color="Firebrick " />

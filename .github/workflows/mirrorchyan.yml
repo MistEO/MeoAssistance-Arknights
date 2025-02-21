@@ -4,7 +4,31 @@ on:
   workflow_dispatch:
 
 jobs:
-  mirrorchyan:
+  mirrorchyan_win_x64:
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [win]
+        arch: [x64]
+
+    steps:
+      - id: uploading
+        uses: MirrorChyan/uploading-action@v1
+        with:
+          filetype: latest-release
+          filename: "*MAA-*-${{ matrix.os }}-${{ matrix.arch }}.zip"
+          mirrorchyan_rid: MAA
+
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          upload_token: ${{ secrets.MirrorChyanUploadToken }}
+          os: ${{ matrix.os }}
+          arch: ${{ matrix.arch }}
+
+  mirrorchyan_win_arm64:
+    needs: [mirrorchyan_win_x64]
     runs-on: macos-latest
     strategy:
       fail-fast: false
@@ -18,6 +42,51 @@ jobs:
         with:
           filetype: latest-release
           filename: "*MAA-*-${{ matrix.os }}-${{ matrix.arch }}.zip"
+          mirrorchyan_rid: MAA
+
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          upload_token: ${{ secrets.MirrorChyanUploadToken }}
+          os: ${{ matrix.os }}
+          arch: ${{ matrix.arch }}
+
+  mirrorchyan_macos:
+    needs: [mirrorchyan_win_x64]
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - id: uploading
+        uses: MirrorChyan/uploading-action@v1
+        with:
+          filetype: latest-release
+          filename: "*MAA-*-macos-universal.zip"
+          mirrorchyan_rid: MAA
+
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          upload_token: ${{ secrets.MirrorChyanUploadToken }}
+          os: macos
+          arch: '' # universal
+
+  mirrorchyan_linux:
+    needs: [mirrorchyan_win_x64, mirrorchyan_win_arm64, mirrorchyan_macos]
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [linux]
+        arch: [aarch64, x86_64]
+
+    steps:
+      - id: uploading
+        uses: MirrorChyan/uploading-action@v1
+        with:
+          filetype: latest-release
+          filename: "*MAA-*-${{ matrix.os }}-${{ matrix.arch }}.tar.gz"
           mirrorchyan_rid: MAA
 
           github_token: ${{ secrets.GITHUB_TOKEN }}

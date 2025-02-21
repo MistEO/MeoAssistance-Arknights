@@ -6870,6 +6870,13 @@
             "Roguelike@CloseEvent"
         ]
     },
+    "Roguelike@CloseInterview": {
+        "template": "empty.png",
+        "action": "ClickSelf",
+        "templThreshold": 0.9,
+        "roi": [572, 434, 144, 141],
+        "next": ["Roguelike@StrategyChange"]
+    },
     "Roguelike@CollectReward": {
         "Doc": "多点一下回收奖励",
         "template": "Phantom@Roguelike@GamePassSkip1Confirm.png",
@@ -6906,7 +6913,7 @@
     },
     "Roguelike@DeepExplorationRewardMiss": {
         "Doc": "base_task 深入调查奖励已获取",
-        "template": "Roguelike@RewardMiss.png",
+        "template": "Roguelike@RewardCompleted.png",
         "action": "ClickRect",
         "roi": [60, 560, 330, 50],
         "specificRect": [940, 210, 50, 80],
@@ -7058,7 +7065,8 @@
     "Roguelike@GetDropLeaveConfirm": {
         "action": "ClickSelf",
         "roi": [0, 484, 1280, 138],
-        "next": ["Roguelike@DropsFlag"]
+        "postDelay": 1000,
+        "next": ["Roguelike@GetDropLeaveConfirm@LoadingText", "Roguelike@DropsFlag"]
     },
     "Roguelike@GetDropRecruit": {
         "Doc": "base_task",
@@ -7231,16 +7239,16 @@
         "postDelay": 300,
         "next": ["Roguelike@StartExplore", "#self"]
     },
-    "Roguelike@MonthlySquadCommsMiss": {
+    "Roguelike@MonthlySquadCommsCompleted": {
         "Doc": "base_task 月度小队通信已获取",
         "template": "empty.png",
         "roi": [110, 380, 370, 70],
         "next": ["Roguelike@MonthlySquadCommsBackTwice"],
         "postDelay": 300
     },
-    "Roguelike@MonthlySquadRewardMiss": {
+    "Roguelike@MonthlySquadRewardCompleted": {
         "Doc": "base_task 月度小队奖励已获取",
-        "template": "Roguelike@RewardMiss.png",
+        "template": "Roguelike@RewardCompleted.png",
         "action": "ClickRect",
         "roi": [735, 410, 280, 95],
         "specificRect": [466, 405, 40, 60],
@@ -7252,7 +7260,7 @@
         "text": [],
         "roi": [522, 431, 245, 144],
         "postDelay": 1000,
-        "next": ["Roguelike@StrategyChange"]
+        "next": ["Roguelike@CloseInterview", "Roguelike@StrategyChange"]
     },
     "Roguelike@NoneSelected": {
         "algorithm": "OcrDetect",
@@ -7565,6 +7573,7 @@
         "action": "ClickSelf",
         "text": [],
         "ocrReplace": [
+            ["绝境(？|\\?)抉择(？|\\?)", "绝境？抉择？"],
             ["魂灵见闻.*以血还血", "魂灵见闻：以血还血"],
             ["魂灵见闻.*善恶同道", "魂灵见闻：善恶同道"],
             ["魂灵见闻.*石心双(子)?", "魂灵见闻：石心双子"]
@@ -8061,6 +8070,9 @@
         "next": ["Phantom@Roguelike@LastReward-EnterPoint", "Phantom@Roguelike@RolesDefault"]
     },
     "Phantom@Roguelike@CloseEvent": {},
+    "Phantom@Roguelike@CloseInterview": {
+        "template": "Phantom@Roguelike@StageEncounterSpecialClose.png"
+    },
     "Phantom@Roguelike@Continue": {},
     "Phantom@Roguelike@DeepExploration": {
         "template": "Phantom@Roguelike@DeepExploration.png"
@@ -8072,7 +8084,7 @@
         "template": "Roguelike@DeepExplorationNotUnlocked.png"
     },
     "Phantom@Roguelike@DeepExplorationRewardMiss": {
-        "template": "Roguelike@RewardMiss.png"
+        "template": "Roguelike@RewardCompleted.png"
     },
     "Phantom@Roguelike@DialogSkip": {
         "template": "Roguelike@DialogSkip.png",
@@ -8166,15 +8178,20 @@
     "Phantom@Roguelike@MonthlySquadComms": {
         "template": "Phantom@Roguelike@MonthlySquadComms.png"
     },
-    "Phantom@Roguelike@MonthlySquadCommsMiss": {
-        "template": "Phantom@Roguelike@CommsMiss.png"
+    "Phantom@Roguelike@MonthlySquadCommsCompleted": {
+        "templThreshold": 0.92,
+        "template": "Phantom@Roguelike@CommsCompleted.png"
     },
-    "Phantom@Roguelike@MonthlySquadRewardMiss": {
-        "template": "Roguelike@RewardMiss.png"
+    "Phantom@Roguelike@MonthlySquadRewardCompleted": {
+        "template": "Roguelike@RewardCompleted.png"
     },
     "Phantom@Roguelike@NextLevel": {
         "text": ["迷雾歧途", "落阳庭院", "故土残躯", "噩梦之始", "血月长廊", "渴欲大厅"],
-        "next": ["Phantom@Roguelike@StrategyChange", "Phantom@Roguelike@DialogSkip"],
+        "next": [
+            "Phantom@Roguelike@CloseInterview",
+            "Phantom@Roguelike@StrategyChange",
+            "Phantom@Roguelike@DialogSkip"
+        ],
         "onErrorNext": ["Phantom@Roguelike@DialogTimeout", "Phantom@Roguelike@Stages#next"]
     },
     "Phantom@Roguelike@RecruitMain": {
@@ -8341,7 +8358,7 @@
         ]
     },
     "Phantom@Roguelike@StrategyChange_mode6": {
-        "text": ["_default", "_exit"],
+        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             ["迷雾歧途", "_aggressive"],
             ["落阳庭院", "_aggressive"],
@@ -8352,7 +8369,7 @@
         ]
     },
     "Phantom@Roguelike@StrategyChange_mode7": {
-        "text": ["_default", "_exit"],
+        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             ["迷雾歧途", "_aggressive"],
             ["落阳庭院", "_aggressive"],
@@ -8437,6 +8454,9 @@
         "action": "ClickRect",
         "specificRect": [619, 615, 41, 17]
     },
+    "Mizuki@Roguelike@CloseInterview": {
+        "template": "Mizuki@Roguelike@CloseCollectionClose.png"
+    },
     "Mizuki@Roguelike@CommissionedMissionCompleted": {
         "action": "ClickRect",
         "specificRect": [600, 600, 50, 50],
@@ -8461,7 +8481,7 @@
         "template": "Roguelike@DeepExplorationNotUnlocked.png"
     },
     "Mizuki@Roguelike@DeepExplorationRewardMiss": {
-        "template": "Roguelike@RewardMiss.png"
+        "template": "Roguelike@RewardCompleted.png"
     },
     "Mizuki@Roguelike@DialogSkip": {
         "template": "Roguelike@DialogSkip.png",
@@ -8631,17 +8651,21 @@
         "template": "Mizuki@Roguelike@MonthlySquadComms.png",
         "roi": [530, 420, 200, 60]
     },
-    "Mizuki@Roguelike@MonthlySquadCommsMiss": {
-        "template": "Roguelike@CommsMiss.png",
+    "Mizuki@Roguelike@MonthlySquadCommsCompleted": {
+        "template": "Roguelike@CommsCompleted.png",
         "roi": [390, 480, 160, 50]
     },
-    "Mizuki@Roguelike@MonthlySquadRewardMiss": {
-        "template": "Roguelike@RewardMiss.png",
+    "Mizuki@Roguelike@MonthlySquadRewardCompleted": {
+        "template": "Roguelike@RewardCompleted.png",
         "specificRect": [423, 536, 54, 62]
     },
     "Mizuki@Roguelike@NextLevel": {
         "text": ["天光海岸", "离岸孤岛", "波涛略地", "隐秘温床", "失尘岩洞", "幽海丛林", "绀碧摇篮"],
-        "next": ["Mizuki@Roguelike@DiceConfirmAfterNextLevel", "Mizuki@Roguelike@StrategyChange"]
+        "next": [
+            "Mizuki@Roguelike@DiceConfirmAfterNextLevel",
+            "Mizuki@Roguelike@CloseInterview",
+            "Mizuki@Roguelike@StrategyChange"
+        ]
     },
     "Mizuki@Roguelike@RecruitMain": {
         "template": "Mizuki@Roguelike@Recruit.png"
@@ -8890,7 +8914,7 @@
         ]
     },
     "Mizuki@Roguelike@StrategyChange_mode6": {
-        "text": ["_default", "_exit"],
+        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             ["天光海岸", "_aggressive"],
             ["离岸孤岛", "_aggressive"],
@@ -8902,7 +8926,7 @@
         ]
     },
     "Mizuki@Roguelike@StrategyChange_mode7": {
-        "text": ["_default", "_exit"],
+        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             ["天光海岸", "_aggressive"],
             ["离岸孤岛", "_aggressive"],
@@ -9049,6 +9073,9 @@
         ]
     },
     "Sami@Roguelike@CloseEvent": {},
+    "Sami@Roguelike@CloseInterview": {
+        "template": "Sami@Roguelike@CloseCollectionClose.png"
+    },
     "Sami@Roguelike@Collapsal": {
         "algorithm": "OcrDetect",
         "text": ["目空", "目空一些", "图像", "图像损坏"],
@@ -9444,17 +9471,18 @@
         "template": "Roguelike@MonthlySquadComms.png",
         "roi": [560, 420, 190, 60]
     },
-    "Sami@Roguelike@MonthlySquadCommsMiss": {
-        "template": "Roguelike@CommsMiss.png",
+    "Sami@Roguelike@MonthlySquadCommsCompleted": {
+        "template": "Roguelike@CommsCompleted.png",
         "roi": [390, 480, 160, 50]
     },
-    "Sami@Roguelike@MonthlySquadRewardMiss": {
-        "template": "Roguelike@RewardMiss.png",
+    "Sami@Roguelike@MonthlySquadRewardCompleted": {
+        "template": "Roguelike@RewardCompleted.png",
         "specificRect": [490, 530, 45, 55]
     },
     "Sami@Roguelike@NextLevel": {
         "text": ["完成本层", "下一层级"],
-        "roi": [268, 600, 197, 78]
+        "roi": [268, 600, 197, 78],
+        "next": ["Sami@Roguelike@CloseInterview", "Sami@Roguelike@StrategyChange"]
     },
     "Sami@Roguelike@NextLevelThenExit": {
         "Doc": "点进下一层后执行退出",
@@ -10186,7 +10214,7 @@
         ]
     },
     "Sami@Roguelike@StrategyChange_mode6": {
-        "text": ["_default", "_exit"],
+        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             ["初霜湖泽", "_aggressive"],
             ["密静林地", "_aggressive"],
@@ -10199,7 +10227,7 @@
         ]
     },
     "Sami@Roguelike@StrategyChange_mode7": {
-        "text": ["_default", "_exit"],
+        "text": ["_aggressive", "_pragmatic", "_default"],
         "ocrReplace": [
             ["初霜湖泽", "_aggressive"],
             ["密静林地", "_aggressive"],
@@ -10255,7 +10283,7 @@
         "next": ["Sarkaz@Roguelike@ChooseBurdenOperatorSelect1"]
     },
     "Sarkaz@Roguelike@ChooseBurdenOperatorAtStart": {
-        "roi": [527, 584, 352, 123],
+        "roi": [590, 620, 200, 50],
         "templThreshold": 0.9,
         "action": "ClickRect",
         "specificRect": [600, 660, 220, 40],
@@ -10397,6 +10425,9 @@
         "action": "ClickRect",
         "specificRect": [153, 79, 63, 29]
     },
+    "Sarkaz@Roguelike@CloseInterview": {
+        "template": "Sarkaz@Roguelike@CloseCollectionClose.png"
+    },
     "Sarkaz@Roguelike@Continue": {},
     "Sarkaz@Roguelike@DecreaseBurdenAbandon": {
         "templThreshold": 0.9,
@@ -10528,7 +10559,7 @@
     },
     "Sarkaz@Roguelike@DeepExplorationRewardMiss": {
         "doc": "等出了记得看眼",
-        "template": "Roguelike@RewardMiss.png"
+        "template": "Roguelike@RewardCompleted.png"
     },
     "Sarkaz@Roguelike@DialogSkip": {
         "template": "Roguelike@DialogSkip.png",
@@ -10671,12 +10702,12 @@
         "template": "Roguelike@MonthlySquadComms.png",
         "roi": [560, 420, 190, 60]
     },
-    "Sarkaz@Roguelike@MonthlySquadCommsMiss": {
-        "template": "Roguelike@CommsMiss.png",
+    "Sarkaz@Roguelike@MonthlySquadCommsCompleted": {
+        "template": "Roguelike@CommsCompleted.png",
         "roi": [390, 480, 160, 50]
     },
-    "Sarkaz@Roguelike@MonthlySquadRewardMiss": {
-        "template": "Roguelike@RewardMiss.png",
+    "Sarkaz@Roguelike@MonthlySquadRewardCompleted": {
+        "template": "Roguelike@RewardCompleted.png",
         "specificRect": [490, 530, 45, 55]
     },
     "Sarkaz@Roguelike@NextLevel": {
@@ -11517,7 +11548,7 @@
         ]
     },
     "Sarkaz@Roguelike@StrategyChange_mode6": {
-        "text": ["_default", "_exit"],
+        "text": ["_default"],
         "ocrReplace": [
             ["熔魂之始", "_default"],
             ["锻铁根须", "_default"],
@@ -11529,7 +11560,7 @@
         ]
     },
     "Sarkaz@Roguelike@StrategyChange_mode7": {
-        "text": ["_default", "_exit"],
+        "text": ["_default"],
         "ocrReplace": [
             ["熔魂之始", "_default"],
             ["锻铁根须", "_default"],
