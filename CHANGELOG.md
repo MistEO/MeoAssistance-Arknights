@@ -1,52 +1,55 @@
-## v5.14.0-beta.1
-
-### 强调 | Highlight
-
-#### Sarkaz I.S. for Global!
-YostarEN, YostarJP and YostarKR receive the update for Sarkaz I.S.
-Issues may be present, so please submit issues on Github patiently.
+## v5.14.0-beta.2
 
 ### 新增 | New
 
-* YoStarEN Sarkaz roguelike (#11921) @Constrat @Daydreamer114
-* YostarJP Sarkaz roguelike (#11914) @Manicsteiner @Daydreamer114
-* YostarKR Sarkaz roguelike (#11920) @HX3N @Daydreamer114
-* SimpleEncryptionHelper 支持默认字符串 @ABA2396
-* Sarkaz extend II 专业人士分队 (#11938) @Daydreamer114
+* IS4 extend2 事件 转机 @Daydreamer114
+* Wpf地图查询 @status102
+* 读取地图数据 (#11973) @status102
+* IS4 extend2 似是而非事件 (#11971) @Daydreamer114
 
 ### 改进 | Improved
 
-* remove spaces for all ocrReplaces for KR + various optimizations (#11926) @Constrat
-* 调整IS4作战、招募 @Daydreamer114
-* 肉鸽为识别错误的事件也添加 callback (#11946) @Daydreamer114 @HX3N
-* Wpf重构自动公招任务序列化 (#11951) @status102
-* Wpf重构生息演算任务参数序列化 (#11916) @status102
-* 肉鸽难度选项降到18个 (#11934) @Daydreamer114
-* IS4 调整公害ew部署 (#11935) @Daydreamer114
-* 优化日志输出 @ABA2396
-* 热键支持 Windows 键 @ABA2396
+* wpf自动战斗战斗列表序列化 @status102
+* 萨卡兹肉鸽负荷干员编入入口ROI拆分 (#11966) @status102
 
 ### 修复 | Fix
 
-* YostarEN I.S. modes (#11956) @Constrat
-* YostarKR updated the StartUpConnectingFlag template (#11960) @HX3N
-* Fix hidden floor Sarkaz EN @Constrat
-* EN 服 IS2 导航失效 (#11955) @Daydreamer114
-* 傀影肉鸽可以选择在第五层 BOSS 前暂停 @Daydreamer114
-* StartupUpdateCheck 不生效 @ABA2396
-* 外服重复检查资源 (#11927) @ABA2396
-* 支持肉鸽特定模式下跳过选队直接选人 (#11915) @BxFS
-* Log Rotate 临时性检查措施 (#11835) @status102
-* 3星招募逻辑修复 (#11913) @Roland125
+* Wpf信用任务-OF-1战斗 修复未勾选刷理智时，仍判断刷理智关卡是否为`当前/上次` @status102
+* 肉鸽放弃战斗奖励后仍能识别到掉落 (#12000) @Daydreamer114
+* Monthly Squad for Global (#11993) @BxFS @Constrat
+* Wpf选中战斗列表作业时，作业内容重复显示 @status102
+* Wpf地图信息MapInfo字段名更正 @status102
+* 会客室进入失败 (#11950) @ABA2396 @Daydreamer114
+* add an missing @ for MonthlySquadCommsBackTwice (#11991) @BxFS
+* Mac 日服 IS4 识别阈值 (#11979) @Daydreamer114
+* YostarJP IS4 计划耕种 (#11990) @Manicsteiner
+* missing tasks for EN @Constrat
+* 生息演算Mode序列化类型 @status102
+* YostarKR Sarkaz CR Node recognition (#11986) @HX3N
+* YostarKR missing tasks (#11981) @HX3N
+* typo in xaml themes for Idea Filter + i18n EN @Constrat
+* Missing EN Sarkaz tasks 2 @Constrat
+* EN Sarkaz missing NextLevel task @Constrat
+* EN replace Sguad with Squad @Constrat
+* 狭路相逢遇到构想卡死 (#11970) @Daydreamer114
+* 移除肉鸽结算插件中的Matcher复用 @status102
+* 修复BattleHelper中的意外报错 @status102
+* IS4 绝境？抉择？ocr (#11969) @Daydreamer114
+* EN remove all spaces from encounter and ignore spaces @Constrat
+* EN Sarkaz SelectTheme @Constrat
 
 ### 文档 | Docs
 
-* 调整肉鸽文档 skill_usage 描述，尝试 json5 @Daydreamer114
+* 作业协议补充难度字段 (#11980) @status102
+* 更新文档 @Daydreamer114
 
 ### 其他 | Other
 
-* 加解密失败时通知 @ABA2396
-* TaskData增加OcrTask的ocrReplace合法性检查 (#11878) @status102
-* 使用RecruitData代替ocrReplace的外服适配 (#11879) @status102
-* tools: ImageCoordinate cursor tweak @Constrat
-* 允许commit message以Reapply开始 (#11967) @Daydreamer114
+* 拆分 OF-1 与 访问好友回调显示 @ABA2396
+* clarify different originium types and unify deep investigation in EN (#11995) @dragonheart107 @Constrat
+* fix typo @MistEO
+* mirrorc with new tab @MistEO
+* 删除官网早就不能用了的镜像 @MistEO
+* 官网添加 MirrorChyan 下载链接 @ABA2396
+* add missing tasks and template for txwy (#11985) @momomochi987
+* ResourceUpdater to remove spaces from EN I.S. encounter @Constrat
