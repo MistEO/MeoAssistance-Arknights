@@ -149,8 +149,8 @@ bool asst::BattleHelper::update_deployment(bool init, const cv::Mat& reusable, b
     };
 
     auto& cur_opers = oper_result_opt->deployment;
-    std::vector<DeploymentOper> unknown_opers;
 
+    bool unknown_oper_detected = false;
     for (auto& oper : cur_opers) {
         BestMatcher avatar_analyzer(oper.avatar);
         avatar_analyzer.set_method(MatchMethod::Ccoeff);
@@ -195,8 +195,14 @@ bool asst::BattleHelper::update_deployment(bool init, const cv::Mat& reusable, b
                 remove_cooling_from_battlefield(oper);
             }
             else {
-                Log.info("unknown oper", oper.index);
-                unknown_opers.emplace_back(oper);
+                if (oper.cooling) {
+                    Log.info("Unknown oper detected. It will not be dealt with now since it is cooling.");
+                }
+                else {
+                    Log.info("Unknown oper detected. Reseting deployment");
+                    unknown_oper_detected = true;
+                    break;
+                }
             }
         }
 
@@ -207,7 +213,7 @@ bool asst::BattleHelper::update_deployment(bool init, const cv::Mat& reusable, b
         }
     }
 
-    if (ranges::count_if(unknown_opers, [](const DeploymentOper& it) { return !it.cooling; }) > 0 || init) {
+    if (unknown_oper_detected || init) {
         // 一个都没匹配上的，挨个点开来看一下
         LogTraceScope("rec unknown opers");
 
@@ -222,9 +228,31 @@ bool asst::BattleHelper::update_deployment(bool init, const cv::Mat& reusable, b
             std::this_thread::yield();
         } while (!m_inst_helper.need_exit());
 
+        // 重新截图
+        image = m_inst_helper.ctrler()->get_image();
+
         if (!check_in_battle(image)) {
             return false;
         }
+
+        // 再识别一次部署栏，并装作谁都不认识的样子
+        BattlefieldMatcher oper_analyzer2(image);
+        // 这里可能可以省略 .oper_cost，不太确定，暂作保留
+        if (init || need_oper_cost) {
+            oper_analyzer2.set_object_of_interest({ .deployment = true, .oper_cost = true });
+        }
+        else {
+            oper_analyzer2.set_object_of_interest({ .deployment = true });
+        }
+        oper_result_opt = oper_analyzer2.analyze();
+        if (!oper_result_opt) {
+            return false;
+        }
+        std::vector<DeploymentOper> unknown_opers = oper_result_opt->deployment;
+
+        // 重制一下 m_cur_deployment_opers
+        m_cur_deployment_opers = std::vector<battle::DeploymentOper>();
+        m_cur_deployment_opers.reserve(oper_result_opt->deployment.size());
 
         cv::Mat name_image;
         for (auto& oper : unknown_opers) {
