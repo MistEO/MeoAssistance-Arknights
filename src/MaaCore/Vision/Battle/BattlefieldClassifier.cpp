@@ -42,11 +42,35 @@ BattlefieldClassifier::SkillReadyResult BattlefieldClassifier::skill_ready_analy
     Rect roi = Rect(m_base_point.x, m_base_point.y, 0, 0).move(skill_roi_move);
 
     cv::Mat image = make_roi(m_image, correct_rect(roi, m_image));
-    std::vector<float> input = image_to_tensor(image);
+
+    // 1. 图像大小调整(推理慢可不做)
+    cv::Mat resized_image;
+    cv::resize(image, resized_image, cv::Size(72, 72));
+
+    // 2. 中心裁剪(推理慢可不做)
+    int crop_size = 64;
+    int x = (resized_image.cols - crop_size) / 2;
+    int y = (resized_image.rows - crop_size) / 2;
+    cv::Rect crop_roi(x, y, crop_size, crop_size);
+    cv::Mat cropped_image = resized_image(crop_roi);
+
+    // 3. 图像转换为 tensor
+    std::vector<float> input = image_to_tensor(cropped_image);
+
+    // 4. 归一化
+    float mean[] = { 0.485f, 0.456f, 0.406f };
+    float std[] = { 0.229f, 0.224f, 0.225f };
+    for (size_t i = 0; i < input.size(); i++) {
+        int channel = i % 3;
+        input[i] = (input[i] - mean[channel]) / std[channel];
+    }
 
     auto memory_info = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
     constexpr int64_t batch_size = 1;
-    std::array<int64_t, 4> input_shape { batch_size, image.channels(), image.cols, image.rows };
+
+    auto& session = OnnxSessions::get_instance().get("skill_ready_cls");
+
+    std::array<int64_t, 4> input_shape { batch_size, cropped_image.channels(), cropped_image.cols, cropped_image.rows };
 
     Ort::Value input_tensor = Ort::Value::CreateTensor<float>(
         memory_info,
@@ -54,6 +78,7 @@ BattlefieldClassifier::SkillReadyResult BattlefieldClassifier::skill_ready_analy
         input.size(),
         input_shape.data(),
         input_shape.size());
+
     SkillReadyResult::Raw raw_results;
     std::array<int64_t, 2> output_shape { batch_size, SkillReadyResult::ClsSize };
     Ort::Value output_tensor = Ort::Value::CreateTensor<float>(
@@ -63,7 +88,6 @@ BattlefieldClassifier::SkillReadyResult BattlefieldClassifier::skill_ready_analy
         output_shape.data(),
         output_shape.size());
 
-    auto& session = OnnxSessions::get_instance().get("skill_ready_cls");
     // 这俩是hardcode在模型里的
     constexpr const char* input_names[] = { "input" };   // session.GetInputName()
     constexpr const char* output_names[] = { "output" }; // session.GetOutputName()
@@ -74,13 +98,22 @@ BattlefieldClassifier::SkillReadyResult BattlefieldClassifier::skill_ready_analy
 
     SkillReadyResult::Prob prob = softmax(raw_results);
     Log.info(__FUNCTION__, "prob:", prob);
-    bool ready = prob[1] > prob[0];
-    float score = std::max(prob[0], prob[1]);
+    // 类别顺序为 c, n, y
+    size_t class_id = ranges::max_element(prob) - prob.begin();
+    bool ready = (class_id == 2); // 只有当class_id为2（代表y）时，才认为是ready
+    float score = prob[class_id];
 
 #ifdef ASST_DEBUG
-    if (ready) {
+    // 在调试模式下，根据不同类别绘制不同颜色的标记
+    if (class_id == 2) {
+        // y类别：橙色
         rectangle(m_image_draw, make_rect<cv::Rect>(roi), cv::Scalar(0, 165, 255), 2);
         putText(m_image_draw, std::to_string(score), cv::Point(roi.x, roi.y - 10), 1, 1.2, cv::Scalar(0, 165, 255), 2);
+    }
+    else if (class_id == 0) { // c类别的特殊处理
+        // 使用蓝色（BGR：255,0,0）标记c类别
+        rectangle(m_image_draw, make_rect<cv::Rect>(roi), cv::Scalar(255, 0, 0), 2);
+        putText(m_image_draw, std::to_string(score), cv::Point(roi.x, roi.y - 10), 1, 1.2, cv::Scalar(255, 0, 0), 2);
     }
 #endif
 
@@ -99,19 +132,19 @@ BattlefieldClassifier::SkillReadyResult BattlefieldClassifier::skill_ready_analy
 
     // 为重新训练模型截图
     static Point last_base_point = { -1, -1 };
+    static int last_class = -1; // 记录上一次的分类结果
     static auto last_save_time = std::chrono::steady_clock::now();
-    static bool last_ready = false;
     const auto now = std::chrono::steady_clock::now();
     const auto duration_since_last_save =
         std::chrono::duration_cast<std::chrono::seconds>(now - last_save_time).count();
 
     auto need_save = false;
-    // 如果相同点且结果不同，保存
-    if (last_base_point == m_base_point && last_ready != ready) {
+    // 如果相同点且分类结果变化了，则保存
+    if (last_base_point == m_base_point && last_class != static_cast<int>(class_id)) {
         need_save = true;
     }
-    // 如果不同点且 ready，保存
-    else if (last_base_point != m_base_point && ready) {
+    // 如果检测到新的基准点且结果为ready（y）或c类别，也保存
+    else if (last_base_point != m_base_point && (class_id == 2 || class_id == 0)) {
         need_save = true;
     }
     // 来点随机截图
@@ -121,19 +154,29 @@ BattlefieldClassifier::SkillReadyResult BattlefieldClassifier::skill_ready_analy
     }
 
     if (need_save) {
-        std::filesystem::path relative_path;
-        if (ready) {
-            relative_path = utils::path("debug") / utils::path("skill_ready") / utils::path("y") /
-                            (utils::get_time_filestem() + "_" + std::to_string(m_base_point.x) + "_" +
-                             std::to_string(m_base_point.y) + ".png");
+        std::string base_filename = utils::get_time_filestem() + "_" + std::to_string(m_base_point.x) + "_" +
+                                    std::to_string(m_base_point.y) + "(c" + std::to_string(prob[0]) + ")(n" +
+                                    std::to_string(prob[1]) + ")(y" + std::to_string(prob[2]) + ").png";
+        std::string subfolder;
+        switch (class_id) {
+        case 2:
+            subfolder = "y";
+            break;
+        case 1:
+            subfolder = "n";
+            break;
+        case 0:
+            subfolder = "c";
+            break;
+        default:
+            subfolder = "unknown";
+            break;
         }
-        else {
-            relative_path = utils::path("debug") / utils::path("skill_ready") / utils::path("n") /
-                            (utils::get_time_filestem() + "_" + std::to_string(m_base_point.x) + "_" +
-                             std::to_string(m_base_point.y) + ".png");
-        }
+
+        std::filesystem::path relative_path =
+            utils::path("debug") / utils::path("skill_ready") / utils::path(subfolder) / base_filename;
         last_base_point = m_base_point;
-        last_ready = ready;
+        last_class = static_cast<int>(class_id);
         Log.trace("Save image", relative_path);
         asst::imwrite(relative_path, image);
     }

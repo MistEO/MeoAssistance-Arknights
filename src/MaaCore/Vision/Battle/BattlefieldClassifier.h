@@ -18,7 +18,7 @@ public:
 public:
     struct SkillReadyResult
     {
-        static constexpr size_t ClsSize = 2;
+        static constexpr size_t ClsSize = 3;
         using Raw = std::array<float, ClsSize>;
         using Prob = Raw;
 

@@ -47,25 +47,78 @@ void asst::DebugTask::test_skill_ready()
 {
     int total = 0;
     int correct = 0;
+
+    // 测试 y 类别（预期为 ready，即 true）
     for (const auto& entry : std::filesystem::directory_iterator(R"(../../test/skill_ready/y)")) {
         cv::Mat image = imread(entry.path().string());
         BattlefieldClassifier analyzer(image);
         analyzer.set_object_of_interest({ .skill_ready = true });
         total++;
-        if (analyzer.analyze()->skill_ready.ready) {
+        auto result = analyzer.analyze()->skill_ready;
+        // 记录日志：文件、预期结果、实际预测、得分、概率信息
+        Log.info(
+            __FUNCTION__,
+            "File: ",
+            entry.path().string(),
+            " | Expected: Y (ready: true)",
+            " | Predicted: ",
+            result.ready,
+            " | Score: ",
+            result.score,
+            " | Prob: ",
+            result.prob);
+        if (result.ready) {
             correct++;
         }
     }
+
+    // 测试 n 类别（预期为 not ready，即 false）
     for (const auto& entry : std::filesystem::directory_iterator(R"(../../test/skill_ready/n)")) {
         cv::Mat image = imread(entry.path().string());
         BattlefieldClassifier analyzer(image);
         analyzer.set_object_of_interest({ .skill_ready = true });
         total++;
-        if (!analyzer.analyze()->skill_ready.ready) {
+        auto result = analyzer.analyze()->skill_ready;
+        Log.info(
+            __FUNCTION__,
+            "File: ",
+            entry.path().string(),
+            " | Expected: N (ready: false)",
+            " | Predicted: ",
+            result.ready,
+            " | Score: ",
+            result.score,
+            " | Prob: ",
+            result.prob);
+        if (!result.ready) {
             correct++;
         }
     }
-    Log.info(__FUNCTION__, correct, "/", total, ",", double(correct) / total);
+
+    // 测试 c 类别（同样预期为 not ready）
+    for (const auto& entry : std::filesystem::directory_iterator(R"(../../test/skill_ready/c)")) {
+        cv::Mat image = imread(entry.path().string());
+        BattlefieldClassifier analyzer(image);
+        analyzer.set_object_of_interest({ .skill_ready = true });
+        total++;
+        auto result = analyzer.analyze()->skill_ready;
+        Log.info(
+            __FUNCTION__,
+            "File: ",
+            entry.path().string(),
+            " | Expected: C (ready: false)",
+            " | Predicted: ",
+            result.ready,
+            " | Score: ",
+            result.score,
+            " | Prob: ",
+            result.prob);
+        if (!result.ready) {
+            correct++;
+        }
+    }
+
+    Log.info(__FUNCTION__, "Final Accuracy: ", correct, "/", total, " (", double(correct) / total, ")");
 }
 
 void asst::DebugTask::test_battle_image()
