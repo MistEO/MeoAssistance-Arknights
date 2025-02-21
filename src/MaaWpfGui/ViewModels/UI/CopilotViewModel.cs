@@ -18,12 +18,14 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using MaaWpfGui.Constants;
 using MaaWpfGui.Helper;
+using MaaWpfGui.Models;
 using MaaWpfGui.Services;
 using MaaWpfGui.States;
 using Microsoft.Win32;
@@ -31,6 +33,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
 using Stylet;
+using static MaaWpfGui.Helper.CopilotHelper;
 using DataFormats = System.Windows.Forms.DataFormats;
 using Task = System.Threading.Tasks.Task;
 
@@ -41,18 +44,23 @@ namespace MaaWpfGui.ViewModels.UI
     /// </summary>
     // 通过 container.Get<CopilotViewModel>(); 实例化或获取实例
     // ReSharper disable once ClassNeverInstantiated.Global
-    public class CopilotViewModel : Screen
+    public partial class CopilotViewModel : Screen
     {
         private readonly RunningState _runningState;
         private static readonly ILogger _logger = Log.ForContext<CopilotViewModel>();
+        private static readonly SemaphoreSlim _semaphore = new(1, 1);
         private readonly List<int> _copilotIdList = []; // 用于保存作业列表中的作业的Id，对于同一个作业，只有都执行成功才点赞
         private readonly List<int> _recentlyRatedCopilotId = []; // TODO: 可能考虑加个持久化
         private AsstTaskType _taskType = AsstTaskType.Copilot;
         private const string CopilotIdPrefix = "maa://";
         private const string TempCopilotFile = "cache/_temp_copilot.json";
         private static readonly string[] _supportExt = [".json", ".mp4", ".m4s", ".mkv", ".flv", ".avi"];
-        private const string CopilotJsonDir = "cache/copilot";
+        private const string CopilotJsonDir = "config/copilot";
         private const string StageNameRegex = @"(?:[a-z]{0,3})(?:\d{0,2})-(?:(?:A|B|C|D|EX|S|TR|MO)-?)?(?:\d{1,2})(\(Raid\)(?=\.json))?";
+        private const string InvalidStageNameChars = @"[:',\.\(\)\|\[\]\?，。【】｛｝；：]"; // 无效字符
+
+        [GeneratedRegex(InvalidStageNameChars)]
+        private static partial Regex InvalidStageNameRegex();
 
         /// <summary>
         /// Gets the view models of log items.
@@ -166,7 +174,7 @@ namespace MaaWpfGui.ViewModels.UI
             {
                 SetAndNotify(ref _filename, value);
                 ClearLog();
-                UpdateFilename();
+                UpdateFilename(value);
             }
         }
 
@@ -230,11 +238,11 @@ namespace MaaWpfGui.ViewModels.UI
             }
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether to use auto-formation.
-        /// </summary>
         private bool _useCopilotList;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether 自动编队.
+        /// </summary>
         public bool UseCopilotList
         {
             get => _useCopilotList;
@@ -260,6 +268,7 @@ namespace MaaWpfGui.ViewModels.UI
             get => _copilotTaskName;
             set
             {
+                value = InvalidStageNameRegex().Replace(value ?? string.Empty, string.Empty).Trim();
                 SetAndNotify(ref _copilotTaskName, value);
             }
         }
@@ -365,10 +374,17 @@ namespace MaaWpfGui.ViewModels.UI
         /// Paste clipboard contents.
         /// </summary>
         // ReSharper disable once UnusedMember.Global
-        public void PasteClipboardCopilotSet()
+        public async void PasteClipboardCopilotSet()
         {
-            IsCopilotSet = true;
-            PasteClipboard();
+            StartEnabled = false;
+            UseCopilotList = true;
+            ClearLog();
+            if (Clipboard.ContainsText())
+            {
+                await GetCopilotSetAsync(Clipboard.GetText().Trim());
+            }
+
+            StartEnabled = true;
         }
 
         /// <summary>
@@ -388,7 +404,7 @@ namespace MaaWpfGui.ViewModels.UI
                 return;
             }
 
-            Dictionary<string, string> taskPairs = new();
+            CopilotId = 0;
             foreach (var file in dialog.FileNames)
             {
                 var fileInfo = new FileInfo(file);
@@ -401,62 +417,30 @@ namespace MaaWpfGui.ViewModels.UI
                 try
                 {
                     using var reader = new StreamReader(File.OpenRead(file));
-                    var jsonStr = await reader.ReadToEndAsync();
+                    var str = await reader.ReadToEndAsync();
+                    var payload = JsonConvert.DeserializeObject<object>(str, new CopilotContentConverter());
 
-                    var json = (JObject?)JsonConvert.DeserializeObject(jsonStr);
-                    if (json is null || !json.ContainsKey("stage_name") || !json.ContainsKey("actions"))
+                    if (payload is CopilotModel copilot)
                     {
-                        AddLog($"{file} is broken", UiLogColor.Error, showTime: false);
-                        return;
+                        var difficulty = copilot.Difficulty;
+                        if (difficulty == CopilotModel.DifficultyFlags.None)
+                        {
+                            difficulty = CopilotModel.DifficultyFlags.Normal;
+                        }
+
+                        await AddCopilotTaskToList(copilot, difficulty);
                     }
-
-                    var fileName = fileInfo.Name[..^fileInfo.Extension.Length];
-                    var stageName = FindStageName(fileInfo.Name, fileName);
-
-                    if (string.IsNullOrEmpty(stageName))
+                    else if (payload is SSSCopilotModel)
                     {
-                        AddLog($"invalid name to navigate: {fileName}[{fileInfo.FullName}]", UiLogColor.Error, showTime: false);
-                        return;
+                        AddLog($"unsupport type: SSS", UiLogColor.Error, showTime: false);
                     }
-
-                    taskPairs.Add(stageName, file);
                 }
-                catch (Exception)
+                catch
                 {
-                    AddLog($"{file}: " + LocalizationHelper.GetString("CopilotFileReadError"), UiLogColor.Error, showTime: false);
+                    AddLog(LocalizationHelper.GetString("CopilotFileReadError"), UiLogColor.Error, showTime: false);
                     return;
                 }
             }
-
-            try
-            {
-                Directory.CreateDirectory(CopilotJsonDir);
-            }
-            catch (Exception)
-            {
-                // ignored
-            }
-
-            foreach (var taskPair in taskPairs)
-            {
-                var jsonPath = $"{CopilotJsonDir}/{taskPair.Key}.json";
-                if (new FileInfo(jsonPath).FullName != taskPair.Value)
-                {
-                    // 相同路径跳拷贝
-                    File.Copy(taskPair.Value, jsonPath, true);
-                }
-
-                var navigateName = taskPair.Key;
-                var isRaid = navigateName.EndsWith("(Raid)");
-                var item = new CopilotItemViewModel(taskPair.Key.Replace("(Raid)", string.Empty), jsonPath, isRaid)
-                {
-                    Index = CopilotItemViewModels.Count,
-                };
-                CopilotItemViewModels.Add(item);
-                AddLog("append task: " + taskPair.Key, showTime: false);
-            }
-
-            SaveCopilotTask();
         }
 
         // UI 绑定的方法
@@ -520,13 +504,13 @@ namespace MaaWpfGui.ViewModels.UI
         // ReSharper disable once UnusedMember.Global
         public void LikeWebJson()
         {
-            RateWebJson("Like", CopilotId);
+            RateCopilot(CopilotId);
         }
 
         // ReSharper disable once UnusedMember.Global
         public void DislikeWebJson()
         {
-            RateWebJson("Dislike", CopilotId);
+            RateCopilot(CopilotId, false);
         }
 
         private void EasterEgg(string text)
@@ -543,11 +527,10 @@ namespace MaaWpfGui.ViewModels.UI
 
         #endregion UI绑定及操作
 
-        private async void UpdateFilename()
+        private async void UpdateFilename(string filename)
         {
             StartEnabled = false;
-            await UpdateFileDoc(_filename);
-            IsCopilotSet = false;
+            await UpdateFileDoc(filename);
             StartEnabled = true;
         }
 
@@ -557,8 +540,12 @@ namespace MaaWpfGui.ViewModels.UI
             CopilotUrl = CopilotUiUrl;
             MapUrl = MapUiUrl;
             _isVideoTask = false;
+            IsDataFromWeb = false;
+            CopilotId = 0;
 
-            string? jsonStr;
+            int copilotId = 0;
+            bool writeToCache = false;
+            object? payload;
             if (File.Exists(filename))
             {
                 var fileSize = new FileInfo(filename).Length;
@@ -572,36 +559,23 @@ namespace MaaWpfGui.ViewModels.UI
                 try
                 {
                     using var reader = new StreamReader(File.OpenRead(filename));
-                    jsonStr = await reader.ReadToEndAsync();
+                    var str = await reader.ReadToEndAsync();
+                    payload = JsonConvert.DeserializeObject<object>(str, new CopilotContentConverter());
                 }
-                catch (Exception)
+                catch
                 {
                     AddLog(LocalizationHelper.GetString("CopilotFileReadError"), UiLogColor.Error, showTime: false);
                     return;
                 }
-
-                IsDataFromWeb = false;
-                CopilotId = 0;
             }
-            else if (filename.ToLower().StartsWith(CopilotIdPrefix))
+            else if (filename.StartsWith(CopilotIdPrefix, StringComparison.OrdinalIgnoreCase) || int.TryParse(filename, out _))
             {
-                var copilotIdStr = filename.ToLower().Remove(0, CopilotIdPrefix.Length);
-                int.TryParse(copilotIdStr, out var numberStyles);
-                jsonStr = await RequestCopilotServer(numberStyles);
-                if (!string.IsNullOrEmpty(jsonStr))
+                (copilotId, payload) = await GetCopilotAsync(filename);
+                if (payload is not null)
                 {
                     IsDataFromWeb = true;
-                    CopilotId = numberStyles;
-                }
-            }
-            else if (int.TryParse(filename, out _))
-            {
-                int.TryParse(filename, out var numberStyles);
-                jsonStr = await RequestCopilotServer(numberStyles);
-                if (!string.IsNullOrEmpty(jsonStr))
-                {
-                    IsDataFromWeb = true;
-                    CopilotId = numberStyles;
+                    writeToCache = true;
+                    CopilotId = copilotId;
                 }
             }
             else
@@ -610,38 +584,21 @@ namespace MaaWpfGui.ViewModels.UI
                 return;
             }
 
-            if (string.IsNullOrEmpty(jsonStr))
+            if (payload is CopilotModel copilot)
             {
+                AddLog(LocalizationHelper.GetString("CopilotTip"), showTime: false);
+                await ParseCopilotAsync(copilot, writeToCache, UseCopilotList, copilotId);
+                return;
+            }
+            else if (payload is SSSCopilotModel sss)
+            {
+                AddLog(LocalizationHelper.GetString("CopilotTip"), showTime: false);
+                await ParseSSSCopilot(sss, writeToCache);
                 return;
             }
 
-            if (IsCopilotSet)
-            {
-                await ParseCopilotSet(jsonStr);
-            }
-            else
-            {
-                ParseJsonAndShowInfo(jsonStr);
-            }
-        }
-
-        private async Task<string?> RequestCopilotServer(int copilotId)
-        {
-            var jsonResponse = await Instances.HttpService.GetStringAsync(new Uri((IsCopilotSet ? MaaUrls.PrtsPlusCopilotSetGet : MaaUrls.PrtsPlusCopilotGet) + copilotId)) ?? string.Empty;
-            if (jsonResponse is null)
-            {
-                AddLog(LocalizationHelper.GetString("NetworkServiceError"), UiLogColor.Error, showTime: false);
-                return string.Empty;
-            }
-
-            var json = (JObject?)JsonConvert.DeserializeObject(jsonResponse);
-            if (json != null && json.ContainsKey("status_code") && json["status_code"]?.ToString() == "200")
-            {
-                return (IsCopilotSet ? json["data"] : json["data"]?["content"])?.ToString();
-            }
-
-            AddLog(LocalizationHelper.GetString("CopilotNoFound"), UiLogColor.Error, showTime: false);
-            return string.Empty;
+            AddLog(LocalizationHelper.GetString("CopilotJsonError"), UiLogColor.Error, showTime: false);
+            return;
         }
 
         /// <summary>
@@ -649,7 +606,7 @@ namespace MaaWpfGui.ViewModels.UI
         /// </summary>
         /// <param name="names">用于匹配的名字</param>
         /// <returns>关卡名 or string.Empty</returns>
-        private static string FindStageName(params string[] names)
+        private static string? FindStageName(params string[] names)
         {
             names = names.Where(str => !string.IsNullOrEmpty(str)).ToArray();
             if (names.Length == 0)
@@ -668,210 +625,233 @@ namespace MaaWpfGui.ViewModels.UI
             return names.Select(str => regex.Match(str)).FirstOrDefault(result => result.Success)?.Value ?? string.Empty;
         }
 
-        private void ParseJsonAndShowInfo(string jsonStr)
+        #region 作业解析
+
+        private async Task<(int CopilotId, object? Payload)> GetCopilotAsync(string copilotCodeString)
         {
-            try
+            if (copilotCodeString.StartsWith(CopilotIdPrefix, StringComparison.OrdinalIgnoreCase))
             {
-                var json = (JObject?)JsonConvert.DeserializeObject(jsonStr);
-                if (json == null)
-                {
-                    AddLog(LocalizationHelper.GetString("CopilotJsonError"), UiLogColor.Error, showTime: false);
-                    return;
-                }
-
-                if (json.TryGetValue("stage_name", out var stageNameValue))
-                {
-                    MapUrl = MapUiUrl.Replace("areas", "map/" + stageNameValue);
-                }
-
-                AddLog(LocalizationHelper.GetString("CopilotTip"), showTime: false);
-
-                var doc = (JObject?)json["doc"];
-                string title = string.Empty;
-                if (doc != null && doc.TryGetValue("title", out var titleValue))
-                {
-                    title = titleValue.ToString();
-                    CopilotTaskName = FindStageName((IsDataFromWeb ? string.Empty : _filename).Split(Path.DirectorySeparatorChar).LastOrDefault()?.Split('.').FirstOrDefault() ?? string.Empty, title);
-                }
-
-                if (title.Length != 0)
-                {
-                    string titleColor = UiLogColor.Message;
-                    if (doc != null && doc.TryGetValue("title_color", out var titleColorValue))
-                    {
-                        titleColor = titleColorValue.ToString();
-                    }
-
-                    AddLog(title, titleColor, showTime: false);
-                }
-
-                string details = string.Empty;
-                if (doc != null && doc.TryGetValue("details", out var detailsValue))
-                {
-                    details = detailsValue.ToString();
-                }
-
-                if (details.Length != 0)
-                {
-                    string detailsColor = UiLogColor.Message;
-                    if (doc != null && doc.TryGetValue("details_color", out var detailsColorValue))
-                    {
-                        detailsColor = detailsColorValue.ToString();
-                    }
-
-                    AddLog(details, detailsColor, showTime: false);
-                    {
-                        CopilotUrl = CopilotUiUrl;
-                        var linkParser = new Regex(@"(?:av\d+|bv[a-z0-9]{10})(?:\/\?p=\d+)?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-                        foreach (Match match in linkParser.Matches(details))
-                        {
-                            CopilotUrl = MaaUrls.BilibiliVideo + match.Value;
-                            break;
-                        }
-                    }// 视频链接
-                }
-
-                AddLog(string.Empty, UiLogColor.Message, showTime: false);
-                AddLog("------------------------------------------------", UiLogColor.Message, showTime: false);
-                AddLog(string.Empty, UiLogColor.Message, showTime: false);
-
-                int count = 0;
-                foreach (var oper in json["opers"] ?? new JArray())
-                {
-                    count++;
-                    var localizedName = DataHelper.GetLocalizedCharacterName((string?)oper["name"]);
-                    AddLog($"{localizedName}, {LocalizationHelper.GetString("CopilotSkill")} {oper["skill"]}", UiLogColor.Message, showTime: false);
-                }
-
-                if (json.TryGetValue("groups", out var groupsValue))
-                {
-                    foreach (var group in groupsValue.Cast<JObject>())
-                    {
-                        count++;
-                        string groupName = group["name"] + ": ";
-                        var operInfos = group["opers"]!.Cast<JObject>()
-                            .Select(oper => $"{DataHelper.GetLocalizedCharacterName((string?)oper["name"])} {oper["skill"]}").ToList();
-
-                        AddLog(groupName + string.Join(" / ", operInfos), UiLogColor.Message, showTime: false);
-                    }
-                }
-
-                AddLog(string.Format(LocalizationHelper.GetString("TotalOperatorsCount"), count), UiLogColor.Message, showTime: false);
-
-                if (json.TryGetValue("type", out var typeValue))
-                {
-                    var type = typeValue.ToString();
-                    if (type == "SSS")
-                    {
-                        _taskType = AsstTaskType.SSSCopilot;
-
-                        if (json.TryGetValue("buff", out var buffValue))
-                        {
-                            string buffLog = LocalizationHelper.GetString("DirectiveECTerm");
-                            string? localizedBuffName = DataHelper.GetLocalizedCharacterName((string?)buffValue);
-                            AddLog(buffLog + (string.IsNullOrEmpty(localizedBuffName) ? (string?)buffValue : localizedBuffName), UiLogColor.Message, showTime: false);
-                        }
-
-                        if (json.TryGetValue("tool_men", out var toolMenValue))
-                        {
-                            string toolMenLog = LocalizationHelper.GetString("OtherOperators");
-                            AddLog(toolMenLog + toolMenValue, UiLogColor.Message, showTime: false);
-                        }
-
-                        if (json.TryGetValue("equipment", out var equipmentValue) && equipmentValue is JArray equipmentJArray)
-                        {
-                            string equipmentLog = LocalizationHelper.GetString("InitialEquipmentHorizontal") + '\n';
-                            AddLog(equipmentLog + string.Join('\n', equipmentJArray.Select(i => (string?)i).Chunk(4).Select(i => string.Join(",", i))), UiLogColor.Message, showTime: false);
-                        }
-
-                        if (json.TryGetValue("strategy", out var strategyValue))
-                        {
-                            string strategyLog = LocalizationHelper.GetString("InitialStrategy");
-                            AddLog(strategyLog + strategyValue, UiLogColor.Message, showTime: false);
-                        }
-                    }
-                }
-                else
-                {
-                    _taskType = AsstTaskType.Copilot;
-                }
-
-                if (!IsDataFromWeb)
-                {
-                    return;
-                }
-
-                File.Delete(TempCopilotFile);
-                File.WriteAllText(TempCopilotFile, json.ToString());
-
-                if (_taskType != AsstTaskType.Copilot || !UseCopilotList)
-                {
-                    return;
-                }
-
-                var value = json["difficulty"];
-                var diff = value?.Type == JTokenType.Integer ? (int)value : 0;
-                switch (diff)
-                {
-                    case 0:
-                    case 1:
-                        AddCopilotTask();
-                        break;
-                    case 2:
-                        AddCopilotTask_Adverse();
-                        break;
-                    case 3:
-                        AddCopilotTask();
-                        AddCopilotTask_Adverse();
-                        break;
-                }
+                copilotCodeString = copilotCodeString[CopilotIdPrefix.Length..];
             }
-            catch (Exception)
+
+            if (int.TryParse(copilotCodeString, out var copilotCode))
             {
-                AddLog(LocalizationHelper.GetString("CopilotJsonError"), UiLogColor.Error, showTime: false);
+                return await GetCopilotAsync(copilotCode);
             }
+
+            AddLog(LocalizationHelper.GetString("CopilotNoFound"), UiLogColor.Error, showTime: false);
+            return (0, null);
         }
 
-        private async Task ParseCopilotSet(string jsonStr)
+        private async Task<(int CopilotId, object? Payload)> GetCopilotAsync(int copilotId)
         {
-            UseCopilotList = true;
-            IsCopilotSet = false;
-            try
+            var (status, copilotset) = await RequestCopilotAsync(copilotId);
+            if (status == PrtsStatus.NetworkError)
             {
-                var json = (JObject?)JsonConvert.DeserializeObject(jsonStr);
-                if (json == null)
-                {
-                    AddLog(LocalizationHelper.GetString("CopilotJsonError"), UiLogColor.Error, showTime: false);
-                    return;
-                }
-
-                var name = json["name"]?.ToString();
-                var description = json["description"]?.ToString();
-                var copilots = json["copilot_ids"]?.Select(i => i.ToString()).ToList();
-                if (copilots is null || copilots.Count == 0)
-                {
-                    Log(name, description);
-                    return;
-                }
-
-                foreach (var copilot in copilots)
-                {
-                    AddLog(copilot, UiLogColor.Message, showTime: false);
-                    await UpdateFileDoc(copilot);
-                }
-
-                Log(name, description);
+                AddLog(LocalizationHelper.GetString("NetworkServiceError"), UiLogColor.Error, showTime: false);
+                return (0, null);
             }
-            catch (Exception)
+            else if (status == PrtsStatus.Success && copilotset is PrtsCopilotModel { StatusCode: 200 })
+            {
+                if (copilotset.Data?.Content is CopilotModel { } copilot)
+                {
+                    return (copilotId, copilot); // await ParseCopilotAsync(copilot, true, copilotList, copilotId));
+                }
+                else if (copilotset.Data?.Content is SSSCopilotModel { } sss)
+                {
+                    return (copilotId, sss); // await ParseSSSCopilot(sss, true));
+                }
+
+                AddLog(LocalizationHelper.GetString("CopilotJsonError"), UiLogColor.Error, showTime: false);
+                return (0, null);
+            }
+
+            AddLog(LocalizationHelper.GetString("CopilotNoFound"), UiLogColor.Error, showTime: false);
+            return (0, null);
+        }
+
+        private async Task<bool> ParseCopilotAsync(CopilotModel copilot, bool writeToCache, bool copilotList, int copilotId)
+        {
+            if (string.IsNullOrEmpty(copilot.StageName))
             {
                 AddLog(LocalizationHelper.GetString("CopilotJsonError"), UiLogColor.Error, showTime: false);
+                return false;
             }
 
+            _taskType = AsstTaskType.Copilot;
+            if (copilot.Documentation?.Details is not null)
+            {
+                CopilotUrl = CopilotUiUrl;
+                var linkParser = new Regex(@"(?:av\d+|bv[a-z0-9]{10})(?:\/\?p=\d+)?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                var match = linkParser.Match(copilot.Documentation.Details);
+                if (match.Success)
+                {
+                    CopilotUrl = MaaUrls.BilibiliVideo + match.Value; // 视频链接
+                }
+            }
+
+            foreach (var (output, color) in copilot.Output())
+            {
+                AddLog(output, color ?? UiLogColor.Message, showTime: false);
+            }
+
+            MapUrl = MapUiUrl.Replace("areas", "map/" + copilot.StageName);
+            var navigateName = DataHelper.FindMap(copilot.StageName)?.Code;
+            if (navigateName is null)
+            {
+                // 不支持的关卡
+                AddLog(LocalizationHelper.GetString("UnsupportedStages") + $"  {copilot.StageName}", UiLogColor.Error, showTime: false);
+                navigateName = FindStageName(copilot.Documentation?.Title ?? string.Empty);
+            }
+
+            CopilotTaskName = navigateName;
+            if (!writeToCache)
+            {// 现在是暂时将所有本地作业不添加到列表
+            }
+            else if (copilotList)
+            {
+                switch (copilot.Difficulty)
+                {
+                    case CopilotModel.DifficultyFlags.None:
+                        await AddCopilotTaskToList(copilot, CopilotModel.DifficultyFlags.Normal, navigateName, copilotId);
+                        break;
+                    default:
+                        await AddCopilotTaskToList(copilot, copilot.Difficulty, navigateName, copilotId);
+                        break;
+                }
+            }
+            else
+            {
+                try
+                {
+                    await File.WriteAllTextAsync(TempCopilotFile, JsonConvert.SerializeObject(copilot, Formatting.Indented));
+                }
+                catch
+                {
+                    _logger.Error("Could not save copilot task to file: " + TempCopilotFile);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private async Task<bool> ParseSSSCopilot(SSSCopilotModel copilot, bool writeToCache)
+        {
+            if (string.IsNullOrEmpty(copilot.StageName) || copilot.Type != new SSSCopilotModel().Type)
+            {
+                return false;
+            }
+
+            _taskType = AsstTaskType.SSSCopilot;
+            MapUrl = MapUiUrl.Replace("areas", "map/" + copilot.StageName);
+            if (copilot.Documentation?.Details is not null)
+            {
+                CopilotUrl = CopilotUiUrl;
+                var linkParser = new Regex(@"(?:av\d+|bv[a-z0-9]{10})(?:\/\?p=\d+)?", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                var match = linkParser.Match(copilot.Documentation.Details);
+                if (match.Success)
+                {
+                    CopilotUrl = MaaUrls.BilibiliVideo + match.Value; // 视频链接
+                }
+            }
+
+            foreach (var (output, color) in copilot.Output())
+            {
+                AddLog(output, color ?? UiLogColor.Message, showTime: false);
+            }
+
+            // 不支持的关卡
+            if (DataHelper.FindMap(copilot.StageName) is null)
+            {
+                AddLog(LocalizationHelper.GetString("UnsupportedStages") + $"  {copilot.StageName}", UiLogColor.Error, showTime: false);
+            }
+
+            if (writeToCache)
+            {
+                try
+                {
+                    await File.WriteAllTextAsync(TempCopilotFile, JsonConvert.SerializeObject(copilot, Formatting.Indented));
+                }
+                catch
+                {
+                    _logger.Error("Could not save copilot task to file: " + TempCopilotFile);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        #endregion 作业解析
+
+        #region 作业集解析
+
+        private async Task GetCopilotSetAsync(string copilotCodeString)
+        {
+            if (copilotCodeString.StartsWith(CopilotIdPrefix, StringComparison.OrdinalIgnoreCase))
+            {
+                copilotCodeString = copilotCodeString[CopilotIdPrefix.Length..];
+            }
+
+            if (int.TryParse(copilotCodeString, out var copilotCode))
+            {
+                await GetCopilotSetAsync(copilotCode);
+                return;
+            }
+
+            AddLog(LocalizationHelper.GetString("CopilotNoFound") + $"  {copilotCodeString}", UiLogColor.Error, showTime: false);
+        }
+
+        private async Task GetCopilotSetAsync(int copilotCode)
+        {
+            var (status, copilotset) = await RequestCopilotSetAsync(copilotCode);
+            if (status == PrtsStatus.NetworkError)
+            {
+                AddLog(LocalizationHelper.GetString("NetworkServiceError"), UiLogColor.Error, showTime: false);
+                return;
+            }
+            else if (status == PrtsStatus.Success && copilotset is PrtsCopilotSetModel { StatusCode: 200 })
+            {
+                await ParseCopilotSetAsync(copilotset.Data);
+                return;
+            }
+
+            AddLog(LocalizationHelper.GetString("CopilotNoFound") + $"  {copilotCode}", UiLogColor.Error, showTime: false);
+            return;
+        }
+
+        private async Task ParseCopilotSetAsync(PrtsCopilotSetModel.CopilotSetData? copilotSet)
+        {
+            CopilotId = 0;
+            ClearLog();
+            if (copilotSet?.CopilotIds is null)
+            {
+                AddLog(LocalizationHelper.GetString("CopilotJsonError"), UiLogColor.Error, showTime: false);
+                return;
+            }
+            else if (copilotSet.CopilotIds.Count == 0)
+            {
+                Log(copilotSet.Name, copilotSet.Description);
+                return;
+            }
+
+            var list = copilotSet.CopilotIds.Select(async (copilotId) => await GetCopilotAsync(copilotId)).ToList();
+            foreach (var task in list)
+            {
+                var (copilotId, payload) = await task;
+                if (payload is CopilotModel copilot)
+                {
+                    await ParseCopilotAsync(copilot, true, true, copilotId);
+                }
+            }
+
+            ClearLog();
+            Log(copilotSet.Name, copilotSet.Description);
             return;
 
             void Log(string? name, string? description)
             {
-                ClearLog();
                 if (!string.IsNullOrWhiteSpace(name))
                 {
                     AddLog(name, UiLogColor.Message, showTime: false);
@@ -883,6 +863,8 @@ namespace MaaWpfGui.ViewModels.UI
                 }
             }
         }
+
+        #endregion 作业集解析
 
         /// <summary>
         /// Drops file.
@@ -950,52 +932,121 @@ namespace MaaWpfGui.ViewModels.UI
             }
         }
 
-        private void AddCopilotTaskToList(string? stageName, bool isRaid)
+        private async void AddCopilotTaskToList(string? stageName, bool isRaid)
         {
-            var invalidChar = @"[:',\.\(\)\|\[\]\?，。【】｛｝；：]"; // 无效字符
-            if (string.IsNullOrEmpty(stageName) || Regex.IsMatch(stageName, invalidChar))
+            if (string.IsNullOrEmpty(stageName) || InvalidStageNameRegex().IsMatch(stageName))
             {
                 AddLog("Invalid stage name for navigation", UiLogColor.Error, showTime: false);
                 return;
             }
 
-            var cachePath = $"{CopilotJsonDir}/{stageName}" + (isRaid ? "(Raid)" : string.Empty) + ".json";
-
+            string file;
             try
             {
-                Directory.CreateDirectory(CopilotJsonDir);
+                file = await File.ReadAllTextAsync(IsDataFromWeb ? TempCopilotFile : Filename);
             }
             catch
             {
-                // ignored
+                AddLog(LocalizationHelper.GetString("CopilotFileReadError"), UiLogColor.Error, showTime: false);
+                return;
             }
 
             try
             {
-                if (cachePath != (IsDataFromWeb ? TempCopilotFile : Filename))
+                var copilot = JsonConvert.DeserializeObject<CopilotModel>(file);
+                if (copilot is not null)
                 {
-                    // 相同路径跳拷贝
-                    File.Copy(IsDataFromWeb ? TempCopilotFile : Filename, cachePath, true);
+                    await AddCopilotTaskToList(copilot, !isRaid ? CopilotModel.DifficultyFlags.Normal : CopilotModel.DifficultyFlags.Raid, stageName, CopilotId);
                 }
-
-                var item = new CopilotItemViewModel(stageName, cachePath, isRaid)
-                {
-                    Index = CopilotItemViewModels.Count,
-                };
-
-                if (IsDataFromWeb)
-                {
-                    item.CopilotId = CopilotId; // 为作业列表保存当前作业的Id
-                }
-
-                CopilotItemViewModels.Add(item);
-                SaveCopilotTask();
             }
             catch (Exception ex)
             {
                 AddLog(LocalizationHelper.GetString("CopilotJsonError"), UiLogColor.Error, showTime: false);
-                Log.Error(ex.ToString());
+                _logger.Error(ex.ToString());
             }
+        }
+
+        /// <summary>
+        /// 将作业添加到列表
+        /// </summary>
+        /// <param name="copilot">作业</param>
+        /// <param name="flags">难度等级</param>
+        /// <param name="navigateName">关卡code，用于导航</param>
+        /// <param name="copilotId">作业站id</param>
+        /// <returns>是否添加了作业</returns>
+        private async Task<bool> AddCopilotTaskToList(CopilotModel copilot, CopilotModel.DifficultyFlags flags, string? navigateName = null, int copilotId = 0)
+        {
+            if (string.IsNullOrEmpty(copilot.StageName))
+            {
+                _logger.Error("Could not add copilot task with empty stage");
+                return false;
+            }
+
+            if (!Path.Exists(CopilotJsonDir))
+            {
+                try
+                {
+                    Directory.CreateDirectory(CopilotJsonDir);
+                }
+                catch
+                {// ignored
+                }
+            }
+
+            var stageName = DataHelper.FindMap(copilot.StageName)?.Code;
+            if (navigateName is null && stageName is null)
+            {
+                AddLog(stageName + " not found, and also no stage name specified", UiLogColor.Error, showTime: false);
+                return false;
+            }
+
+            stageName ??= navigateName;
+            var fileName = !string.IsNullOrEmpty(stageName!) ? stageName : DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+            var cachePath = $"{CopilotJsonDir}/{fileName}.json";
+            await _semaphore.WaitAsync();
+            if (File.Exists(cachePath) && CopilotItemViewModels.Any(i => i.FilePath == cachePath))
+            {
+                cachePath = $"{CopilotJsonDir}/{fileName}_{DateTimeOffset.Now.ToUnixTimeMilliseconds()}.json";
+                if (CopilotItemViewModels.Any(i => i.FilePath == cachePath))
+                {
+                    _logger.Error("Could not add copilot task with duplicate stage name: " + copilot.StageName);
+                    _semaphore.Release();
+                    return false;
+                }
+            }
+
+            try
+            {
+                await File.WriteAllTextAsync(cachePath, JsonConvert.SerializeObject(copilot, Formatting.Indented));
+            }
+            catch
+            {
+                _logger.Error("Could not save copilot task to file: " + cachePath);
+                _semaphore.Release();
+                return false;
+            }
+
+            if (flags.HasFlag(CopilotModel.DifficultyFlags.Normal))
+            {
+                var item = new CopilotItemViewModel(stageName, cachePath, false, copilotId)
+                {
+                    Index = CopilotItemViewModels.Count,
+                };
+                CopilotItemViewModels.Add(item);
+            }
+
+            if (flags.HasFlag(CopilotModel.DifficultyFlags.Raid))
+            {
+                var item = new CopilotItemViewModel(stageName, cachePath, true, copilotId)
+                {
+                    Index = CopilotItemViewModels.Count,
+                };
+                CopilotItemViewModels.Add(item);
+            }
+
+            _semaphore.Release();
+            SaveCopilotTask();
+            return true;
         }
 
         public void SaveCopilotTask()
@@ -1022,8 +1073,7 @@ namespace MaaWpfGui.ViewModels.UI
 
                     if (model.CopilotId > 0 && _copilotIdList.Remove(model.CopilotId) && _copilotIdList.IndexOf(model.CopilotId) == -1)
                     {
-                        CouldLikeWebJson = _recentlyRatedCopilotId.IndexOf(model.CopilotId) == -1;
-                        RateWebJson("Like", model.CopilotId);
+                        RateCopilot(model.CopilotId);
                     }
 
                     break;
@@ -1068,6 +1118,13 @@ namespace MaaWpfGui.ViewModels.UI
             if (_isVideoTask)
             {
                 _ = StartVideoTask();
+                return;
+            }
+
+            if (UseCopilotList && !await VerifyCopilotListTask())
+            {
+                // 校验作业合法性
+                _runningState.SetIdle(true);
                 return;
             }
 
@@ -1173,31 +1230,12 @@ namespace MaaWpfGui.ViewModels.UI
 
         private bool _isVideoTask;
 
-        private void UpdateCouldLikeWebJson()
-        {
-            CouldLikeWebJson = IsDataFromWeb &&
-                CopilotId > 0 &&
-                _recentlyRatedCopilotId.IndexOf(CopilotId) == -1;
-        }
-
         private bool _isDataFromWeb;
 
         private bool IsDataFromWeb
         {
             get => _isDataFromWeb;
-            set
-            {
-                SetAndNotify(ref _isDataFromWeb, value);
-                UpdateCouldLikeWebJson();
-            }
-        }
-
-        private bool _isCopilotSet;
-
-        private bool IsCopilotSet
-        {
-            get => _isCopilotSet;
-            set => SetAndNotify(ref _isCopilotSet, value);
+            set => SetAndNotify(ref _isDataFromWeb, value);
         }
 
         private int _copilotId;
@@ -1208,36 +1246,70 @@ namespace MaaWpfGui.ViewModels.UI
             set
             {
                 SetAndNotify(ref _copilotId, value);
-                UpdateCouldLikeWebJson();
+                CouldLikeWebJson = value > 0;
             }
         }
 
-        private async void RateWebJson(string rating, int copilotId)
+        private async void RateCopilot(int copilotId, bool isLike = true)
         {
-            if (!CouldLikeWebJson)
+            if (copilotId <= 0 || _recentlyRatedCopilotId.Contains(copilotId) || IsDataFromWeb/*以防万一*/)
             {
                 return;
             }
 
-            CouldLikeWebJson = false;
+            var result = await RateWebJsonAsync(copilotId, isLike ? "Like" : "Dislike");
+            switch (result)
+            {
+                case PrtsStatus.Success:
+                    _recentlyRatedCopilotId.Add(copilotId);
+                    CouldLikeWebJson = false;
+                    AddLog(LocalizationHelper.GetString("ThanksForLikeWebJson"), UiLogColor.Info, showTime: false);
+                    break;
+                case PrtsStatus.NetworkError:
+                    AddLog(LocalizationHelper.GetString("FailedToLikeWebJson"), UiLogColor.Error, showTime: false);
+                    break;
+            }
+        }
 
-            // PostAsJsonAsync 会自动序列化为 json
+        private async Task<bool> VerifyCopilotListTask()
+        {
+            var list = CopilotItemViewModels.Where(i => i.IsChecked);
             /*
-            string jsonParam = JsonConvert.SerializeObject(new
+            if (list.Any(i => string.IsNullOrEmpty(i.Name.Trim())))
             {
-                id = CopilotId,
-                rating,
-            });
-            */
-            var response = await Instances.HttpService.PostAsJsonAsync(new Uri(MaaUrls.PrtsPlusCopilotRating), new { id = copilotId, rating });
-            if (response == null)
-            {
-                AddLog(LocalizationHelper.GetString("FailedToLikeWebJson"), UiLogColor.Error, showTime: false);
+                _runningState.SetIdle(false);
                 return;
+            }*/
+
+            var stageNames = list.Select(i => i.FilePath).ToHashSet().Select(async path =>
+            {
+                if (!File.Exists(path))
+                {
+                    return null;
+                }
+
+                try
+                {
+                    var str = await File.ReadAllTextAsync(path);
+                    return JsonConvert.DeserializeObject<CopilotModel>(str)?.StageName;
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error("could not read & parse copilot file: " + path, ex);
+                    return null;
+                }
+            });
+            foreach (var stageName in stageNames)
+            {
+                var name = await stageName;
+                if (string.IsNullOrEmpty(name) || DataHelper.FindMap(name) is null)
+                {
+                    AddLog(LocalizationHelper.GetString("UnsupportedStages") + $"  {name}", UiLogColor.Error, showTime: false);
+                    return false;
+                }
             }
 
-            _recentlyRatedCopilotId.Add(copilotId);
-            AddLog(LocalizationHelper.GetString("ThanksForLikeWebJson"), UiLogColor.Info, showTime: false);
+            return true;
         }
 
         /// <summary>
