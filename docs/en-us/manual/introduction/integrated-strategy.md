@@ -44,7 +44,7 @@ The recommended difficulty level is the one without the `Enemy Difficulty` and `
 
 ## Battle Strategy
 
-MAA does not have AI capabilities; all operations in automatic Integrated Strategy are pre-set strategies, and all stage battles use built-in job files.
+All operations in automatic Integrated Strategy are pre-set strategies, and all stage battles use built-in job files. When the corresponding mission for the level does not exist, a general decision tree, which is not very smart, will be used for the battle.
 
 For more details, please refer to the [Integrated Strategy Schema](../../protocol/integrated-strategy-schema.md).
 
