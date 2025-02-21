@@ -9,10 +9,17 @@ using namespace asst;
 BrightPointAnalyzer::ResultsVecOpt BrightPointAnalyzer::analyze()
 {
     const cv::Mat croppedImage = make_roi(m_image, m_roi);
-    cv::Mat grayImage;
-    cv::cvtColor(croppedImage, grayImage, cv::COLOR_BGR2GRAY);
     cv::Mat binaryImage;
-    cv::threshold(grayImage, binaryImage, 200, 255, cv::THRESH_BINARY);
+    if (m_rgb_mode) {
+        cv::Mat rgbImage;
+        cv::cvtColor(croppedImage, rgbImage, cv::COLOR_BGR2RGB);
+        cv::inRange(rgbImage, m_rgb_lb, m_rgb_ub, binaryImage);
+    }
+    else {
+        cv::Mat grayImage;
+        cv::cvtColor(croppedImage, grayImage, cv::COLOR_BGR2GRAY);
+        cv::threshold(grayImage, binaryImage, m_lb, m_ub, cv::THRESH_BINARY);
+    }
     std::vector<cv::Point> brightPoints;
     cv::findNonZero(binaryImage, brightPoints);
 

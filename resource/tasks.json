@@ -11581,6 +11581,12 @@
         "action": "ClickSelf"
     },
     "Sarkaz@RoguelikeSettlementConfirm": {},
+    "CostRegenerationBar": {
+        "template": "empty.png",
+        "roi": [1160, 542, 120, 1],
+        "subErrorIgnored": true,
+        "specialParams": [120, 100]
+    },
     "Reclamation2": {
         "doc": "生息演算「沙洲遗闻」",
         "algorithm": "JustReturn",

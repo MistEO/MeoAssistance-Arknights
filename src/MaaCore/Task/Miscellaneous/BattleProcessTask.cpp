@@ -19,6 +19,7 @@
 #include "Utils/Logger.hpp"
 #include "Vision/Battle/BattlefieldMatcher.h"
 #include "Vision/Matcher.h"
+#include "Vision/Miscellaneous/BrightPointAnalyzer.h"
 #include "Vision/RegionOCRer.h"
 
 using namespace asst::battle;
@@ -42,11 +43,26 @@ bool asst::BattleProcessTask::_run()
 
     update_deployment(true);
     to_group();
+    m_battle_starting_time = std::chrono::steady_clock::now();
+    update_cost_regenerated(ctrler()->get_image());
+
+    const bool screenshot_mode = Task.get("CostRegenerationBar")->sub_error_ignored;
+    const std::filesystem::path relative_dir = utils::path("debug") / utils::path("battleProcess");
+    filenum_ctrl(relative_dir, 0);
 
     size_t action_size = get_combat_data().actions.size();
     for (size_t i = 0; i < action_size && !need_exit() && m_in_battle; ++i) {
         const auto& action = get_combat_data().actions.at(i);
         do_action(action, i);
+        if (screenshot_mode) {
+            const std::filesystem::path relative_path =
+                relative_dir / ("time-elapsed-" +
+                                std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(
+                                                   std::chrono::steady_clock::now() - m_battle_starting_time)
+                                                   .count()) +
+                                "_cost-regenerated-" + std::to_string(m_cost_regenerated) + "_raw.png");
+            asst::imwrite(relative_path, ctrler()->get_image());
+        }
     }
 
     if (need_to_wait_until_end()) {
@@ -202,6 +218,9 @@ bool asst::BattleProcessTask::do_action(const battle::copilot::Action& action, s
         ret = deploy_oper(name, location, action.direction);
         if (ret) {
             m_in_bullet_time = false;
+            if (action.flash_detection_delay > 0) {
+                ProcessTask(this_task(), { "BattlePauseCancel" }).run();
+            }
         }
         break;
 
@@ -209,6 +228,9 @@ bool asst::BattleProcessTask::do_action(const battle::copilot::Action& action, s
         ret = m_in_bullet_time ? click_retreat() : (location.empty() ? retreat_oper(name) : retreat_oper(location));
         if (ret) {
             m_in_bullet_time = false;
+            if (action.flash_detection_delay > 0) {
+                ProcessTask(this_task(), { "BattlePauseCancel" }).run();
+            }
         }
         break;
 
@@ -216,6 +238,9 @@ bool asst::BattleProcessTask::do_action(const battle::copilot::Action& action, s
         ret = m_in_bullet_time ? click_skill() : (location.empty() ? use_skill(name) : use_skill(location));
         if (ret) {
             m_in_bullet_time = false;
+            if (action.flash_detection_delay > 0) {
+                ProcessTask(this_task(), { "BattlePauseCancel" }).run();
+            }
         }
         break;
 
@@ -287,12 +312,15 @@ void asst::BattleProcessTask::notify_action(const battle::copilot::Action& actio
     };
 
     json::value info = basic_info_with_what("CopilotAction");
-    info["details"] |= json::object {
-        { "action", ActionNames.at(action.type) },
-        { "target", action.name },
-        { "doc", action.doc },
-        { "doc_color", action.doc_color },
-    };
+    info["details"] |= json::object { { "action", ActionNames.at(action.type) },
+                                      { "target", action.name },
+                                      { "doc", action.doc },
+                                      { "doc_color", action.doc_color },
+                                      { "time_elapsed",
+                                        std::chrono::duration_cast<std::chrono::milliseconds>(
+                                            std::chrono::steady_clock::now() - m_battle_starting_time)
+                                            .count() },
+                                      { "cost_regenerated", m_cost_regenerated } };
     callback(AsstMsg::SubTaskExtraInfo, info);
 }
 
@@ -374,6 +402,32 @@ bool asst::BattleProcessTask::wait_condition(const Action& action)
         }
     }
 
+    // 距离战斗开始度过了多久 elapsed_ms
+    if (action.time_elapsed > 0) {
+        update_image_if_empty();
+        while (!need_exit()) {
+            // 计算当前时间与 m_battle_starting_time 之间的间隔
+            auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(
+                std::chrono::steady_clock::now() - m_battle_starting_time);
+            if (elapsed_ms.count() >= action.time_elapsed) {
+                break;
+            }
+            do_strategy_and_update_image();
+        }
+    }
+
+    // 距离战斗开始度过了多久 elapsed_ms
+    if (action.cost_regenerated > 0) {
+        update_image_if_empty();
+        while (!need_exit()) {
+            update_cost_regenerated(image);
+            if (m_cost_regenerated >= action.cost_regenerated) {
+                break;
+            }
+            do_strategy_and_update_image();
+        }
+    }
+
     // 部署干员还要额外等待费用够或 CD 转好
     if (action.type == ActionType::Deploy) {
         const std::string& name = get_name_from_group(action.name);
@@ -387,6 +441,28 @@ bool asst::BattleProcessTask::wait_condition(const Action& action)
                 iter != m_cur_deployment_opers.end() && iter->available) {
                 break;
             }
+            do_strategy_and_update_image();
+        }
+    }
+
+    if (action.flash_detection_delay > 0) {
+        ProcessTask(this_task(), { "BattlePause" }).run();
+        const Rect& pause_button_rect = Task.get("BattlePause")->specific_rect;
+        update_image_if_empty();
+
+        BrightPointAnalyzer analyzer;
+        analyzer.set_rgb_mode(true);
+        analyzer.set_roi(action.flash_roi);
+        analyzer.set_rgb_lb(action.flash_lb);
+        analyzer.set_rgb_ub(action.flash_ub);
+        while (!need_exit()) {
+            analyzer.set_image(image);
+            if (analyzer.analyze()) {
+                break;
+            }
+            ctrler()->click(pause_button_rect);
+            sleep(action.flash_detection_delay);
+            ctrler()->click(pause_button_rect);
             do_strategy_and_update_image();
         }
     }

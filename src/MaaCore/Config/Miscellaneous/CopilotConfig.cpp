@@ -204,6 +204,24 @@ std::vector<asst::battle::copilot::Action> asst::CopilotConfig::parse_actions(co
         action.cost_changes = action_info.get("cost_changes", 0);
         action.costs = action_info.get("costs", 0);
         action.cooling = action_info.get("cooling", -1);
+        action.cost_regenerated = action_info.get("cost_regenerated", 0.0);
+        action.time_elapsed = action_info.get("time_elapsed", 0);
+        action.flash_detection_delay = action_info.get("flash_detection_delay", 0);
+        if (action_info.contains("flash_roi")) {
+            auto flash_roi = action_info.at("flash_roi").as_array();
+            action.flash_roi = { flash_roi[0].as_integer(),
+                                 flash_roi[1].as_integer(),
+                                 flash_roi[2].as_integer(),
+                                 flash_roi[3].as_integer() };
+        }
+        if (action_info.contains("flash_lb")) {
+            auto flash_lb = action_info.at("flash_lb").as_array();
+            action.flash_lb = { flash_lb[0].as_integer(), flash_lb[1].as_integer(), flash_lb[2].as_integer() };
+        }
+        if (action_info.contains("flash_ub")) {
+            auto flash_ub = action_info.at("flash_ub").as_array();
+            action.flash_ub = { flash_ub[0].as_integer(), flash_ub[1].as_integer(), flash_ub[2].as_integer() };
+        }
         action.name = action_info.get("name", std::string());
 
         action.location.x = action_info.get("location", 0, 0);
